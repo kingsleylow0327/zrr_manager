@@ -1,5 +1,6 @@
 # bot.py
 import discord
+import message as ms
 from discord.ext import commands
 from modal.api_modal import APIModal
 from modal.activate_modal import ActivateModal
@@ -39,6 +40,11 @@ async def activate(interaction: discord.Interaction):
 
 @bot.command()
 async def trader(ctx: commands.Context):
+    player_id = str(ctx.author.id)
+    if not dbcon.check_user_exist(player_id):
+        message = ms.NON_REGISTERED
+        await ctx.send(message, ephemeral=True)
+        return
     await ctx.send("Select Your Trader", view=TraderSelectView(dbcon), ephemeral=True)
 
 @bot.command()
@@ -47,10 +53,7 @@ async def status(ctx: commands.Context):
     max_wallet = 1000
     player_id = str(ctx.author.id)
     if not dbcon.check_user_exist(player_id):
-        message = """
-        You have not registered to the system
-        Please Contact ZRR Admin to register
-        """
+        message = ms.NON_REGISTERED
         await ctx.send(message, ephemeral=True)
         return
     trader_api = dbcon.get_player_status(player_id)[0]
