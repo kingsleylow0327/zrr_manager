@@ -48,10 +48,15 @@ async def trader(ctx: commands.Context):
     await ctx.send("Select Your Trader", view=TraderSelectView(dbcon), ephemeral=True)
 
 @bot.command()
-async def status(ctx: commands.Context):
+async def status(ctx: commands.Context, id=None):
     min_wallet = 200
     max_wallet = 1000
     player_id = str(ctx.author.id)
+    is_admin_flag = False
+    if dbcon.is_admin(player_id):
+        is_admin_flag = True
+        if id is not None and id.strip() != "":
+            player_id = id
     if not dbcon.check_user_exist(player_id):
         message = ms.NON_REGISTERED
         await ctx.send(message, ephemeral=True)
@@ -70,6 +75,7 @@ async def status(ctx: commands.Context):
 
     if response.get("code") == 0 or response.get("code") == 200:
         msg_api = "✅"
+        uid = str(response.get("data").get("balance").get("userId"))
         balance = float(response.get("data").get("balance").get("availableMargin"))
         if balance > float(min_wallet):
             msg_wallet_min = "✅"
@@ -77,10 +83,14 @@ async def status(ctx: commands.Context):
             msg_wallet_max = "✅"
 
     embed = discord.Embed(title="Your ZRR status", description="")
+    if is_admin_flag and (response.get("code") == 0 or response.get("code") == 200):
+        embed.add_field(name=f"BingX UserId: {uid}", value="", inline=False)
     embed.add_field(name=f"API Setup: {msg_api} \n", value="", inline=False)
     embed.add_field(name=f"Wallet > {min_wallet}: {msg_wallet_min} \n", value="", inline=False)
     embed.add_field(name=f"Wallet < {max_wallet}: {msg_wallet_max} \n", value="", inline=False)
     embed.add_field(name=f"Following Traders: {msg_trader}", value="", inline=False)
+    if is_admin_flag and (response.get("code") == 0 or response.get("code") == 200):
+        embed.add_field(name=f"Wallet Amount: {balance}", value="", inline=False)
     await ctx.send(embed=embed, ephemeral=True)
 
 bot.run(config.TOKEN)
