@@ -4,8 +4,8 @@ from discord.interactions import Interaction
 class PlayerDropDown(discord.ui.Select):
     def __init__(self, trader_list, dbcon):
         self.dbcon = dbcon
-        traders = [discord.SelectOption(label=t.get("player_id"),
-                                        value=t.get("player_id")) for t in trader_list]
+        traders = [discord.SelectOption(label=t.get("trader_name"),
+                                        value=t.get("trader_badge_id")) for t in trader_list]
         super().__init__(placeholder="Trader Id", options=traders, min_values=1, max_values=1)
 
     async def callback(self, interaction: Interaction):

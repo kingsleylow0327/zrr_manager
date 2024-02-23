@@ -51,10 +51,8 @@ class ZonixDB():
         return row
     
     def get_trader_list(self):
-        sql = f"""SELECT player_id
-        FROM {self.config.FOLLOWER_TABLE} 
-        WHERE 
-        player_id = follower_id
+        sql = f"""SELECT *
+        FROM {self.config.TRADER_DETAIL_TABLE}
         """
         return self.dbcon_manager(sql, get_all=True)
     
