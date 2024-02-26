@@ -25,8 +25,8 @@ GUILD_ID = int(config.GUILD_ID)
 
 def within_valid_period(date_time):
     current_date = datetime.now()
-    if current_date.day in range(1, 7):
-        return (date_time.month < current_date.month and date_time.year <= current_date.year)
+    if current_date.day in range(1, 31):
+        return (date_time.month <= current_date.month and date_time.year <= current_date.year)
     return False
 
 @bot.event
@@ -109,7 +109,7 @@ async def status(ctx: commands.Context, id=None):
                 msg_wallet_max = "✅"
 
         if is_admin_flag and (response.get("code") == 0 or response.get("code") == 200):
-            embed.add_field(name=f"BingX UserItrader_idd: {uid}", value="", inline=False)
+            embed.add_field(name=f"BingX UserId: {uid}", value="", inline=False)
         embed.add_field(name=f"Ref Id: {trader_api.get('player_id')} \n", value="", inline=False)
         embed.add_field(name=f"API Setup: {msg_api} \n", value="", inline=False)
         embed.add_field(name=f"Wallet > {min_wallet}: {msg_wallet_min} \n", value="", inline=False)
