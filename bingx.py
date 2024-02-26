@@ -9,6 +9,8 @@ ACTUAL_API = "https://open-api.bingx.com"
 DEMO_API = "https://open-api-vst.bingx.com"
 SERVER_TIME = "/openApi/swap/v2/server/time"
 WALLET_API = "/openApi/swap/v2/user/balance"
+POS_API = "/openApi/swap/v2/trade/closeAllPositions"
+ORDER_API = "/openApi/swap/v2/trade/allOpenOrders"
 
 APIDOMAIN = ACTUAL_API
 if eval(CONFIG.IS_TEST):
@@ -66,3 +68,18 @@ class BINGX:
             "recvWindow": 0
         }
         return self.__send_request(method, WALLET_API, param_map)
+    
+    def close_all_pos(self):
+        method = "POST"
+        param_map = {
+            "recvWindow": 0
+        }
+        return self.__send_request(method, POS_API, param_map)
+    
+    def close_all_order(self):
+        method = "DELETE"
+        param_map = {
+            "recvWindow": 0
+        }
+        return self.__send_request(method, ORDER_API, param_map)
+    

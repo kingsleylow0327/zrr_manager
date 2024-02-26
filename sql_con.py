@@ -56,29 +56,43 @@ class ZonixDB():
         """
         return self.dbcon_manager(sql, get_all=True)
     
-    def updare_trader_list(self, player_id, follower_id):
+    def update_trader_list(self, player_id, follower_id):
         sql = f"""UPDATE {self.config.FOLLOWER_TABLE}
-        SET player_id = '{player_id}'
+        SET player_id = '{player_id}', following_time = NOW()
         WHERE 
         follower_id = '{follower_id}'
         AND player_id != follower_id
         """
         return self.dbcon_manager(sql, get_all=True)
 
-    def get_player_status(self, player_id):
-        sql = f"""SELECT a.player_id, a.api_key, a.api_secret, f.player_id as trader_id
+    def get_player_status(self, player_id, arg):
+        sql = f"""SELECT a.player_id, a.api_key, a.api_secret, f.player_id as trader_id, f.following_time
         FROM {self.config.API_TABLE} as a
         LEFT JOIN {self.config.FOLLOWER_TABLE} as f
         ON a.player_id = f.follower_id
-        WHERE a.player_id = '{player_id}';
+        WHERE a.player_id = '{arg}'
+        AND
+        a.discord_id = '{player_id}';
+        """
+        return self.dbcon_manager(sql, get_all=False)
+    
+    def get_all_player_status(self, player_id):
+        sql = f"""SELECT a.player_id, a.api_key, a.api_secret, f.player_id as trader_id, f.following_time
+        FROM {self.config.API_TABLE} as a
+        LEFT JOIN {self.config.FOLLOWER_TABLE} as f
+        ON a.player_id = f.follower_id
+        WHERE
+        a.discord_id = '{player_id}';
         """
         return self.dbcon_manager(sql, get_all=True)
     
-    def set_player_api(self, player_id, api, key):    
+    def set_player_api(self, player_id, api, key, player_ref_id):    
         sql = f"""UPDATE {self.config.API_TABLE}
         SET api_key = '{api}', api_secret = '{key}'
         WHERE 
-        player_id = '{player_id}'
+        player_id = '{player_ref_id}'
+        AND
+        discord_id = '{player_id}'
         """
         return self.dbcon_manager(sql, get_all=True)
     
@@ -88,22 +102,30 @@ class ZonixDB():
         ret = self.dbcon_manager(sql, get_all=True)
         return len(ret) != 0
     
-    def check_user_exist(self, player_id):
+    def check_user_exist_with_ref(self, player_id, player_ref_name):
         sql = f"""SELECT player_id FROM {self.config.API_TABLE} 
-        WHERE player_id='{player_id}'"""
+        WHERE player_id='{player_ref_name}'
+        AND
+        discord_id='{player_id}'"""
         ret = self.dbcon_manager(sql, get_all=True)
         return ret and len(ret) != 0
     
-    def activate_user(self, player_id):
+    def check_user_exist(self, player_id):
+        sql = f"""SELECT player_id FROM {self.config.API_TABLE} 
+        WHERE discord_id='{player_id}'"""
+        ret = self.dbcon_manager(sql, get_all=True)
+        return ret and len(ret) != 0
+    
+    def activate_user(self, player_id, player_ref_name):
         sql = f"""INSERT INTO {self.config.API_TABLE}
-        (player_id, platform)
+        (player_id, discord_id, platform)
         VALUES
-        ('{player_id}', 'bingx')
+        ('{player_ref_name}', '{player_id}', 'bingx')
         """
         self.dbcon_manager(sql)
 
         sql = f"""INSERT INTO {self.config.FOLLOWER_TABLE}
         (follower_id, platform)
         VALUES
-        ('{player_id}', 'bingx')"""
+        ('{player_ref_name}', 'bingx')"""
         return self.dbcon_manager(sql)
