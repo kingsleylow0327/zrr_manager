@@ -18,7 +18,7 @@ class PlayerDropDown(discord.ui.Select):
 
 
 class TraderSelectView(discord.ui.View):
-    def __init__(self, dbcon, ref_id):
+    def __init__(self, dbcon, ref_id, following_trader_id):
         super().__init__()
-        trader_list = dbcon.get_trader_list()
+        trader_list = dbcon.get_trader_list(following_trader_id)
         self.add_item(PlayerDropDown(trader_list, dbcon, ref_id))

@@ -58,7 +58,8 @@ async def trader(ctx: commands.Context, arg=None):
     if player_status.get("following_time") and not within_valid_period(player_status.get("following_time")):
         await ctx.send(ms.SELECTED_TRADER, ephemeral=True)
         return
-    await ctx.send("Select Your Trader", view=TraderSelectView(dbcon, arg), ephemeral=True)
+    following_trader_id = player_status.get("trader_id")
+    await ctx.send("Select Your Trader", view=TraderSelectView(dbcon, arg, following_trader_id), ephemeral=True)
     player = BINGX(player_status.get("api_key"), player_status.get("api_secret"))
     pos_ret = player.close_all_pos()
     order_ret = player.close_all_order()

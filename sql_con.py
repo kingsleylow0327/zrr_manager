@@ -50,10 +50,16 @@ class ZonixDB():
             return None
         return row
     
-    def get_trader_list(self):
+    def get_trader_list(self, following_trader_id=None):
         sql = f"""SELECT *
-        FROM {self.config.TRADER_DETAIL_TABLE}
+        FROM {self.config.TRADER_CHANNEL_TABLE}
         """
+        if following_trader_id:
+            sql = f"""SELECT *
+            FROM {self.config.TRADER_CHANNEL_TABLE}
+            WHERE
+            trader_id != '{following_trader_id}'
+            """
         return self.dbcon_manager(sql, get_all=True)
     
     def update_trader_list(self, player_id, follower_id):
@@ -81,7 +87,7 @@ class ZonixDB():
         FROM {self.config.API_TABLE} as a
         LEFT JOIN {self.config.FOLLOWER_TABLE} as f
         ON a.player_id = f.follower_id
-        LEFT JOIN {self.config.TRADER_DETAIL_TABLE} as t
+        LEFT JOIN {self.config.TRADER_CHANNEL_TABLE} as t
         ON f.player_id = t.trader_id
         WHERE
         a.discord_id = '{player_id}';
