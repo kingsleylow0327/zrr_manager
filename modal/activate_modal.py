@@ -18,4 +18,4 @@ class ActivateModal(discord.ui.Modal, title=TITLE):
             self.dbcon.activate_user(player_id, player_ref_name)
             await interaction.response.send_message("User Activated", ephemeral=True)
             return
-        await interaction.response.send_message(f"User Id with {player_id} has already signed up with name = {player_ref_name}", ephemeral=True)
+        await interaction.response.send_message(f"User Id {player_id} has been activated before", ephemeral=True)

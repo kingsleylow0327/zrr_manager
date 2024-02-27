@@ -6,6 +6,7 @@ from datetime import datetime
 from modal.api_modal import APIModal
 from modal.activate_modal import ActivateModal
 from view.trader_view import TraderSelectView
+from view.damage_view import DamageSelectView
 from config import Config
 from sql_con import ZonixDB
 from bingx import BINGX
@@ -73,6 +74,17 @@ async def trader(ctx: commands.Context, arg=None):
         await ctx.send(ms.ERROR_CLOSED_ORDER, ephemeral=True)
 
 @bot.command()
+async def damage(ctx: commands.Context, arg=None):
+    player_id = str(ctx.author.id)
+    if not arg:
+        await ctx.send(ms.MISSING_REF_NAME, ephemeral=True)
+        return
+    if not dbcon.check_user_exist_with_ref(player_id, arg):
+        await ctx.send(ms.NON_REGISTERED, ephemeral=True)
+        return
+    await ctx.send("Select Your Damage Cost", view=DamageSelectView(dbcon, arg), ephemeral=True)   
+
+@bot.command()
 async def status(ctx: commands.Context, id=None):
     min_wallet = 200
     max_wallet = 1000
@@ -116,6 +128,7 @@ async def status(ctx: commands.Context, id=None):
         embed.add_field(name=f"Wallet > {min_wallet}: {msg_wallet_min} \n", value="", inline=False)
         embed.add_field(name=f"Wallet < {max_wallet}: {msg_wallet_max} \n", value="", inline=False)
         embed.add_field(name=f"Following Traders: {msg_trader}", value="", inline=False)
+        embed.add_field(name=f"Damage Cost: {trader_api.get('damage_cost')}%", value="", inline=False)
         if is_admin_flag and (response.get("code") == 0 or response.get("code") == 200):
             embed.add_field(name=f"Wallet Amount: {balance}", value="", inline=False)
         embed.add_field(name=f"=====\n", value="", inline=False)
