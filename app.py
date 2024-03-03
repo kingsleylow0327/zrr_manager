@@ -38,15 +38,13 @@ async def on_ready():
 @bot.tree.command(name="api", description="Register API")
 async def register(interaction: discord.Interaction):
     if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
-        await interaction.response.send_message(ms.WRONG_CHANNEL, ephemeral=True)
-        return
+        return True
     await interaction.response.send_modal(APIModal(dbcon))
 
 @bot.tree.command(name="activate", description="Activate User")
 async def activate(interaction: discord.Interaction):
     if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
-        await interaction.response.send_message(ms.WRONG_CHANNEL, ephemeral=True)
-        return
+        return True
     if not dbcon.is_admin(str(interaction.user.id)):
         await interaction.response.send_message("This function only limit to Admin", ephemeral=True)
         return
@@ -55,8 +53,7 @@ async def activate(interaction: discord.Interaction):
 @bot.tree.command(name="trader", description="Select Trader")
 async def trader(interaction: discord.Interaction, ref_id: str):
     if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
-        await interaction.response.defer()
-        return
+        return True
     player_id = str(interaction.user.id)
     if not ref_id:
         await interaction.response.send_message(ms.MISSING_REF_NAME, ephemeral=True)
@@ -86,13 +83,13 @@ async def damage(ctx: commands.Context, arg=None):
         return
     await ctx.send("Select Your Damage Cost", view=DamageSelectView(dbcon, arg), ephemeral=True)   
 
-@bot.command()
-async def status(ctx: commands.Context, id=None):
-    if ctx.channel != int(config.COMMAND_CHANNEL_ID):
-        return
+@bot.tree.command(name="status", description="Check Status")
+async def status(interaction: discord.Interaction, id:str=None):
+    if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
+        return True
     min_wallet = 200
     max_wallet = 1000
-    player_id = str(ctx.author.id)
+    player_id = str(interaction.user.id)
     is_admin_flag = False
     if dbcon.is_admin(player_id):
         is_admin_flag = True
@@ -101,7 +98,7 @@ async def status(ctx: commands.Context, id=None):
 
     trader_api_list = dbcon.get_all_player_status(player_id)
     if not trader_api_list:
-        await ctx.send(ms.NON_REGISTERED, ephemeral=True)
+        await interaction.response.send_message(ms.NON_REGISTERED, ephemeral=True)
         return
     
     embed = discord.Embed(title="Your ZRR status", description="")
@@ -136,6 +133,6 @@ async def status(ctx: commands.Context, id=None):
         if is_admin_flag and (response.get("code") == 0 or response.get("code") == 200):
             embed.add_field(name=f"Wallet Amount: {balance}", value="", inline=False)
         embed.add_field(name=f"=====\n", value="", inline=False)
-    await ctx.send(embed=embed, ephemeral=True)
+    await interaction.response.send_message(embed=embed, ephemeral=True)
 
 bot.run(config.TOKEN)
