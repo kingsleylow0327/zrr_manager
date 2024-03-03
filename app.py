@@ -37,44 +37,46 @@ async def on_ready():
 
 @bot.tree.command(name="api", description="Register API")
 async def register(interaction: discord.Interaction):
+    if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
+        await interaction.response.send_message(ms.WRONG_CHANNEL, ephemeral=True)
+        return
     await interaction.response.send_modal(APIModal(dbcon))
 
 @bot.tree.command(name="activate", description="Activate User")
 async def activate(interaction: discord.Interaction):
+    if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
+        await interaction.response.send_message(ms.WRONG_CHANNEL, ephemeral=True)
+        return
     if not dbcon.is_admin(str(interaction.user.id)):
         await interaction.response.send_message("This function only limit to Admin", ephemeral=True)
         return
     await interaction.response.send_modal(ActivateModal(dbcon))
 
-@bot.command()
-async def trader(ctx: commands.Context, arg=None):
-    player_id = str(ctx.author.id)
-    if not arg:
-        await ctx.send(ms.MISSING_REF_NAME, ephemeral=True)
+@bot.tree.command(name="trader", description="Select Trader")
+async def trader(interaction: discord.Interaction, ref_id: str):
+    if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
+        await interaction.response.defer()
         return
-    if not dbcon.check_user_exist_with_ref(player_id, arg):
-        await ctx.send(ms.NON_REGISTERED, ephemeral=True)
+    player_id = str(interaction.user.id)
+    if not ref_id:
+        await interaction.response.send_message(ms.MISSING_REF_NAME, ephemeral=True)
         return
-    player_status = dbcon.get_player_status(player_id, arg)
+    if not dbcon.check_user_exist_with_ref(player_id, ref_id):
+        await interaction.response.send_message(ms.NON_REGISTERED, ephemeral=True)
+        return
+    player_status = dbcon.get_player_status(player_id, ref_id)
     if player_status.get("following_time") and not within_valid_period(player_status.get("following_time")):
-        await ctx.send(ms.SELECTED_TRADER, ephemeral=True)
+        await interaction.response.send_message(ms.SELECTED_TRADER, ephemeral=True)
         return
     following_trader_id = player_status.get("trader_id")
-    await ctx.send("Select Your Trader", view=TraderSelectView(dbcon, arg, following_trader_id), ephemeral=True)
     player = BINGX(player_status.get("api_key"), player_status.get("api_secret"))
-    pos_ret = player.close_all_pos()
-    order_ret = player.close_all_order()
-    if pos_ret.get("code") == 0:
-        await ctx.send(ms.CLOSED_POS, ephemeral=True)
-    else:
-        await ctx.send(ms.ERROR_CLOSED_POS, ephemeral=True)
-    if order_ret.get("code") == 0:
-        await ctx.send(ms.CLOSED_ORDER, ephemeral=True)
-    else:
-        await ctx.send(ms.ERROR_CLOSED_ORDER, ephemeral=True)
+
+    await interaction.response.send_message(content="Please Select a Trader", view=TraderSelectView(dbcon, ref_id, player, following_trader_id), ephemeral=True)
 
 @bot.command()
 async def damage(ctx: commands.Context, arg=None):
+    if ctx.channel != int(config.COMMAND_CHANNEL_ID):
+        return
     player_id = str(ctx.author.id)
     if not arg:
         await ctx.send(ms.MISSING_REF_NAME, ephemeral=True)
@@ -86,6 +88,8 @@ async def damage(ctx: commands.Context, arg=None):
 
 @bot.command()
 async def status(ctx: commands.Context, id=None):
+    if ctx.channel != int(config.COMMAND_CHANNEL_ID):
+        return
     min_wallet = 200
     max_wallet = 1000
     player_id = str(ctx.author.id)
