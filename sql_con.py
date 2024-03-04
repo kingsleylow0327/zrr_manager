@@ -62,6 +62,14 @@ class ZonixDB():
             """
         return self.dbcon_manager(sql, get_all=True)
     
+    def get_trader_by_id(self, follower_id):
+        sql = f"""SELECT trader_name FROM {self.config.FOLLOWER_TABLE} as f
+        LEFT JOIN {self.config.TRADER_CHANNEL_TABLE} as t
+        ON f.player_id = t.trader_id
+        WHERE f.follower_id = '{follower_id}'
+        """
+        return self.dbcon_manager(sql, get_all=False)
+    
     def update_trader_list(self, player_id, follower_id):
         sql = f"""UPDATE {self.config.FOLLOWER_TABLE}
         SET player_id = '{player_id}', following_time = NOW()

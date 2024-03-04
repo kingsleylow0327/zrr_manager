@@ -41,6 +41,8 @@ class ConfirmationDropDown(discord.ui.Select):
 
     async def callback(self, interaction: Interaction):
         message = ms.REMAIN_TRADER
+        is_changed_trader = False
+        prev_trader_name = None
         if self.values[0] == "yes":
             pos_ret = self.player.close_all_pos()
             order_ret = self.player.close_all_order()
@@ -52,11 +54,18 @@ class ConfirmationDropDown(discord.ui.Select):
                 message += ms.CLOSED_ORDER
             else:
                 message += ms.ERROR_CLOSED_ORDER
+            prev_trader_name = self.dbcon.get_trader_by_id(self.ref_id).get("trader_name")
             self.dbcon.update_trader_list(self.trader_info.get("id"), self.ref_id)
             message += ms.SELECTED_NEW_TRADER.format(self.trader_info.get("name"))
-            # Set role
-            
+            is_changed_trader = True
         await interaction.response.edit_message(content=message, view=MessageBlockView())
+        # Set role
+        if is_changed_trader:
+            user = interaction.user
+            role = discord.utils.get(interaction.guild.roles, name=self.trader_info.get("name"))
+            original_role = discord.utils.get(interaction.guild.roles, name=prev_trader_name)
+            await user.remove_roles(original_role)
+            await user.add_roles(role)
 
 class MessageBlockView(discord.ui.View):
     def __init__(self):

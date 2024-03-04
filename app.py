@@ -70,18 +70,18 @@ async def trader(interaction: discord.Interaction, ref_id: str):
 
     await interaction.response.send_message(content="Please Select a Trader", view=TraderSelectView(dbcon, ref_id, player, following_trader_id), ephemeral=True)
 
-@bot.command()
-async def damage(ctx: commands.Context, arg=None):
-    if ctx.channel != int(config.COMMAND_CHANNEL_ID):
+@bot.tree.command(name="damage", description="Amend Damage Cost")
+async def damage(interaction: discord.Interaction, ref_id: str):
+    if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
+        return True
+    player_id = str(interaction.user.id)
+    if not ref_id:
+        await interaction.response.send_message(ms.MISSING_REF_NAME, ephemeral=True)
         return
-    player_id = str(ctx.author.id)
-    if not arg:
-        await ctx.send(ms.MISSING_REF_NAME, ephemeral=True)
+    if not dbcon.check_user_exist_with_ref(player_id, ref_id):
+        await interaction.response.send_message(ms.NON_REGISTERED, ephemeral=True)
         return
-    if not dbcon.check_user_exist_with_ref(player_id, arg):
-        await ctx.send(ms.NON_REGISTERED, ephemeral=True)
-        return
-    await ctx.send("Select Your Damage Cost", view=DamageSelectView(dbcon, arg), ephemeral=True)   
+    await interaction.response.send_message("Select Your Damage Cost", view=DamageSelectView(dbcon, ref_id), ephemeral=True)   
 
 @bot.tree.command(name="status", description="Check Status")
 async def status(interaction: discord.Interaction, id:str=None):
