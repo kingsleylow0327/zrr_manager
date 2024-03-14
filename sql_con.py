@@ -125,6 +125,8 @@ class ZonixDB():
         sql = f"""SELECT discord_id FROM user 
         WHERE discord_id='{player_id}'"""
         ret = self.dbcon_manager(sql, get_all=True)
+        if not ret:
+            return False
         return len(ret) != 0
     
     def check_user_exist_with_ref(self, player_id, player_ref_name):
