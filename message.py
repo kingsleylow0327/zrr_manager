@@ -1,7 +1,7 @@
 WRONG_CHANNEL="""Please call this command in Manager Channel"""
 
 NON_REGISTERED="""
-You have not registered to the system or you have used with a wrong REF_ID
+You have not registered to the system or you have used with a wrong Account ID
 Please Contact ZRR Admin
 """
 
@@ -15,9 +15,9 @@ SELECTED_NEW_TRADER="""
 You have selected ***{}*** as you new trader!
 """
 
-MISSING_REF_NAME="""
-Please key in with your REF_ID as below
-Example: !trader Potato_1
+MISSING_ACCOUNT_NAME="""
+Please key in with your Account Name as below
+Example: /trader Potato_1
 If you dont have one or forgotten, please contact our Admin
 """
 

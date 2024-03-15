@@ -51,37 +51,39 @@ async def activate(interaction: discord.Interaction):
     await interaction.response.send_modal(ActivateModal(dbcon))
 
 @bot.tree.command(name="trader", description="Select Trader")
-async def trader(interaction: discord.Interaction, ref_id: str):
+async def trader(interaction: discord.Interaction, user_account_name: str):
+    user_account_name = user_account_name.lower()
     if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
         return True
     player_id = str(interaction.user.id)
-    if not ref_id:
-        await interaction.response.send_message(ms.MISSING_REF_NAME, ephemeral=True)
+    if not user_account_name:
+        await interaction.response.send_message(ms.MISSING_ACCOUNT_NAME, ephemeral=True)
         return
-    if not dbcon.check_user_exist_with_ref(player_id, ref_id):
+    if not dbcon.check_user_exist_with_ref(player_id, user_account_name):
         await interaction.response.send_message(ms.NON_REGISTERED, ephemeral=True)
         return
-    player_status = dbcon.get_player_status(player_id, ref_id)
+    player_status = dbcon.get_player_status(player_id, user_account_name)
     if player_status.get("following_time") and not within_valid_period(player_status.get("following_time")):
         await interaction.response.send_message(ms.SELECTED_TRADER, ephemeral=True)
         return
     following_trader_id = player_status.get("trader_id")
     player = BINGX(player_status.get("api_key"), player_status.get("api_secret"))
 
-    await interaction.response.send_message(content="Please Select a Trader", view=TraderSelectView(dbcon, ref_id, player, following_trader_id), ephemeral=True)
+    await interaction.response.send_message(content="Please Select a Trader", view=TraderSelectView(dbcon, user_account_name, player, following_trader_id), ephemeral=True)
 
 @bot.tree.command(name="damage", description="Amend Damage Cost")
-async def damage(interaction: discord.Interaction, ref_id: str):
+async def damage(interaction: discord.Interaction, user_account_name: str):
+    user_account_name = user_account_name.lower()
     if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
         return True
     player_id = str(interaction.user.id)
-    if not ref_id:
-        await interaction.response.send_message(ms.MISSING_REF_NAME, ephemeral=True)
+    if not user_account_name:
+        await interaction.response.send_message(ms.MISSING_ACCOUNT_NAME, ephemeral=True)
         return
-    if not dbcon.check_user_exist_with_ref(player_id, ref_id):
+    if not dbcon.check_user_exist_with_ref(player_id, user_account_name):
         await interaction.response.send_message(ms.NON_REGISTERED, ephemeral=True)
         return
-    await interaction.response.send_message("Select Your Damage Cost", view=DamageSelectView(dbcon, ref_id), ephemeral=True)   
+    await interaction.response.send_message("Select Your Damage Cost", view=DamageSelectView(dbcon, user_account_name), ephemeral=True)   
 
 @bot.tree.command(name="status", description="Check Status")
 async def status(interaction: discord.Interaction, id:str=None):
@@ -109,7 +111,7 @@ async def status(interaction: discord.Interaction, id:str=None):
         msg_api = "❌"
         msg_wallet_min = "❌"
         msg_wallet_max = "❌"
-        msg_trader = ""
+        msg_trader = "❌"
         if trader_api.get("trader_id"):
             msg_trader = f" ***{trader_api.get('trader_id')}***"
 

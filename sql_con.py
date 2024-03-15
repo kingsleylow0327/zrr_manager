@@ -79,11 +79,11 @@ class ZonixDB():
         """
         return self.dbcon_manager(sql, get_all=True)
     
-    def update_damage_cost(self, damage_cost, ref_id):
+    def update_damage_cost(self, damage_cost, account_name):
         sql = f"""UPDATE {self.config.FOLLOWER_TABLE}
         SET damage_cost = '{damage_cost}'
         WHERE 
-        follower_id = '{ref_id}'
+        follower_id = '{account_name}'
         AND player_id != follower_id
         """
         return self.dbcon_manager(sql, get_all=True)
@@ -111,11 +111,11 @@ class ZonixDB():
         """
         return self.dbcon_manager(sql, get_all=True)
     
-    def set_player_api(self, player_id, api, key, player_ref_id):    
+    def set_player_api(self, player_id, api, key, player_account_name):    
         sql = f"""UPDATE {self.config.API_TABLE}
         SET api_key = '{api}', api_secret = '{key}'
         WHERE 
-        player_id = '{player_ref_id}'
+        player_id = '{player_account_name}'
         AND
         discord_id = '{player_id}'
         """
@@ -129,11 +129,11 @@ class ZonixDB():
             return False
         return len(ret) != 0
     
-    def check_user_exist_with_ref(self, player_id, player_ref_name):
+    def check_user_exist_with_ref(self, player_id, player_account_name):
         sql = f"""SELECT player_id FROM {self.config.API_TABLE}
-        WHERE (player_id='{player_ref_name}')
+        WHERE (player_id='{player_account_name}')
         OR
-        (player_id='{player_ref_name}'
+        (player_id='{player_account_name}'
         AND
         discord_id='{player_id}')"""
         ret = self.dbcon_manager(sql, get_all=True)
@@ -145,16 +145,16 @@ class ZonixDB():
         ret = self.dbcon_manager(sql, get_all=True)
         return ret and len(ret) != 0
     
-    def activate_user(self, player_id, player_ref_name):
+    def activate_user(self, player_id, player_account_name):
         sql = f"""INSERT INTO {self.config.API_TABLE}
         (player_id, discord_id, platform)
         VALUES
-        ('{player_ref_name}', '{player_id}', 'bingx')
+        ('{player_account_name}', '{player_id}', 'bingx')
         """
         self.dbcon_manager(sql)
 
         sql = f"""INSERT INTO {self.config.FOLLOWER_TABLE}
         (follower_id, platform)
         VALUES
-        ('{player_ref_name}', 'bingx')"""
+        ('{player_account_name}', 'bingx')"""
         return self.dbcon_manager(sql)
