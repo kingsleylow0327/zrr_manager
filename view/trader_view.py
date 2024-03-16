@@ -63,9 +63,11 @@ class ConfirmationDropDown(discord.ui.Select):
         if is_changed_trader:
             user = interaction.user
             role = discord.utils.get(interaction.guild.roles, name=self.trader_info.get("name"))
-            original_role = discord.utils.get(interaction.guild.roles, name=prev_trader_name)
-            await user.remove_roles(original_role)
-            await user.add_roles(role)
+            if prev_trader_name:
+                original_role = discord.utils.get(interaction.guild.roles, name=prev_trader_name)
+                await user.remove_roles(original_role)
+            if role:
+                await user.add_roles(role)
 
 class MessageBlockView(discord.ui.View):
     def __init__(self):
