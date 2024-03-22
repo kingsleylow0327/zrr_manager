@@ -10,7 +10,7 @@ class ActivateModal(discord.ui.Modal, title=TITLE):
 
     player_id = discord.ui.TextInput(label="User Id",placeholder="user id",style=discord.TextStyle.short)
     player_account_name = discord.ui.TextInput(label="Account Name",placeholder="user account name",style=discord.TextStyle.short)
-    expiry_date = discord.ui.TextInput(label="Package",placeholder="2w(Default), 3m, 6m, 1y",style=discord.TextStyle.short)
+    expiry_date = discord.ui.TextInput(label="Package",placeholder="2w(Default), 3m, 6m, 1y",style=discord.TextStyle.short, required=False)
 
     async def on_submit(self, interaction: Interaction):
         player_id = str(interaction.data.get("components")[0].get("components")[0].get("value"))
@@ -26,7 +26,6 @@ class ActivateModal(discord.ui.Modal, title=TITLE):
             expiry_date = "1 year"
         else:
             expiry_date = "2 week"
-            return
 
         if not self.dbcon.check_user_exist_with_ref(player_id, user_account_name):
             self.dbcon.activate_user(player_id, user_account_name, expiry_date)
