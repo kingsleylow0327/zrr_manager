@@ -145,11 +145,11 @@ class ZonixDB():
         ret = self.dbcon_manager(sql, get_all=True)
         return ret and len(ret) != 0
     
-    def activate_user(self, player_id, player_account_name):
+    def activate_user(self, player_id, player_account_name, expiry):
         sql = f"""INSERT INTO {self.config.API_TABLE}
         (player_id, discord_id, platform)
         VALUES
-        ('{player_account_name}', '{player_id}', 'bingx')
+        ('{player_account_name}', '{player_id}', date_add(now(),interval {expiry}), 'bingx')
         """
         self.dbcon_manager(sql)
 

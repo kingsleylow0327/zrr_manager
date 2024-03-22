@@ -12,7 +12,7 @@ class DamageDropDown(discord.ui.Select):
     async def callback(self, interaction: Interaction):
         damage_cost = self.values[0]
         self.dbcon.update_damage_cost(damage_cost, self.account_name)
-        await interaction.response.edit_message(content=f"You have set your damage cost to ***{damage_cost}***", view=None)
+        await interaction.response.edit_message(content=f"You have set your damage cost to ***{damage_cost}%***", view=None)
 
 
 class DamageSelectView(discord.ui.View):
