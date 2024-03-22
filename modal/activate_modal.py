@@ -16,7 +16,7 @@ class ActivateModal(discord.ui.Modal, title=TITLE):
         player_id = str(interaction.data.get("components")[0].get("components")[0].get("value"))
         user_account_name = str(interaction.data.get("components")[1].get("components")[0].get("value"))
         user_account_name = user_account_name.lower()
-        expiry_date = str(interaction.data.get("components")[2].get("components")[0].get("value"))
+        expiry_date = str(interaction.data.get("components")[2].get("components")[0].get("value")).strip()
 
         if expiry_date.lower() == "3m":
             expiry_date = "3 month"
