@@ -126,7 +126,7 @@ async def status(interaction: discord.Interaction, id:str=None):
 
         if is_admin_flag and (response.get("code") == 0 or response.get("code") == 200):
             embed.add_field(name=f"BingX UserId: {uid}", value="", inline=False)
-        embed.add_field(name=f"Ref Id: {trader_api.get('player_id')} \n", value="", inline=False)
+        embed.add_field(name=f"Account Id: {trader_api.get('player_id')} \n", value="", inline=False)
         embed.add_field(name=f"API Setup: {msg_api} \n", value="", inline=False)
         embed.add_field(name=f"Wallet > {min_wallet}: {msg_wallet_min} \n", value="", inline=False)
         embed.add_field(name=f"Wallet < {max_wallet}: {msg_wallet_max} \n", value="", inline=False)
