@@ -126,17 +126,17 @@ async def status(interaction: discord.Interaction, id:str=None):
             if balance < float(max_wallet):
                 msg_wallet_max = "✅"
 
-        if is_admin_flag and (response.get("code") == 0 or response.get("code") == 200):
+        if is_admin_flag:
             embed.add_field(name=f"BingX UserId: {uid}", value="", inline=False)
-        embed.add_field(name=f"Account Id: {trader_api.get('player_id')} \n", value="", inline=False)
+        embed.add_field(name=f"Account Name: {trader_api.get('player_id')} \n", value="", inline=False)
         embed.add_field(name=f"\n", value="", inline=False)
         embed.add_field(name=f"API Setup: {msg_api} \n", value="", inline=False)
         embed.add_field(name=f"Wallet > {min_wallet}: {msg_wallet_min} \n", value="", inline=False)
         embed.add_field(name=f"Wallet < {max_wallet}: {msg_wallet_max} \n", value="", inline=False)
-        embed.add_field(name=f"Wallet Amount: ***{balance}***", value="", inline=False)
+        embed.add_field(name=f"Wallet Amount: **{balance}**", value="", inline=False)
         embed.add_field(name=f"\n", value="", inline=False)
-        embed.add_field(name=f"Following Traders: ***{msg_trader}***", value="", inline=False)
-        embed.add_field(name=f"Damage Cost: ***{trader_api.get('damage_cost')}%***", value="", inline=False)
+        embed.add_field(name=f"Following Traders: **{msg_trader}**", value="", inline=False)
+        embed.add_field(name=f"Damage Cost: **{trader_api.get('damage_cost')}%**", value="", inline=False)
         embed.add_field(name=f"============\n", value="", inline=False)
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
