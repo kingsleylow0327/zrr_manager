@@ -133,10 +133,10 @@ async def status(interaction: discord.Interaction, id:str=None):
         embed.add_field(name=f"API Setup: {msg_api} \n", value="", inline=False)
         embed.add_field(name=f"Wallet > {min_wallet}: {msg_wallet_min} \n", value="", inline=False)
         embed.add_field(name=f"Wallet < {max_wallet}: {msg_wallet_max} \n", value="", inline=False)
-        embed.add_field(name=f"Wallet Amount: **{balance}**", value="", inline=False)
+        embed.add_field(name=f"Wallet Amount: ***{balance}***", value="", inline=False)
         embed.add_field(name=f"\n", value="", inline=False)
-        embed.add_field(name=f"Following Traders: **{msg_trader}**", value="", inline=False)
-        embed.add_field(name=f"Damage Cost: **{trader_api.get('damage_cost')}%**", value="", inline=False)
+        embed.add_field(name=f"Following Traders: {msg_trader}", value="", inline=False)
+        embed.add_field(name=f"Damage Cost: ***{trader_api.get('damage_cost')}%***", value="", inline=False)
         embed.add_field(name=f"============\n", value="", inline=False)
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
