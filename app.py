@@ -89,8 +89,8 @@ async def damage(interaction: discord.Interaction, user_account_name: str):
 async def status(interaction: discord.Interaction, id:str=None):
     if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
         return True
-    min_wallet = 200
-    max_wallet = 1000
+    min_wallet = 300
+    max_wallet = 3000
     player_id = str(interaction.user.id)
     is_admin_flag = False
     if dbcon.is_admin(player_id):
@@ -103,15 +103,17 @@ async def status(interaction: discord.Interaction, id:str=None):
         await interaction.response.send_message(ms.NON_REGISTERED, ephemeral=True)
         return
     
-    embed = discord.Embed(title="Your ZRR status", description="")
+    embed = discord.Embed(title="# Your ZRR status", description="")
     for trader_api in trader_api_list:
         bingx = BINGX(trader_api.get("api_key"), trader_api.get("api_secret"))
         response = bingx.get_wallet()
         
+        uid = "❌"
         msg_api = "❌"
         msg_wallet_min = "❌"
         msg_wallet_max = "❌"
         msg_trader = "❌"
+        balance = "❌"
         if trader_api.get("trader_id"):
             msg_trader = f" ***{trader_api.get('trader_id')}***"
 
@@ -127,14 +129,15 @@ async def status(interaction: discord.Interaction, id:str=None):
         if is_admin_flag and (response.get("code") == 0 or response.get("code") == 200):
             embed.add_field(name=f"BingX UserId: {uid}", value="", inline=False)
         embed.add_field(name=f"Account Id: {trader_api.get('player_id')} \n", value="", inline=False)
+        embed.add_field(name=f"\n", value="", inline=False)
         embed.add_field(name=f"API Setup: {msg_api} \n", value="", inline=False)
         embed.add_field(name=f"Wallet > {min_wallet}: {msg_wallet_min} \n", value="", inline=False)
         embed.add_field(name=f"Wallet < {max_wallet}: {msg_wallet_max} \n", value="", inline=False)
-        embed.add_field(name=f"Following Traders: {msg_trader}", value="", inline=False)
-        embed.add_field(name=f"Damage Cost: {trader_api.get('damage_cost')}%", value="", inline=False)
-        if is_admin_flag and (response.get("code") == 0 or response.get("code") == 200):
-            embed.add_field(name=f"Wallet Amount: {balance}", value="", inline=False)
-        embed.add_field(name=f"=====\n", value="", inline=False)
+        embed.add_field(name=f"Wallet Amount: ***{balance}***", value="", inline=False)
+        embed.add_field(name=f"\n", value="", inline=False)
+        embed.add_field(name=f"Following Traders: ***{msg_trader}***", value="", inline=False)
+        embed.add_field(name=f"Damage Cost: ***{trader_api.get('damage_cost')}%***", value="", inline=False)
+        embed.add_field(name=f"============\n", value="", inline=False)
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 bot.run(config.TOKEN)
