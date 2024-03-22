@@ -103,7 +103,7 @@ async def status(interaction: discord.Interaction, id:str=None):
         await interaction.response.send_message(ms.NON_REGISTERED, ephemeral=True)
         return
     
-    embed = discord.Embed(title="# Your ZRR status", description="")
+    embed = discord.Embed(title="# Your AutoTrade Account Status", description="")
     for trader_api in trader_api_list:
         bingx = BINGX(trader_api.get("api_key"), trader_api.get("api_secret"))
         response = bingx.get_wallet()
