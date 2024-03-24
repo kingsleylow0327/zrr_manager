@@ -16,11 +16,11 @@ class PlayerDropDown(discord.ui.Select):
         trader_options = []
         for trader in trader_list:
             count = int(trader.get('count'))
-            if count >= 20:
+            if count >= 50:
                 continue
-            if count < 2:
+            if count < 10:
                 count = '🟢' + str(count)
-            elif count < 5:
+            elif count < 30:
                 count = '🤯' + str(count)
             else:
                 count = '🔥' + str(count)
