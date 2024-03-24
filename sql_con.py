@@ -51,13 +51,16 @@ class ZonixDB():
         return row
     
     def get_trader_list(self, following_trader_id=None):
-        sql = f"""SELECT *
-        FROM {self.config.TRADER_CHANNEL_TABLE}
+        sql = f"""SELECT t.*, f.count FROM {self.config.TRADER_CHANNEL_TABLE} as t
+        LEFT JOIN (SELECT player_id, COUNT(player_id)-1 as count FROM {self.config.FOLLOWER_TABLE}
+        GROUP BY player_id) as f
+        on f.player_id = t.trader_id;
         """
         if following_trader_id:
-            sql = f"""SELECT *
-            FROM {self.config.TRADER_CHANNEL_TABLE}
-            WHERE
+            sql = f"""SELECT t.*, f.count FROM {self.config.TRADER_CHANNEL_TABLE} as t
+            LEFT JOIN (SELECT player_id, COUNT(player_id)-1 as count FROM {self.config.FOLLOWER_TABLE}
+            GROUP BY player_id) as f
+            on f.player_id = t.trader_id;
             trader_id != '{following_trader_id}'
             """
         return self.dbcon_manager(sql, get_all=True)

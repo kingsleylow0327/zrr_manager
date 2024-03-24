@@ -13,9 +13,22 @@ class PlayerDropDown(discord.ui.Select):
         self.dbcon = dbcon
         self.account_name = account_name
         self.player = player
-        traders = [discord.SelectOption(label=t.get("trader_name"),
-                                        value=f"{t.get('trader_name')},{t.get('trader_id')}") for t in trader_list]
-        super().__init__(placeholder="Trader Name", options=traders, min_values=1, max_values=1)
+        trader_options = []
+        for trader in trader_list:
+            count = int(trader.get('count'))
+            if count >= 20:
+                continue
+            if count < 2:
+                count = '🟢' + str(count)
+            elif count < 5:
+                count = '🤯' + str(count)
+            else:
+                count = '🔥' + str(count)
+            
+            trader_options.append(discord.SelectOption(label=f"{trader.get('trader_name')} ({count})",
+                                                       value=f"{trader.get('trader_name')},{trader.get('trader_id')}"))
+        
+        super().__init__(placeholder="Trader Name", options=trader_options, min_values=1, max_values=1)
 
     async def callback(self, interaction: Interaction):
         trader_info = self.values[0].split(",")
