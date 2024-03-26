@@ -7,11 +7,11 @@ class APIModal(discord.ui.Modal, title=TITLE):
 
     def __init__(self, dbcon):
         self.dbcon = dbcon
-        super().__init__(title=TITLE, timeout=30)
+        super().__init__(title=TITLE, timeout=60)
 
     api = discord.ui.TextInput(label="API Key",placeholder="api key",style=discord.TextStyle.short)
     secret = discord.ui.TextInput(label="API Secret",placeholder="api secret",style=discord.TextStyle.short)
-    user_account_name = discord.ui.TextInput(label="Player Account Name",placeholder="player account name",style=discord.TextStyle.short)
+    user_account_name = discord.ui.TextInput(label="Account Name",placeholder="account name",style=discord.TextStyle.short)
 
     async def on_submit(self, interaction: Interaction):
         api = interaction.data.get("components")[0].get("components")[0].get("value")

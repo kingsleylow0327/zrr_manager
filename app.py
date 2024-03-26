@@ -103,8 +103,8 @@ async def status(interaction: discord.Interaction, id:str=None):
         await interaction.response.send_message(ms.NON_REGISTERED, ephemeral=True)
         return
     
-    embed = discord.Embed(title="# Your AutoTrade Account Status", description="")
     for trader_api in trader_api_list:
+        embed = discord.Embed(title="# Your AutoTrade Account Status", description="")
         bingx = BINGX(trader_api.get("api_key"), trader_api.get("api_secret"))
         response = bingx.get_wallet()
         
@@ -131,13 +131,12 @@ async def status(interaction: discord.Interaction, id:str=None):
         embed.add_field(name=f"Account Name: {trader_api.get('player_id')} \n", value="", inline=False)
         embed.add_field(name=f"\n", value="", inline=False)
         embed.add_field(name=f"API Setup: {msg_api} \n", value="", inline=False)
-        embed.add_field(name=f"Wallet > {min_wallet}: {msg_wallet_min} \n", value="", inline=False)
-        embed.add_field(name=f"Wallet < {max_wallet}: {msg_wallet_max} \n", value="", inline=False)
+        embed.add_field(name=f"Future Wallet > {min_wallet}: {msg_wallet_min} \n", value="", inline=False)
+        embed.add_field(name=f"Future Wallet < {max_wallet}: {msg_wallet_max} \n", value="", inline=False)
         embed.add_field(name=f"Wallet Amount: `{balance}`", value="", inline=False)
         embed.add_field(name=f"\n", value="", inline=False)
         embed.add_field(name=f"Following Traders: {msg_trader}", value="", inline=False)
         embed.add_field(name=f"Damage Cost: `{trader_api.get('damage_cost')}%`", value="", inline=False)
-        embed.add_field(name=f"============\n", value="", inline=False)
-    await interaction.response.send_message(embed=embed, ephemeral=True)
+        await interaction.response.send_message(embed=embed, ephemeral=True)
 
 bot.run(config.TOKEN)
