@@ -1,5 +1,4 @@
 # bot.py
-import asyncio
 import discord
 import message as ms
 from discord.ext import commands
@@ -143,40 +142,6 @@ async def status(interaction: discord.Interaction, id:str=None):
         embed_list.append(embed)
         count += 1
     
-    current = 0
-    buttons = [u"\u23EA", u"\u2B05", u"\u27A1", u"\u23E9"]
-    msg = await interaction.response.send_message(embed=embed_list[current], ephemeral=True)
-
-    for button in buttons:
-        await msg.add_reaction(button)
-        
-    while True:
-        try:
-            reaction, user = await bot.wait_for("reaction_add", check=lambda reaction, user: user == interaction.message.author and reaction.emoji in buttons, timeout=60.0)
-
-        except asyncio.TimeoutError:
-            return print("Time Out Error")
-
-        else:
-            previous_page = current
-            if reaction.emoji == u"\u23EA":
-                current = 0
-                
-            elif reaction.emoji == u"\u2B05":
-                if current > 0:
-                    current -= 1
-                    
-            elif reaction.emoji == u"\u27A1":
-                if current < len(embed_list)-1:
-                    current += 1
-
-            elif reaction.emoji == u"\u23E9":
-                current = len(embed_list)-1
-
-            for button in buttons:
-                await msg.remove_reaction(button, interaction.message.author)
-
-            if current != previous_page:
-                await msg.edit(embed=embed_list[current])
+    await interaction.response.send_message(embeds=embed_list, ephemeral=True)
 
 bot.run(config.TOKEN)
