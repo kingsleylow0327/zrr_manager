@@ -7,7 +7,7 @@ class APIModal(discord.ui.Modal, title=TITLE):
 
     def __init__(self, dbcon):
         self.dbcon = dbcon
-        super().__init__(title=TITLE, timeout=60)
+        super().__init__(title=TITLE, timeout=120)
 
     api = discord.ui.TextInput(label="API Key",placeholder="api key",style=discord.TextStyle.short)
     secret = discord.ui.TextInput(label="API Secret",placeholder="api secret",style=discord.TextStyle.short)
