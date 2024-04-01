@@ -116,7 +116,7 @@ async def status(interaction: discord.Interaction, id:str=None):
         msg_wallet_max = "❌"
         msg_trader = "❌"
         balance = "❌"
-        expiry = ""
+        expiry = "None"
         if trader_api.get('expiry_date'):
             expiry = trader_api.get('expiry_date')
 
@@ -143,7 +143,7 @@ async def status(interaction: discord.Interaction, id:str=None):
         embed.add_field(name=f"\n", value="", inline=False)
         embed.add_field(name=f"Following Traders: {msg_trader}", value="", inline=False)
         embed.add_field(name=f"Damage Cost: `{trader_api.get('damage_cost')}%`", value="", inline=False)
-        embed.add_field(name=f"Expiry Date: `{expiry}%`", value="", inline=False)
+        embed.add_field(name=f"Expiry Date: `{expiry}`", value="", inline=False)
         embed_list.append(embed)
         count += 1
     
