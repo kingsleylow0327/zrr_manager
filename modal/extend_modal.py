@@ -25,6 +25,6 @@ class ExtendModal(discord.ui.Modal, title=TITLE):
         else:
             expiry_date = "2 week"
 
-        self.dbcon.activate_user(user_account_name, expiry_date)
+        self.dbcon.extend_user(user_account_name, expiry_date)
         await interaction.response.send_message(f"{user_account_name} has extended {expiry_date}!", ephemeral=True)
         return
