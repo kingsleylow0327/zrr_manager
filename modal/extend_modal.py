@@ -12,9 +12,9 @@ class ExtendModal(discord.ui.Modal, title=TITLE):
     expiry_date = discord.ui.TextInput(label="Package",placeholder="2w(Default), 3m, 6m, 1y",style=discord.TextStyle.short, required=False)
 
     async def on_submit(self, interaction: Interaction):
-        user_account_name = str(interaction.data.get("components")[1].get("components")[0].get("value"))
+        user_account_name = str(interaction.data.get("components")[0].get("components")[0].get("value"))
         user_account_name = user_account_name.lower()
-        expiry_date = str(interaction.data.get("components")[2].get("components")[0].get("value")).strip()
+        expiry_date = str(interaction.data.get("components")[1].get("components")[0].get("value")).strip()
 
         if expiry_date.lower() == "3m":
             expiry_date = "3 month"
