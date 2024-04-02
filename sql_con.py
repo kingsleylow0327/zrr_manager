@@ -162,3 +162,10 @@ class ZonixDB():
         VALUES
         ('{player_account_name}', 'bingx')"""
         return self.dbcon_manager(sql)
+    
+    def extend_user(self, player_account_name, expiry):
+        sql = f"""UPDATE {self.config.API_TABLE}
+        SET expiry_date = IF(expiry_date < NOW(), DATE_ADD(NOW(), INTERVAL {expiry}), DATE_ADD(expiry_date, INTERVAL {expiry}))
+        WHERE player_id = '{player_account_name}';
+        """
+        return self.dbcon_manager(sql)

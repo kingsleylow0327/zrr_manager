@@ -5,6 +5,7 @@ from discord.ext import commands
 from datetime import datetime
 from modal.api_modal import APIModal
 from modal.activate_modal import ActivateModal
+from modal.extend_modal import ExtendModal
 from view.trader_view import TraderSelectView
 from view.damage_view import DamageSelectView
 from config import Config
@@ -49,6 +50,15 @@ async def activate(interaction: discord.Interaction):
         await interaction.response.send_message("This function only limit to Admin", ephemeral=True)
         return
     await interaction.response.send_modal(ActivateModal(dbcon))
+
+@bot.tree.command(name="extend", description="Extend Users Expiry")
+async def activate(interaction: discord.Interaction):
+    if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
+        return True
+    if not dbcon.is_admin(str(interaction.user.id)):
+        await interaction.response.send_message("This function only limit to Admin", ephemeral=True)
+        return
+    await interaction.response.send_modal(ExtendModal(dbcon))
 
 @bot.tree.command(name="trader", description="Select Trader")
 async def trader(interaction: discord.Interaction, user_account_name: str):
