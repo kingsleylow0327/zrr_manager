@@ -52,7 +52,7 @@ async def activate(interaction: discord.Interaction):
     await interaction.response.send_modal(ActivateModal(dbcon))
 
 @bot.tree.command(name="extend", description="Extend Users Expiry")
-async def activate(interaction: discord.Interaction):
+async def extend(interaction: discord.Interaction):
     if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
         return True
     if not dbcon.is_admin(str(interaction.user.id)):
