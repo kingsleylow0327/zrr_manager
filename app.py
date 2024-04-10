@@ -46,7 +46,6 @@ async def on_ready():
 
 @bot.tree.command(name="clearex", description="AutoTrade Manager Command")
 async def clearex(interaction: discord.Interaction):
-    await interaction.response.send_message("Clearing Expired User...", ephemeral=True)
     if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
         return True
     if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
@@ -55,7 +54,7 @@ async def clearex(interaction: discord.Interaction):
         await interaction.response.edit_message("This function only limit to Admin", view=None)
         return True
     # await clear_expired()
-    await interaction.response.edit_message(content="Expired Clear OK", view=None)
+    await interaction.response.send_message("Clearing Expired User Done", ephemeral=True)
 
 @bot.tree.command(name="api", description="Register API")
 async def register(interaction: discord.Interaction):
