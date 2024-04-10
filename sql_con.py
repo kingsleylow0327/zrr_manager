@@ -89,7 +89,7 @@ class ZonixDB():
         ON a.player_id = f.follower_id
         LEFT JOIN {self.config.TRADER_CHANNEL_TABLE} as t
         ON f.player_id = t.trader_id
-        WHERE a.expiry_date < date_add(NOW(),interval -1 day) AND (f.player_id IS NOT NULL AND f.player_id != '')
+        WHERE a.expiry_date <= NOW() AND (f.player_id IS NOT NULL AND f.player_id != '')
         """
         return self.dbcon_manager(sql, get_all=True)
     
