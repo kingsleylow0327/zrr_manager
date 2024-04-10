@@ -1,8 +1,11 @@
 # bot.py
+import asyncio
 import discord
 import message as ms
+import schedule
 from discord.ext import commands
 from datetime import datetime
+from logger import Logger
 from modal.api_modal import APIModal
 from modal.activate_modal import ActivateModal
 from modal.extend_modal import ExtendModal
@@ -11,6 +14,10 @@ from view.damage_view import DamageSelectView
 from config import Config
 from sql_con import ZonixDB
 from bingx import BINGX
+
+# Logger setup
+logger_mod = Logger("Manager")
+logger = logger_mod.get_logger()
 
 # Client setup
 intents = discord.Intents.all()
@@ -34,7 +41,21 @@ def within_valid_period(date_time):
 @bot.event
 async def on_ready():
     await bot.tree.sync()
-    print("Manager Ready")
+    logger.info("Manager Ready")
+    await run_scheduler()
+
+@bot.tree.command(name="clearex", description="AutoTrade Manager Command")
+async def clearex(interaction: discord.Interaction):
+    await interaction.response.send_message("Clearing Expired User...", ephemeral=True)
+    if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
+        return True
+    if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
+        return True
+    if not dbcon.is_admin(str(interaction.user.id)):
+        await interaction.response.edit_message("This function only limit to Admin", view=None)
+        return True
+    # await clear_expired()
+    await interaction.response.edit_message(content="Expired Clear OK", view=None)
 
 @bot.tree.command(name="api", description="Register API")
 async def register(interaction: discord.Interaction):
@@ -158,5 +179,30 @@ async def status(interaction: discord.Interaction, id:str=None):
         count += 1
     
     await interaction.response.send_message(embeds=embed_list, ephemeral=True)
+
+async def clear_expired():
+    expired_player_list = dbcon.get_expired_user()
+    player_name_list = []
+    if not expired_player_list:
+        return True
+    guild = bot.get_channel(int(config.COMMAND_CHANNEL_ID)).guild
+    for player_info in expired_player_list:
+        user = guild.get_member(int(player_info.get("discord_id")))
+        if not user:
+            continue
+        original_role = discord.utils.get(guild.roles, name=player_info.get("trader_name"))
+        await user.remove_roles(original_role)
+        player_name_list.append(f"""\'{player_info.get("player_id")}\'""")
+    player_name_list = f"({','.join(player_name_list)})"
+    dbcon.unfollow_trader(player_name_list)
+    logger.info("Cron Job:Clearing Expired User Done")
+
+# Main Program Run here
+schedule.every().day.at('00:00').do(lambda: asyncio.create_task(clear_expired()))
+
+async def run_scheduler():
+    while True:
+        schedule.run_pending()
+        await asyncio.sleep(1)
 
 bot.run(config.TOKEN)

@@ -83,6 +83,23 @@ class ZonixDB():
         """
         return self.dbcon_manager(sql, get_all=True)
     
+    def get_expired_user(self):
+        sql = f"""SELECT a.player_id, a.discord_id, a.expiry_date, t.trader_name FROM {self.config.API_TABLE} as a
+        LEFT JOIN {self.config.FOLLOWER_TABLE} as f
+        ON a.player_id = f.follower_id
+        LEFT JOIN {self.config.TRADER_CHANNEL_TABLE} as t
+        ON f.player_id = t.trader_id
+        WHERE a.expiry_date < date_add(NOW(),interval -1 day) AND (f.player_id IS NOT NULL AND f.player_id != '')
+        """
+        return self.dbcon_manager(sql, get_all=True)
+    
+    def unfollow_trader(self, player_list):
+        sql = f"""UPDATE {self.config.FOLLOWER_TABLE}
+        SET player_id = ''
+        WHERE follower_id IN {player_list}
+        """
+        return self.dbcon_manager(sql, get_all=True)
+
     def update_damage_cost(self, damage_cost, account_name):
         sql = f"""UPDATE {self.config.FOLLOWER_TABLE}
         SET damage_cost = '{damage_cost}'
