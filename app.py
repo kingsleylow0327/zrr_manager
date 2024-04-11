@@ -119,6 +119,7 @@ async def damage(interaction: discord.Interaction, user_account_name: str):
 
 @bot.tree.command(name="status", description="Check Status")
 async def status(interaction: discord.Interaction, id:str=None):
+    interaction.response.defer()
     if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
         return True
     min_wallet = 300
@@ -132,7 +133,7 @@ async def status(interaction: discord.Interaction, id:str=None):
 
     trader_api_list = dbcon.get_all_player_status(player_id)
     if not trader_api_list:
-        await interaction.response.send_message(ms.NON_REGISTERED, ephemeral=True)
+        await interaction.followup.send(ms.NON_REGISTERED, ephemeral=True)
         return
     
     embed_list = []
@@ -179,7 +180,7 @@ async def status(interaction: discord.Interaction, id:str=None):
         embed_list.append(embed)
         count += 1
     
-    await interaction.response.send_message(embeds=embed_list, ephemeral=True)
+    await interaction.followup.send(embeds=embed_list, ephemeral=True)
 
 async def clear_expired():
     logger.info("Cron Job:Clearing Start")
