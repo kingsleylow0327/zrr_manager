@@ -83,7 +83,7 @@ async def extend(interaction: discord.Interaction):
 
 @bot.tree.command(name="trader", description="Select Trader")
 async def trader(interaction: discord.Interaction, user_account_name: str):
-    await interaction.response.defer()
+    await interaction.response.defer(ephemeral=True)
     user_account_name = user_account_name.lower()
     if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
         return True
@@ -105,7 +105,7 @@ async def trader(interaction: discord.Interaction, user_account_name: str):
 
 @bot.tree.command(name="damage", description="Amend Damage Cost")
 async def damage(interaction: discord.Interaction, user_account_name: str):
-    await interaction.response.defer()
+    await interaction.response.defer(ephemeral=True)
     user_account_name = user_account_name.lower()
     if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
         return True
@@ -120,7 +120,7 @@ async def damage(interaction: discord.Interaction, user_account_name: str):
 
 @bot.tree.command(name="status", description="Check Status")
 async def status(interaction: discord.Interaction, id:str=None):
-    await interaction.response.defer()
+    await interaction.response.defer(ephemeral=True)
     if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
         return True
     min_wallet = 300
