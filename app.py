@@ -42,7 +42,7 @@ def within_valid_period(date_time):
 async def on_ready():
     await bot.tree.sync()
     logger.info("Manager Ready")
-    await run_scheduler()
+    # await run_scheduler()
 
 @bot.tree.command(name="clearex", description="AutoTrade Manager Command")
 async def clearex(interaction: discord.Interaction):
@@ -198,11 +198,11 @@ async def clear_expired():
     logger.info("Cron Job:Clearing Expired User Done")
 
 # Main Program Run here
-schedule.every().day.at('00:00').do(lambda: asyncio.create_task(clear_expired()))
+# schedule.every().day.at('00:00').do(lambda: asyncio.create_task(clear_expired()))
 
-async def run_scheduler():
-    while True:
-        schedule.run_pending()
-        await asyncio.sleep(1)
+# async def run_scheduler():
+#     while True:
+#         schedule.run_pending()
+#         await asyncio.sleep(1)
 
 bot.run(config.TOKEN)
