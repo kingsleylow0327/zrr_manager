@@ -53,6 +53,7 @@ async def clearex(interaction: discord.Interaction):
     if not dbcon.is_admin(str(interaction.user.id)):
         await interaction.response.edit_message("This function only limit to Admin", view=None)
         return True
+    await interaction.response.send_message("Clearing Start", ephemeral=True)
     await clear_expired()
     return True
     # await interaction.response.send_message("Clearing Expired User Done", ephemeral=True)
@@ -181,9 +182,12 @@ async def status(interaction: discord.Interaction, id:str=None):
     await interaction.response.send_message(embeds=embed_list, ephemeral=True)
 
 async def clear_expired():
+    logger.info("Cron Job:Clearing Start")
     expired_player_list = dbcon.get_expired_user()
     player_name_list = []
+    logger.info(f"Cron Job:{len(player_name_list)} user to be cleared")
     if not expired_player_list:
+        logger.info("Cron Job:Clearing Expired User Done")
         return True
     guild = bot.get_channel(int(config.COMMAND_CHANNEL_ID)).guild
     for player_info in expired_player_list:
