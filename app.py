@@ -54,7 +54,8 @@ async def clearex(interaction: discord.Interaction):
         await interaction.response.edit_message("This function only limit to Admin", view=None)
         return True
     await clear_expired()
-    await interaction.response.send_message("Clearing Expired User Done", ephemeral=True)
+    return True
+    # await interaction.response.send_message("Clearing Expired User Done", ephemeral=True)
 
 @bot.tree.command(name="api", description="Register API")
 async def register(interaction: discord.Interaction):
