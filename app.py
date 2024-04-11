@@ -42,7 +42,7 @@ def within_valid_period(date_time):
 async def on_ready():
     await bot.tree.sync()
     logger.info("Manager Ready")
-    # await run_scheduler()
+    await run_scheduler()
 
 @bot.tree.command(name="clearex", description="AutoTrade Manager Command")
 async def clearex(interaction: discord.Interaction):
@@ -56,7 +56,6 @@ async def clearex(interaction: discord.Interaction):
     await interaction.response.send_message("Clearing Start", ephemeral=True)
     await clear_expired()
     return True
-    # await interaction.response.send_message("Clearing Expired User Done", ephemeral=True)
 
 @bot.tree.command(name="api", description="Register API")
 async def register(interaction: discord.Interaction):
@@ -84,42 +83,44 @@ async def extend(interaction: discord.Interaction):
 
 @bot.tree.command(name="trader", description="Select Trader")
 async def trader(interaction: discord.Interaction, user_account_name: str):
+    await interaction.response.defer()
     user_account_name = user_account_name.lower()
     if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
         return True
     player_id = str(interaction.user.id)
     if not user_account_name:
-        await interaction.response.send_message(ms.MISSING_ACCOUNT_NAME, ephemeral=True)
+        await interaction.followup.send(ms.MISSING_ACCOUNT_NAME, ephemeral=True)
         return
     if not dbcon.check_user_exist_with_ref(player_id, user_account_name):
-        await interaction.response.send_message(ms.NON_REGISTERED, ephemeral=True)
+        await interaction.followup.send(ms.NON_REGISTERED, ephemeral=True)
         return
     player_status = dbcon.get_player_status(player_id, user_account_name)
     if player_status.get("following_time") and not within_valid_period(player_status.get("following_time")):
-        await interaction.response.send_message(ms.SELECTED_TRADER, ephemeral=True)
+        await interaction.followup.send(ms.SELECTED_TRADER, ephemeral=True)
         return
     following_trader_id = player_status.get("trader_id")
     player = BINGX(player_status.get("api_key"), player_status.get("api_secret"))
 
-    await interaction.response.send_message(content="Please Select a Trader", view=TraderSelectView(dbcon, user_account_name, player, following_trader_id), ephemeral=True)
+    await interaction.followup.send(content="Please Select a Trader", view=TraderSelectView(dbcon, user_account_name, player, following_trader_id), ephemeral=True)
 
 @bot.tree.command(name="damage", description="Amend Damage Cost")
 async def damage(interaction: discord.Interaction, user_account_name: str):
+    await interaction.response.defer()
     user_account_name = user_account_name.lower()
     if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
         return True
     player_id = str(interaction.user.id)
     if not user_account_name:
-        await interaction.response.send_message(ms.MISSING_ACCOUNT_NAME, ephemeral=True)
+        await interaction.followup.send(ms.MISSING_ACCOUNT_NAME, ephemeral=True)
         return
     if not dbcon.check_user_exist_with_ref(player_id, user_account_name):
-        await interaction.response.send_message(ms.NON_REGISTERED, ephemeral=True)
+        await interaction.followup.send(ms.NON_REGISTERED, ephemeral=True)
         return
-    await interaction.response.send_message("Select Your Damage Cost", view=DamageSelectView(dbcon, user_account_name), ephemeral=True)   
+    await interaction.followup.send("Select Your Damage Cost", view=DamageSelectView(dbcon, user_account_name), ephemeral=True)   
 
 @bot.tree.command(name="status", description="Check Status")
 async def status(interaction: discord.Interaction, id:str=None):
-    interaction.response.defer()
+    await interaction.response.defer()
     if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
         return True
     min_wallet = 300
@@ -203,11 +204,11 @@ async def clear_expired():
     logger.info("Cron Job:Clearing Expired User Done")
 
 # Main Program Run here
-# schedule.every().day.at('00:00').do(lambda: asyncio.create_task(clear_expired()))
+schedule.every().day.at('00:00').do(lambda: asyncio.create_task(clear_expired()))
 
-# async def run_scheduler():
-#     while True:
-#         schedule.run_pending()
-#         await asyncio.sleep(1)
+async def run_scheduler():
+    while True:
+        schedule.run_pending()
+        await asyncio.sleep(1)
 
 bot.run(config.TOKEN)
