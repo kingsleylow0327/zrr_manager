@@ -25,7 +25,7 @@ REMAIN_TRADER="""
 You have remained your previous trader
 """
 
-SELECTED_TRADER="""You have selected a Trader this month, please do it next month"""
+SELECTED_TRADER="""You have selected a Trader this month, please do it next month (1st - 7th)"""
 
 CLOSED_POS="""All Position has been closed
 """

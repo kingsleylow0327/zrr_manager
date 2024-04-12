@@ -34,7 +34,7 @@ GUILD_ID = int(config.GUILD_ID)
 
 def within_valid_period(date_time):
     current_date = datetime.now()
-    if current_date.day in range(1, 31):
+    if current_date.day in range(1, 8):
         return (date_time.month <= current_date.month and date_time.year <= current_date.year)
     return False
 
