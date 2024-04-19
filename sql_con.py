@@ -54,7 +54,8 @@ class ZonixDB():
         sql = f"""SELECT t.*, f.count FROM {self.config.TRADER_CHANNEL_TABLE} as t
         LEFT JOIN (SELECT player_id, COUNT(player_id)-1 as count FROM {self.config.FOLLOWER_TABLE}
         GROUP BY player_id) as f
-        on f.player_id = t.trader_id;
+        on f.player_id = t.trader_id
+        WHERE t.is_hidden = 0
         """
         if following_trader_id:
             sql = f"""SELECT t.*, f.count FROM {self.config.TRADER_CHANNEL_TABLE} as t
@@ -63,6 +64,8 @@ class ZonixDB():
             on f.player_id = t.trader_id
             WHERE
             trader_id != '{following_trader_id}'
+            AND
+            t.is_hidden = 0
             """
         return self.dbcon_manager(sql, get_all=True)
     
