@@ -28,7 +28,7 @@ class PlayerDropDown(discord.ui.Select):
             trader_options.append(discord.SelectOption(label=f"{trader.get('trader_name')} ({count})",
                                                        value=f"{trader.get('trader_name')},{trader.get('trader_id')}"))
         
-        super().__init__(placeholder="Trader Name", options=trader_options, min_values=1, max_values=1)
+        super().__init__(placeholder="Select your deisre Trader", options=trader_options, min_values=1, max_values=1)
 
     async def callback(self, interaction: Interaction):
         trader_info = self.values[0].split(",")
@@ -71,7 +71,8 @@ class ConfirmationDropDown(discord.ui.Select):
             self.dbcon.update_trader_list(self.trader_info.get("id"), self.account_name)
             message += ms.SELECTED_NEW_TRADER.format(self.trader_info.get("name"))
             is_changed_trader = True
-        await interaction.response.edit_message(content=message, view=MessageBlockView())
+        embed = discord.Embed(title=message, description="")
+        await interaction.response.edit_message(content="", embed=embed, view=None)
         # Set role
         if is_changed_trader:
             user = interaction.user

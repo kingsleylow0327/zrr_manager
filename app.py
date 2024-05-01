@@ -6,11 +6,10 @@ import schedule
 from discord.ext import commands
 from datetime import datetime
 from logger import Logger
-from modal.api_modal import APIModal
 from modal.activate_modal import ActivateModal
 from modal.extend_modal import ExtendModal
-from view.trader_view import TraderSelectView
-from view.damage_view import DamageSelectView
+from view.master_view import MasterView
+from view.status_view import StatusView
 from config import Config
 from sql_con import ZonixDB
 from bingx import BINGX
@@ -57,12 +56,6 @@ async def clearex(interaction: discord.Interaction):
     await clear_expired()
     return True
 
-@bot.tree.command(name="api", description="Register API")
-async def register(interaction: discord.Interaction):
-    if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
-        return True
-    await interaction.response.send_modal(APIModal(dbcon))
-
 @bot.tree.command(name="activate", description="Activate User")
 async def activate(interaction: discord.Interaction):
     if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
@@ -81,56 +74,32 @@ async def extend(interaction: discord.Interaction):
         return
     await interaction.response.send_modal(ExtendModal(dbcon))
 
-@bot.tree.command(name="trader", description="Select Trader")
-async def trader(interaction: discord.Interaction, user_account_name: str):
+@bot.tree.command(name="atm", description="AutoTrade Manager")
+async def atm(interaction: discord.Interaction):
     await interaction.response.defer(ephemeral=True)
-    user_account_name = user_account_name.lower()
     if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
         return True
     player_id = str(interaction.user.id)
-    if not user_account_name:
-        await interaction.followup.send(ms.MISSING_ACCOUNT_NAME, ephemeral=True)
+    user_account_list = dbcon.get_all_player_status(player_id)
+    if not user_account_list:
+        await interaction.followup.send(content=ms.NO_ACCOUNT, ephemeral=True, delete_after=5)
         return
-    if not dbcon.check_user_exist_with_ref(player_id, user_account_name):
-        await interaction.followup.send(ms.NON_REGISTERED, ephemeral=True)
-        return
-    player_status = dbcon.get_player_status(player_id, user_account_name)
-    if player_status.get("following_time") and not within_valid_period(player_status.get("following_time")):
-        await interaction.followup.send(ms.SELECTED_TRADER, ephemeral=True)
-        return
-    following_trader_id = player_status.get("trader_id")
-    player = BINGX(player_status.get("api_key"), player_status.get("api_secret"))
-
-    await interaction.followup.send(content="Please Select a Trader", view=TraderSelectView(dbcon, user_account_name, player, following_trader_id), ephemeral=True)
-
-@bot.tree.command(name="damage", description="Amend Damage Cost")
-async def damage(interaction: discord.Interaction, user_account_name: str):
-    await interaction.response.defer(ephemeral=True)
-    user_account_name = user_account_name.lower()
-    if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
-        return True
-    player_id = str(interaction.user.id)
-    if not user_account_name:
-        await interaction.followup.send(ms.MISSING_ACCOUNT_NAME, ephemeral=True)
-        return
-    if not dbcon.check_user_exist_with_ref(player_id, user_account_name):
-        await interaction.followup.send(ms.NON_REGISTERED, ephemeral=True)
-        return
-    await interaction.followup.send("Select Your Damage Cost", view=DamageSelectView(dbcon, user_account_name), ephemeral=True)   
+    status_view = StatusView(dbcon, interaction, user_account_list)
+    embeded_status_list = status_view.compute()
+    await interaction.followup.send(content="Welcome to AutoTrade Manager", embeds=embeded_status_list, view=MasterView(dbcon, user_account_list), ephemeral=True)
 
 @bot.tree.command(name="status", description="Check Status")
-async def status(interaction: discord.Interaction, id:str=None):
+async def status(interaction: discord.Interaction, id:str):
     await interaction.response.defer(ephemeral=True)
     if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
         return True
+
+    if not dbcon.is_admin(player_id):
+        return True
+
     min_wallet = 300
     max_wallet = 3000
     player_id = str(interaction.user.id)
-    is_admin_flag = False
-    if dbcon.is_admin(player_id):
-        is_admin_flag = True
-        if id is not None and id.strip() != "":
-            player_id = id
 
     trader_api_list = dbcon.get_all_player_status(player_id)
     if not trader_api_list:
@@ -154,8 +123,8 @@ async def status(interaction: discord.Interaction, id:str=None):
         if trader_api.get('expiry_date'):
             expiry = trader_api.get('expiry_date')
 
-        if trader_api.get("trader_id"):
-            msg_trader = f" `{trader_api.get('trader_id')}`"
+        if trader_api.get("trader_name"):
+            msg_trader = f" `{trader_api.get('trader_name')}`"
 
         if response.get("code") == 0 or response.get("code") == 200:
             msg_api = "✅"
@@ -166,8 +135,7 @@ async def status(interaction: discord.Interaction, id:str=None):
             if balance < float(max_wallet):
                 msg_wallet_max = "✅"
 
-        if is_admin_flag:
-            embed.add_field(name=f"BingX UserId: {uid}", value="", inline=False)
+        embed.add_field(name=f"BingX UserId: {uid}", value="", inline=False)
         embed.add_field(name=f"Account Name: {trader_api.get('player_id')} \n", value="", inline=False)
         embed.add_field(name=f"\n", value="", inline=False)
         embed.add_field(name=f"API Setup: {msg_api} \n", value="", inline=False)

@@ -5,6 +5,11 @@ You have not registered to the system or you have used with a wrong Account ID
 Please Contact ZRR Admin
 """
 
+NO_ACCOUNT="""
+You have not registered any account with us
+Please Contact ZRR Admin
+"""
+
 SELECT_TRADER_MESSAGE="""
 ***❗❗❗NOTE❗❗❗***:
 You have selected ***{}*** as your next trader
@@ -19,6 +24,10 @@ MISSING_ACCOUNT_NAME="""
 Please key in with your Account Name as below
 Example: /trader Potato_1
 If you dont have one or forgotten, please contact our Admin
+"""
+
+SELECTED_ACCOUNT="""
+Current User Account: ***{}***
 """
 
 REMAIN_TRADER="""
