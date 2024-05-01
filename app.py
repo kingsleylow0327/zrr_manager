@@ -94,14 +94,14 @@ async def status(interaction: discord.Interaction, id:str):
     if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
         return True
 
+    player_id = str(interaction.user.id)
     if not dbcon.is_admin(player_id):
         return True
 
     min_wallet = 300
     max_wallet = 3000
-    player_id = str(interaction.user.id)
 
-    trader_api_list = dbcon.get_all_player_status(player_id)
+    trader_api_list = dbcon.get_all_player_status(id)
     if not trader_api_list:
         await interaction.followup.send(ms.NON_REGISTERED, ephemeral=True)
         return
