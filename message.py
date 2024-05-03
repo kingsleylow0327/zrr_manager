@@ -47,3 +47,8 @@ ERROR_CLOSED_POS = """Closing Position failed, please close ALL Position manuall
 
 ERROR_CLOSED_ORDER = """Closing Active Order failed, please close ALL Active Order manually and check with your API
 """
+
+EXPIRED_ACCOUNT = """
+This account is expired
+Please Contact ZRR Admin
+"""

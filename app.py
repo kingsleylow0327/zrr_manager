@@ -82,7 +82,7 @@ async def atm(interaction: discord.Interaction):
     player_id = str(interaction.user.id)
     user_account_list = dbcon.get_all_player_status(player_id)
     if not user_account_list:
-        await interaction.followup.send(content=ms.NO_ACCOUNT, ephemeral=True, delete_after=5)
+        await interaction.followup.send(content=ms.NO_ACCOUNT, ephemeral=True)
         return
     status_view = StatusView(dbcon, interaction, user_account_list)
     embeded_status_list = status_view.compute()
