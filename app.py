@@ -88,6 +88,18 @@ async def atm(interaction: discord.Interaction):
     embeded_status_list = status_view.compute()
     await interaction.followup.send(content="Welcome to AutoTrade Manager", embeds=embeded_status_list, view=MasterView(dbcon, user_account_list), ephemeral=True)
 
+@bot.tree.command(name="api", description="API setup")
+async def register(interaction: discord.Interaction, account_name: str, key: str, secret: str):
+    if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
+        return True
+    await interaction.response.defer(ephemeral=True)
+    player_id = str(interaction.user.id)
+    if not dbcon.check_user_exist_with_ref(player_id, account_name):
+        await interaction.followup.send(content=ms.NON_REGISTERED, ephemeral=True)
+        return
+    dbcon.set_player_api(player_id, key, secret, account_name)
+    await interaction.followup.send(content="API Set", ephemeral=True)
+
 @bot.tree.command(name="status", description="Check Status")
 async def status(interaction: discord.Interaction, id:str):
     await interaction.response.defer(ephemeral=True)
