@@ -32,7 +32,7 @@ class UserDropDown(discord.ui.Select):
         following_trader_id = self.player_dict.get(selected_account).get("discord_id")
         player = self.player_dict.get(selected_account).get("bingx")
         expiry_date = self.player_dict.get(selected_account).get("expiry_date")
-        if expiry_date < datetime.today().date():
+        if expiry_date != None and expiry_date < datetime.today().date():
             await interaction.response.edit_message(content=ms.EXPIRED_ACCOUNT,
                                                     embed=None,
                                                     view=None)
