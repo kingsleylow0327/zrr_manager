@@ -1,5 +1,6 @@
 import discord
 from discord.interactions import Interaction
+from util.date_dictionary import expriy_date_parse as ed
 
 TITLE = "Activate User"
 class ActivateModal(discord.ui.Modal, title=TITLE):
@@ -17,15 +18,7 @@ class ActivateModal(discord.ui.Modal, title=TITLE):
         user_account_name = str(interaction.data.get("components")[1].get("components")[0].get("value"))
         user_account_name = user_account_name.lower()
         expiry_date = str(interaction.data.get("components")[2].get("components")[0].get("value")).strip()
-
-        if expiry_date.lower() == "1m":
-            expiry_date = "1 month"
-        elif expiry_date.lower() == "3m":
-            expiry_date = "3 month"
-        elif expiry_date.lower() == "6m":
-            expiry_date = "6 month"
-        else:
-            expiry_date = "2 week"
+        expiry_date = ed(expiry_date.lower())
 
         if not self.dbcon.check_user_exist_with_ref(player_id, user_account_name):
             self.dbcon.activate_user(player_id, user_account_name, expiry_date)
