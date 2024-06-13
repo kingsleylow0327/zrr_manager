@@ -113,7 +113,7 @@ class ZonixDB():
         return self.dbcon_manager(sql, get_all=True)
     
     def get_all_player_status(self, player_id):
-        sql = f"""SELECT a.player_id, a.api_key, a.api_secret, t.trader_name as trader_name, f.player_id as trader_discord_id, f.following_time, f.damage_cost, a.expiry_date
+        sql = f"""SELECT a.player_id, a.api_key, a.api_secret, ifnull(t.trader_name, f.player_id), f.player_id as trader_discord_id, f.following_time, f.damage_cost, a.expiry_date
         FROM {self.config.API_TABLE} as a
         LEFT JOIN {self.config.FOLLOWER_TABLE} as f
         ON a.player_id = f.follower_id
