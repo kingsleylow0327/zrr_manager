@@ -53,6 +53,7 @@ class ConfirmationDropDown(discord.ui.Select):
         super().__init__(placeholder="Are you Sure?", options=traders, min_values=1, max_values=1)
 
     async def callback(self, interaction: Interaction):
+        await interaction.response.defer(ephemeral=True)
         message = ms.REMAIN_TRADER
         is_changed_trader = False
         prev_trader_name = None
@@ -72,7 +73,8 @@ class ConfirmationDropDown(discord.ui.Select):
             message += ms.SELECTED_NEW_TRADER.format(self.trader_info.get("name"))
             is_changed_trader = True
         embed = discord.Embed(title=message, description="")
-        await interaction.response.edit_message(content="", embed=embed, view=None)
+        message_id = interaction.message.id
+        await interaction.followup.edit_message(message_id, content="", embed=embed, view=None)
         # Set role
         if is_changed_trader:
             user = interaction.user

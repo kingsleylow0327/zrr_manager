@@ -1,5 +1,6 @@
 from mysql.connector import pooling
 from logger import Logger
+from dto.license_dto import LicenseDTO
 
 # Logger setup
 logger_mod = Logger("DB")
@@ -77,6 +78,22 @@ class ZonixDB():
         """
         return self.dbcon_manager(sql, get_all=False)
     
+    def update_trader_by_trader_name(self, trader_name, follower_id):
+        sql = f"""UPDATE {self.config.FOLLOWER_TABLE}
+        SET player_id = (SELECT trader_id from {self.config.TRADER_CHANNEL_TABLE} where trader_name = '{trader_name}'), following_time = NOW()
+        WHERE 
+        follower_id = '{follower_id}'
+        AND player_id != follower_id"""
+        return self.dbcon_manager(sql, get_all=True)
+    
+    def cancel_trader(self, follower_id):
+        sql = f"""UPDATE {self.config.FOLLOWER_TABLE}
+        SET player_id = ''
+        WHERE 
+        follower_id = '{follower_id}'
+        AND player_id != follower_id"""
+        return self.dbcon_manager(sql, get_all=True)
+    
     def update_trader_list(self, player_id, follower_id):
         sql = f"""UPDATE {self.config.FOLLOWER_TABLE}
         SET player_id = '{player_id}', following_time = NOW()
@@ -123,6 +140,16 @@ class ZonixDB():
         a.discord_id = '{player_id}';
         """
         return self.dbcon_manager(sql, get_all=True)
+    
+    def get_api_secret_by_account_name(self, player_id, account_name):
+        sql = f"""SELECT a.api_key, a.api_secret
+        FROM {self.config.API_TABLE} as a
+        WHERE
+        a.discord_id = '{player_id}'
+        AND
+        a.player_id = '{account_name}';
+        """
+        return self.dbcon_manager(sql, get_all=False)
     
     def set_player_api(self, player_id, api, key, player_account_name):    
         sql = f"""UPDATE {self.config.API_TABLE}
@@ -177,4 +204,29 @@ class ZonixDB():
         SET expiry_date = IF(expiry_date < NOW(), DATE_ADD(NOW(), INTERVAL {expiry}), DATE_ADD(expiry_date, INTERVAL {expiry}))
         WHERE player_id = '{player_account_name}';
         """
+        return self.dbcon_manager(sql)
+    
+    def register_license(self, dto:LicenseDTO, account_used):
+        sql = f"""INSERT INTO {self.config.LICENSE_TABLE}
+        (player_id, license_key, validity, type, trader_name, account_used)
+        VALUES
+        ('{dto.userId}', '{dto.licenseKey}', '{dto.validity}', '{dto.type}', '{dto.trader}', '{account_used}')"""
+        return self.dbcon_manager(sql)
+    
+    def get_license_by_license_key(self, license_key):
+        sql = f"""SELECT * FROM {self.config.LICENSE_TABLE}
+        WHERE license_key = '{license_key}'
+        ORDER BY id DESC
+        limit 1"""
+        return self.dbcon_manager(sql, get_all=False)
+    
+    def get_license(self, user_id):
+        sql = f"""SELECT * FROM {self.config.LICENSE_TABLE}
+        WHERE player_id = '{user_id}'"""
+        return self.dbcon_manager(sql, get_all=True)
+    
+    def use_license(self, license_key):
+        sql = f"""UPDATE {self.config.LICENSE_TABLE}
+        SET time_used = NOW()
+        WHERE license_key = '{license_key}'"""
         return self.dbcon_manager(sql)

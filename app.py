@@ -3,11 +3,16 @@ import asyncio
 import discord
 import message as ms
 import schedule
+import json
+from dto.license_dto import LicenseDTO
 from discord.ext import commands
 from datetime import datetime
 from logger import Logger
 from modal.activate_modal import ActivateModal
 from modal.extend_modal import ExtendModal
+from service.new_account import create_new_account
+from service.resubscribe import resubscribe
+from service.cancel_subscribe import cancel_subscribe
 from view.master_view import MasterView
 from view.status_view import StatusView
 from config import Config
@@ -43,7 +48,30 @@ async def on_ready():
     logger.info("Manager Ready")
     await run_scheduler()
 
-@bot.tree.command(name="clearex", description="AutoTrade Manager Command")
+# License command
+@bot.event
+async def on_message(message):
+    if message.author == int(config.ZODIAC_ID):  # Ignore messages from the bot itself
+        return
+
+    if message.channel.id == int(config.LICENCE_CHANNEL_ID):
+        try:
+            json_msg = json.loads(message.content)
+            license_dto = LicenseDTO.from_json(json_msg)
+            guild = bot.get_guild(GUILD_ID)
+            # New Account
+            if license_dto.type == "create":
+                await create_new_account(dbcon, license_dto, guild)
+            # Renew Subs
+            elif license_dto.type == "renew":
+                await resubscribe(dbcon, license_dto, guild)
+            elif license_dto.type == "cancel":
+                await cancel_subscribe(dbcon, license_dto, guild)
+        except Exception as e:
+            logger.error(e)
+    await bot.process_commands(message)
+
+@bot.tree.command(name="zrrdev_clearex", description="AutoTrade Manager Command")
 async def clearex(interaction: discord.Interaction):
     if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
         return True
@@ -81,12 +109,13 @@ async def atm(interaction: discord.Interaction):
         return True
     player_id = str(interaction.user.id)
     user_account_list = dbcon.get_all_player_status(player_id)
-    if not user_account_list:
+    license_list = dbcon.get_license(player_id)
+    if not user_account_list and not license_list:
         await interaction.followup.send(content=ms.NO_ACCOUNT, ephemeral=True)
         return
     status_view = StatusView(dbcon, interaction, user_account_list)
     embeded_status_list = status_view.compute()
-    await interaction.followup.send(content="Welcome to AutoTrade Manager", embeds=embeded_status_list, view=MasterView(dbcon, user_account_list), ephemeral=True)
+    await interaction.followup.send(content="Welcome to AutoTrade Manager", embeds=embeded_status_list, view=MasterView(dbcon, user_account_list, license_list), ephemeral=True)
 
 @bot.tree.command(name="api", description="API setup")
 async def register(interaction: discord.Interaction, account_name: str, key: str, secret: str):

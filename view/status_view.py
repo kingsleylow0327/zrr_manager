@@ -15,6 +15,8 @@ class StatusView():
     def compute(self):
         embed_list = []
         count = 1
+        if not self.trader_api_list:
+            return []
         for trader_api in self.trader_api_list:
             embed = discord.Embed(title=f"# Your AutoTrade Account {count} Status", description="")
             bingx = BINGX(trader_api.get("api_key"), trader_api.get("api_secret"))

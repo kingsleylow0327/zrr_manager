@@ -52,3 +52,7 @@ EXPIRED_ACCOUNT = """
 This account is expired
 Please Contact ZRR Admin
 """
+
+NO_LICENSE = """
+You didn't have any license with you currently.
+"""
