@@ -51,9 +51,9 @@ async def on_ready():
 # License command
 @bot.event
 async def on_message(message):
-    if message.author == int(config.ZONIX_ID):  # Ignore messages from the bot itself
+    if message.author.id == int(config.ZONIX_ID):  # Ignore messages from the bot itself
         return
-    if message.channel.id == int(config.LICENCE_CHANNEL_ID) and message.author == int(config.PAYMENT_BOT_ID):
+    if message.channel.id == int(config.LICENCE_CHANNEL_ID) and message.author.id == int(config.PAYMENT_BOT_ID):
         try:
             json_msg = json.loads(message.content)
             license_dto = LicenseDTO.from_json(json_msg)
