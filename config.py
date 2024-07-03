@@ -24,6 +24,7 @@ class Config():
         self.API_TABLE = os.getenv('API_TABLE')
         self.FOLLOWER_TABLE = os.getenv('FOLLOWER_TABLE')
         self.LICENSE_TABLE = os.getenv('LICENSE_TABLE')
+        self.PAYMENT_BOT_ID = os.getenv('PAYMENT_BOT_ID')
         self.MESSAGE_PLAYER_TABLE=os.getenv('MESSAGE_PLAYER_TABLE')
         self.PLAYER_FOLLOWER_TABLE=os.getenv('PLAYER_FOLLOWER_TABLE')
         self.CLEINT_ORDER_ID_TABLE=os.getenv('CLEINT_ORDER_ID_TABLE')

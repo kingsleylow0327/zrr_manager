@@ -51,17 +51,14 @@ async def on_ready():
 # License command
 @bot.event
 async def on_message(message):
-    if message.author == int(config.ZODIAC_ID):  # Ignore messages from the bot itself
+    if message.author == int(config.ZONIX_ID):  # Ignore messages from the bot itself
         return
-
-    if message.channel.id == int(config.LICENCE_CHANNEL_ID):
-        logger.info(f"channel id is {message.channel.id}")
+    if message.channel.id == int(config.LICENCE_CHANNEL_ID) and message.author == int(config.PAYMENT_BOT_ID):
         try:
             json_msg = json.loads(message.content)
             license_dto = LicenseDTO.from_json(json_msg)
             guild = bot.get_guild(GUILD_ID)
             # New Account
-            logger.info(f"message is {message}")
             if license_dto.type == "create":
                 logger.info(f"Created!")
                 await create_new_account(dbcon, license_dto, guild)
