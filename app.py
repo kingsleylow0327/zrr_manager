@@ -55,12 +55,15 @@ async def on_message(message):
         return
 
     if message.channel.id == int(config.LICENCE_CHANNEL_ID):
+        logger.info(f"channel id is {message.channel.id}")
         try:
             json_msg = json.loads(message.content)
             license_dto = LicenseDTO.from_json(json_msg)
             guild = bot.get_guild(GUILD_ID)
             # New Account
+            logger.info(f"message is {message}")
             if license_dto.type == "create":
+                logger.info(f"Created!")
                 await create_new_account(dbcon, license_dto, guild)
             # Renew Subs
             elif license_dto.type == "renew":
