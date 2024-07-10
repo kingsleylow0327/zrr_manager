@@ -80,7 +80,8 @@ class ZonixDB():
     
     def update_trader_by_trader_name(self, trader_name, follower_id):
         sql = f"""UPDATE {self.config.FOLLOWER_TABLE}
-        SET player_id = (SELECT trader_id from {self.config.TRADER_CHANNEL_TABLE} where trader_name = '{trader_name}'), following_time = NOW()
+        SET player_id = (SELECT if(INSTR(trader_id, ',') > 0,trader_name,trader_id)
+        FROM {self.config.TRADER_CHANNEL_TABLE} where trader_name = '{trader_name}'), following_time = NOW()
         WHERE 
         follower_id = '{follower_id}'
         AND player_id != follower_id"""
