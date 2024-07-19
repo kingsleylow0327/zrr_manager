@@ -1,5 +1,6 @@
 import discord
 import message as ms
+from modal.create_bingx_account_modal import CreateBingXAccountModal
 from view.account_select_view import AccountSelectView
 from view.license_select_view import LicenseSelectView
 
@@ -17,6 +18,10 @@ class MasterView(discord.ui.View):
     #                                             view=AccountSelectView(self.dbcon,
     #                                                                    self.user_account_list,
     #                                                                    "trader"))
+
+    @discord.ui.button(label="Create Account", style=discord.ButtonStyle.grey)
+    async def createAccountButton(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.send_modal(CreateBingXAccountModal(self.dbcon, "createAccount"))
 
     @discord.ui.button(label="Set Damage", style=discord.ButtonStyle.green)
     async def damageButton(self, interaction: discord.Interaction, button: discord.ui.Button):

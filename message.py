@@ -56,3 +56,7 @@ Please Contact ZRR Admin
 NO_LICENSE = """
 You didn't have any license with you currently.
 """
+
+REGISTERED_DISCORD_ID = """
+You had already registered.
+"""
