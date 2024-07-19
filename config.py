@@ -32,3 +32,4 @@ class Config():
         self.SERVER_IP=os.getenv('SERVER_IP')
         self.POOL_SIZE=os.getenv('POOL_SIZE')
         self.IS_TEST=os.getenv('IS_TEST')
+        self.TRADE_VOLUME_TABLE = os.getenv('TRADE_VOLUME_TABLE')
