@@ -113,7 +113,7 @@ async def atm(interaction: discord.Interaction):
     if not user_account_list and not license_list:
         await interaction.followup.send(content=ms.NO_ACCOUNT, ephemeral=True)
         return
-    status_view = StatusView(dbcon, interaction, user_account_list)
+    status_view = StatusView(dbcon, interaction, user_account_list, player_id)
     embeded_status_list = status_view.compute()
     await interaction.followup.send(content="Welcome to AutoTrade Manager", embeds=embeded_status_list, view=MasterView(dbcon, user_account_list, license_list), ephemeral=True)
 
