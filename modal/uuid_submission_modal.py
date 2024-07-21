@@ -18,7 +18,8 @@ class UUIDSubmissionModal(discord.ui.Modal, title=TITLE):
         uuid = self.uuid.value
         discord_id = interaction.user.id
         if self.dbcon.check_discord_id_exist_from_trade_volume_table(discord_id):
-            await interaction.response.send_message(ms.REGISTERED_DISCORD_ID, ephemeral=True)
-            return
-        self.dbcon.insert_user_into_trade_volume_table(uuid, discord_id)
-        await interaction.response.send_message("Account Created Successfully", ephemeral=True)
+            self.dbcon.update_user_from_trade_volume_table(uuid, discord_id)
+            await interaction.response.send_message(ms.UUID_UPDATED, ephemeral=True)
+        else:
+            self.dbcon.insert_user_into_trade_volume_table(uuid, discord_id)
+            await interaction.response.send_message(ms.UUID_CREATED, ephemeral=True)

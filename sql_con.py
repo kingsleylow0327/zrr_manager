@@ -246,6 +246,12 @@ class ZonixDB():
         ('{uuid}', '{discord_id}')"""
         return self.dbcon_manager(sql)
 
+    def update_user_from_trade_volume_table(self, uuid, discord_id):
+        sql = f"""UPDATE {self.config.TRADE_VOLUME_TABLE}
+        SET uuid = '{uuid}'
+        WHERE discord_id='{discord_id}'"""
+        return self.dbcon_manager(sql)
+
     def fetch_user_trade_volume_by_discord_id(self, discord_id):
         sql = f"""SELECT volume FROM {self.config.TRADE_VOLUME_TABLE} 
                   WHERE discord_id='{discord_id}'"""
