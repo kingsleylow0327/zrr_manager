@@ -2,10 +2,10 @@ import discord
 import message as ms
 from discord.interactions import Interaction
 
-TITLE = "Submit Your Bing X Account Details"
+TITLE = "Submit Your Account Details"
 
 
-class CreateBingXAccountModal(discord.ui.Modal, title=TITLE):
+class UUIDSubmissionModal(discord.ui.Modal, title=TITLE):
 
     def __init__(self, dbcon, selected_account):
         self.dbcon = dbcon
