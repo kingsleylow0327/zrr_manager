@@ -56,3 +56,11 @@ Please Contact ZRR Admin
 NO_LICENSE = """
 You didn't have any license with you currently.
 """
+
+UUID_UPDATED = """
+UUID updated.
+"""
+
+UUID_CREATED = """
+UUID created successfully.
+"""

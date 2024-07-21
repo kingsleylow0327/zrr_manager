@@ -1,7 +1,8 @@
 import discord
 import message as ms
+from modal.uuid_submission_modal import UUIDSubmissionModal
 from view.account_select_view import AccountSelectView
-from view.license_select_view import LicenseSelectView
+
 
 class MasterView(discord.ui.View):
 
@@ -17,6 +18,10 @@ class MasterView(discord.ui.View):
     #                                             view=AccountSelectView(self.dbcon,
     #                                                                    self.user_account_list,
     #                                                                    "trader"))
+
+    @discord.ui.button(label="UUID Submission", style=discord.ButtonStyle.grey)
+    async def uuidSubmissionButton(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.send_modal(UUIDSubmissionModal(self.dbcon, "createAccount"))
 
     @discord.ui.button(label="Set Damage", style=discord.ButtonStyle.green)
     async def damageButton(self, interaction: discord.Interaction, button: discord.ui.Button):
