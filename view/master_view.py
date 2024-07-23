@@ -19,9 +19,9 @@ class MasterView(discord.ui.View):
     #                                                                    self.user_account_list,
     #                                                                    "trader"))
 
-    @discord.ui.button(label="UUID Submission", style=discord.ButtonStyle.grey)
-    async def uuidSubmissionButton(self, interaction: discord.Interaction, button: discord.ui.Button):
-        await interaction.response.send_modal(UUIDSubmissionModal(self.dbcon, "createAccount"))
+    # @discord.ui.button(label="UUID Submission", style=discord.ButtonStyle.blurple)
+    # async def uuidSubmissionButton(self, interaction: discord.Interaction, button: discord.ui.Button):
+    #     await interaction.response.send_modal(UUIDSubmissionModal(self.dbcon, "createAccount"))
 
     @discord.ui.button(label="Set Damage", style=discord.ButtonStyle.green)
     async def damageButton(self, interaction: discord.Interaction, button: discord.ui.Button):

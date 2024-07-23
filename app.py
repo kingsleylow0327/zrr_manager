@@ -15,6 +15,7 @@ from service.resubscribe import resubscribe
 from service.cancel_subscribe import cancel_subscribe
 from view.master_view import MasterView
 from view.status_view import StatusView
+from view.redeem_vip_view import RedeemVIPView
 from config import Config
 from sql_con import ZonixDB
 from bingx import BINGX
@@ -71,7 +72,7 @@ async def on_message(message):
             logger.error(e)
     await bot.process_commands(message)
 
-@bot.tree.command(name="zrrdev_clearex", description="AutoTrade Manager Command")
+@bot.tree.command(name="clearex", description="AutoTrade Manager Command")
 async def clearex(interaction: discord.Interaction):
     if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
         return True
@@ -128,6 +129,18 @@ async def register(interaction: discord.Interaction, account_name: str, key: str
         return
     dbcon.set_player_api(player_id, key, secret, account_name)
     await interaction.followup.send(content="API Set", ephemeral=True)
+
+@bot.tree.command(name="redeemvip", description="Redeem Vip")
+async def vip(interaction: discord.Interaction):
+    await interaction.response.defer(ephemeral=True)
+    if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
+        return True
+    support_channel_id = config.SUPPORT_CHANNEL_ID
+    player_id = str(interaction.user.id)
+    status_view = StatusView(dbcon, interaction, None, player_id)
+    trade_volume = status_view.fetch_total_volume()
+    embeded_volume_list = [discord.Embed(title=f"Your Open Trade Volume for this Month: {trade_volume} USDT \n", description="")]
+    await interaction.followup.send(content="VIP Redeemtion", embeds=embeded_volume_list, view=RedeemVIPView(dbcon, support_channel_id), ephemeral=True)
 
 @bot.tree.command(name="status", description="Check Status")
 async def status(interaction: discord.Interaction, id:str):

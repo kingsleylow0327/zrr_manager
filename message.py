@@ -62,5 +62,25 @@ UUID updated.
 """
 
 UUID_CREATED = """
-UUID created successfully.
+UID created successfully.
+"""
+
+EXPIRED_VIP = """
+You have redeem FREE VIP previously and it's expired, please contact <#{}> if you think this is an mistake
+"""
+
+REDEEMED_VIP = """
+You have redeem FREE VIP previously and not eligible to redeem again, please contact <#{}> if you think this is an mistake
+"""
+
+NO_UUID = """
+Your UID is invalid, please submit your UID or contact <#{}> if you think this is an mistake.
+"""
+
+VIP_SUCCESS = """
+Your UID is valid, enjoy your 7 Days @FREE-VIP and access to our premium features.
+"""
+
+USED_UUID = """
+Your UID being used before, please contact <#{}> if you think this is an mistake.
 """

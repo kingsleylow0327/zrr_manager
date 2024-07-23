@@ -69,9 +69,6 @@ class StatusView:
         return embed_list
 
     def fetch_total_volume(self):
-        total_volume = 0
-        for trader_api in self.trader_api_list:
-            volume = self.dbcon.fetch_user_trade_volume_by_discord_id(self.discord_id)
-            if volume:
-                total_volume += float(volume[0].get('volume', 0))
-        return total_volume
+        volume_detail = self.dbcon.fetch_user_trade_volume_by_discord_id(self.discord_id)
+        final_volume = volume_detail.get('volume') if volume_detail.get('volume') else "--"
+        return final_volume
