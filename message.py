@@ -58,7 +58,7 @@ You didn't have any license with you currently.
 """
 
 UUID_UPDATED = """
-UUID updated.
+UID updated.
 """
 
 UUID_CREATED = """
@@ -74,11 +74,11 @@ You have redeem FREE VIP previously and not eligible to redeem again, please con
 """
 
 NO_UUID = """
-Your UID is invalid, please submit your UID or contact <#{}> if you think this is an mistake.
+Your UID is invalid, please submit your UID by clicking `Redeem VIP` or contact <#{}> if you think this is an mistake.
 """
 
 VIP_SUCCESS = """
-Your UID is valid, enjoy your 7 Days @FREE-VIP and access to our premium features.
+Your have submited your UID, enjoy your 7 Days @FREE-VIP and access to our premium features.
 """
 
 USED_UUID = """

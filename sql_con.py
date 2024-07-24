@@ -170,6 +170,14 @@ class ZonixDB():
             return False
         return len(ret) != 0
     
+    def is_vip_admin(self, player_id):
+        sql = f"""SELECT discord_id FROM vip_admin 
+        WHERE discord_id='{player_id}'"""
+        ret = self.dbcon_manager(sql, get_all=True)
+        if not ret:
+            return False
+        return len(ret) != 0
+    
     def check_user_exist_with_ref(self, player_id, player_account_name):
         sql = f"""SELECT player_id FROM {self.config.API_TABLE}
         WHERE (player_id='{player_account_name}')
@@ -250,22 +258,16 @@ class ZonixDB():
         WHERE discord_id='{discord_id}'"""
         return self.dbcon_manager(sql)
     
-    def insert_user_into_trade_volume_table(self, uuid, discord_id):
+    def insert_user_into_trade_volume_table(self, uuid, discord_id, date):
         sql = f"""INSERT INTO {self.config.TRADE_VOLUME_TABLE}
-        (uuid, discord_id)
+        (uuid, discord_id, vip_expired_date)
         VALUES
-        ('{uuid}', '{discord_id}')"""
+        ('{uuid}', '{discord_id}', '{date}')"""
         return self.dbcon_manager(sql)
 
     def update_user_from_trade_volume_table(self, uuid, discord_id):
         sql = f"""UPDATE {self.config.TRADE_VOLUME_TABLE}
         SET uuid = '{uuid}'
-        WHERE discord_id='{discord_id}'"""
-        return self.dbcon_manager(sql)
-    
-    def update_exipry_date_from_trade_volume_table(self, discord_id, date):
-        sql = f"""UPDATE {self.config.TRADE_VOLUME_TABLE}
-        SET vip_expired_date = '{date}'
         WHERE discord_id='{discord_id}'"""
         return self.dbcon_manager(sql)
 

@@ -47,6 +47,8 @@ def within_valid_period(date_time):
 async def on_ready():
     await bot.tree.sync()
     logger.info("Manager Ready")
+    bot.add_view(RedeemVIPView(dbcon, config.SUPPORT_CHANNEL_ID))
+    await run_vip()
     await run_scheduler()
 
 # License command
@@ -132,15 +134,19 @@ async def register(interaction: discord.Interaction, account_name: str, key: str
 
 @bot.tree.command(name="redeemvip", description="Redeem Vip")
 async def vip(interaction: discord.Interaction):
-    await interaction.response.defer(ephemeral=True)
-    if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
+    await interaction.response.defer()
+    if interaction.channel.id != int(config.ON_BOARDING_CHANNEL_ID):
+        return True
+    player_id = str(interaction.user.id)
+    if not dbcon.is_vip_admin(player_id):
         return True
     support_channel_id = config.SUPPORT_CHANNEL_ID
-    player_id = str(interaction.user.id)
-    status_view = StatusView(dbcon, interaction, None, player_id)
-    trade_volume = status_view.fetch_total_volume()
-    embeded_volume_list = [discord.Embed(title=f"Your Open Trade Volume for this Month: {trade_volume} USDT \n", description="")]
-    await interaction.followup.send(content="VIP Redeemtion", embeds=embeded_volume_list, view=RedeemVIPView(dbcon, support_channel_id), ephemeral=True)
+    embed = discord.Embed(
+        title="VIP Redeemtion",
+        description="By claiming this trial, you declare that you have read, comprehended, and agreed to these terms, fully understanding the inherent risks of automated trading as above.",
+        color=0xE733FF  # Purple color
+    )   
+    await interaction.followup.send(content="", embed=embed, view=RedeemVIPView(dbcon, support_channel_id))
 
 @bot.tree.command(name="status", description="Check Status")
 async def status(interaction: discord.Interaction, id:str):
@@ -227,6 +233,16 @@ async def clear_expired():
 
 # Main Program Run here
 schedule.every().day.at('00:00').do(lambda: asyncio.create_task(clear_expired()))
+
+async def run_vip():
+    channel = bot.get_channel(int(config.ON_BOARDING_CHANNEL_ID))
+    embed = discord.Embed(
+        title="VIP Redeemtion",
+        description="By claiming this trial, you declare that you have read, comprehended, and agreed to these terms, fully understanding the inherent risks of automated trading as above.",
+        color=0xE733FF  # Purple color
+    )     
+    view = RedeemVIPView(dbcon, config.SUPPORT_CHANNEL_ID)
+    await channel.send(embed=embed, view=view)
 
 async def run_scheduler():
     while True:

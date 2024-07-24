@@ -34,3 +34,4 @@ class Config():
         self.IS_TEST=os.getenv('IS_TEST')
         self.TRADE_VOLUME_TABLE = os.getenv('TRADE_VOLUME_TABLE')
         self.SUPPORT_CHANNEL_ID = os.getenv('SUPPORT_CHANNEL_ID')
+        self.ON_BOARDING_CHANNEL_ID = os.getenv('ON_BOARDING_CHANNEL_ID')
