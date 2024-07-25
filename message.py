@@ -119,9 +119,9 @@ VIP_TITTLE_CH = """
 
 VIP_DESCRIPTION = """
 <a:animatedarrowright:1224308096835256361> Daily Live Trade & Market Analysis.
-<a:animatedarrowright:1224308096835256361> Weekly TAP Beginner Class LiveTrade.
-<a:animatedarrowright:1224308096835256361> Weekly MMM Intermediate LiveTrade.
-<a:animatedarrowright:1224308096835256361> Weekly GTM Advanced LiveTrade.
+<a:animatedarrowright:1224308096835256361> Weekly TAP Beginner LiveTrade.
+<a:animatedarrowright:1224308096835256361> Weekly MMM Strategy LiveTrade.
+<a:animatedarrowright:1224308096835256361> Weekly GTM Strategy LiveTrade.
 
 By claiming this limited-time VIP access, you fully understand the inherent risks of cryptocurrency trading and acknowledge that past performance is not indicative of future results. Engage wisely and take advantage of expert insights to enhance your trading strategies.
 """
