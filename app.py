@@ -15,7 +15,7 @@ from service.resubscribe import resubscribe
 from service.cancel_subscribe import cancel_subscribe
 from view.master_view import MasterView
 from view.status_view import StatusView
-from view.redeem_vip_view import RedeemVIPView
+from view.redeem_vip_view import RedeemVIPView, RedeemVIPViewCH
 from config import Config
 from sql_con import ZonixDB
 from bingx import BINGX
@@ -135,15 +135,15 @@ async def register(interaction: discord.Interaction, account_name: str, key: str
 @bot.tree.command(name="redeemvip", description="Redeem Vip")
 async def vip(interaction: discord.Interaction):
     await interaction.response.defer()
-    if interaction.channel.id != int(config.ON_BOARDING_CHANNEL_ID):
+    if str(interaction.channel.id) in config.ON_BOARDING_CHANNEL_ID:
         return True
     player_id = str(interaction.user.id)
     if not dbcon.is_vip_admin(player_id):
         return True
     support_channel_id = config.SUPPORT_CHANNEL_ID
     embed = discord.Embed(
-        title="VIP Redeemtion",
-        description="By claiming this trial, you declare that you have read, comprehended, and agreed to these terms, fully understanding the inherent risks of automated trading as above.",
+        title=ms.VIP_TITTLE,
+        description=ms.VIP_DESCRIPTION,
         color=0xE733FF  # Purple color
     )   
     await interaction.followup.send(content="", embed=embed, view=RedeemVIPView(dbcon, support_channel_id))
@@ -235,14 +235,23 @@ async def clear_expired():
 schedule.every().day.at('00:00').do(lambda: asyncio.create_task(clear_expired()))
 
 async def run_vip():
-    channel = bot.get_channel(int(config.ON_BOARDING_CHANNEL_ID))
+    channel_en = bot.get_channel(int(config.ON_BOARDING_CHANNEL_ID[0]))
     embed = discord.Embed(
-        title="VIP Redeemtion",
-        description="By claiming this trial, you declare that you have read, comprehended, and agreed to these terms, fully understanding the inherent risks of automated trading as above.",
+        title=ms.VIP_TITTLE,
+        description=ms.VIP_DESCRIPTION,
         color=0xE733FF  # Purple color
     )     
     view = RedeemVIPView(dbcon, config.SUPPORT_CHANNEL_ID)
-    await channel.send(embed=embed, view=view)
+    await channel_en.send(embed=embed, view=view)
+
+    channel_ch = bot.get_channel(int(config.ON_BOARDING_CHANNEL_ID[1]))
+    embed = discord.Embed(
+        title=ms.VIP_TITTLE_CH,
+        description=ms.VIP_DESCRIPTION_CH,
+        color=0xE733FF  # Purple color
+    )     
+    view = RedeemVIPViewCH(dbcon, config.SUPPORT_CHANNEL_ID)
+    await channel_ch.send(embed=embed, view=view)
 
 async def run_scheduler():
     while True:
