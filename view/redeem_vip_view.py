@@ -13,7 +13,7 @@ class RedeemVIPView(discord.ui.View):
         self.support_channel_id = support_channel_id
 
     @discord.ui.button(label="Redeem VIP", style=discord.ButtonStyle.blurple, custom_id="redeem_button")
-    async def damageButton(self, interaction: discord.Interaction, button: discord.ui.Button):
+    async def RedeemButton(self, interaction: discord.Interaction, button: discord.ui.Button):
         discord_id = interaction.user.id
         trade_detail = self.dbcon.get_trade_volume_by_id(discord_id)
         

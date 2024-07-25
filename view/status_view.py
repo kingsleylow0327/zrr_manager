@@ -59,16 +59,10 @@ class StatusView:
         if not self.trader_api_list:
             return []
 
-        total_volume = self.fetch_total_volume()
-        embed_list = [discord.Embed(title=f"Your Open Trade Volume for this Month: {total_volume} USDT \n", description="")]
+        embed_list = []
 
         for count, trader_api in enumerate(self.trader_api_list, start=1):
             embed = create_account_embed(trader_api, count)
             embed_list.append(embed)
 
         return embed_list
-
-    def fetch_total_volume(self):
-        volume_detail = self.dbcon.fetch_user_trade_volume_by_discord_id(self.discord_id)
-        final_volume = volume_detail.get('volume') if volume_detail.get('volume') else "--"
-        return final_volume
