@@ -6,7 +6,7 @@ import schedule
 import json
 from dto.license_dto import LicenseDTO
 from discord.ext import commands
-from datetime import datetime
+from datetime import datetime, timedelta
 from logger import Logger
 from modal.activate_modal import ActivateModal
 from modal.extend_modal import ExtendModal
@@ -135,7 +135,7 @@ async def register(interaction: discord.Interaction, account_name: str, key: str
 @bot.tree.command(name="redeemvip", description="Redeem Vip")
 async def vip(interaction: discord.Interaction):
     await interaction.response.defer()
-    if str(interaction.channel.id) in config.ON_BOARDING_CHANNEL_ID:
+    if str(interaction.channel.id) not in config.ON_BOARDING_CHANNEL_ID:
         return True
     player_id = str(interaction.user.id)
     if not dbcon.is_vip_admin(player_id):
@@ -211,6 +211,44 @@ async def status(interaction: discord.Interaction, id:str):
     
     await interaction.followup.send(embeds=embed_list, ephemeral=True)
 
+@bot.tree.command(name="givevip", description="Give VIP")
+async def give_vip(interaction: discord.Interaction, id:str, day:str):
+    await interaction.response.defer(ephemeral=True)
+    if str(interaction.channel.id) not in config.ON_BOARDING_CHANNEL_ID:
+        return True
+    player_id = str(interaction.user.id)
+    if not dbcon.is_vip_admin(player_id):
+        return True
+    vip_detail = dbcon.get_trade_volume_by_id(id)
+    if not vip_detail:
+        await interaction.followup.send(content="This User have not pair with a UID yet", ephemeral=True)
+    else:
+        current_date = datetime.now()
+        new_exipry_date = (current_date + timedelta(days=int(day))).strftime("%Y-%m-%d")
+        dbcon.update_expiry_date_by_discord_id(player_id, new_exipry_date)
+
+        # Give Role
+        guild = bot.get_guild(GUILD_ID)
+        member = guild.get_member(int(id))
+        role = discord.utils.get(interaction.guild.roles, name="FREE_VIP")
+        await member.add_roles(role)
+        await interaction.followup.send(content=f"User {id} have bocome VIP until {new_exipry_date}", ephemeral=True)
+
+@bot.tree.command(name="adduid", description="Add UID")
+async def give_vip(interaction: discord.Interaction, uid:str):
+    await interaction.response.defer(ephemeral=True)
+    if str(interaction.channel.id) not in config.ON_BOARDING_CHANNEL_ID:
+        return True
+    player_id = str(interaction.user.id)
+    if not dbcon.is_vip_admin(player_id):
+        return True
+    uid_detail = dbcon.check_uid_exist_from_trade_volume_table(uid)
+    if uid_detail:
+        await interaction.followup.send(content="This BingX UID already existed", ephemeral=True)
+    else:
+        dbcon.insert_solely_uid(uid)
+        await interaction.followup.send(content=f"New UID {uid} added", ephemeral=True)
+    
 async def clear_expired():
     logger.info("Cron Job:Clearing Start")
     expired_player_list = dbcon.get_expired_user()
