@@ -1,6 +1,7 @@
 # bot.py
 import asyncio
 import discord
+
 import message as ms
 import schedule
 import json
@@ -13,12 +14,14 @@ from modal.extend_modal import ExtendModal
 from service.new_account import create_new_account
 from service.resubscribe import resubscribe
 from service.cancel_subscribe import cancel_subscribe
+from modal.manual_assign_free_vip_modal import ManualAssignFreeVipModal
 from view.master_view import MasterView
 from view.status_view import StatusView
 from view.redeem_vip_view import RedeemVIPView, RedeemVIPViewCH
 from config import Config
 from sql_con import ZonixDB
 from bingx import BINGX
+import service.gsheet_bot
 
 # Logger setup
 logger_mod = Logger("Manager")
@@ -257,7 +260,57 @@ async def give_vip(interaction: discord.Interaction, uid: str):
         await interaction.followup.send(content="This BingX UID already existed")
     else:
         dbcon.insert_solely_uid(uid)
-        await interaction.followup.send(content=f"New UID {uid} added")
+        await interaction.followup.send(content=f"New UID {uid} added", ephemeral=True)
+
+
+@bot.tree.command(name="batch_assign_free_vip", description="Batch assign User Free VIP Role")
+async def batch_assign_free_vip(interaction: discord.Interaction):
+    await interaction.response.defer()
+    if str(interaction.channel.id) not in config.ON_BOARDING_CHANNEL_ID:
+        return True
+    player_id = str(interaction.user.id)
+    if not dbcon.is_admin(player_id):
+        await interaction.followup.send("You do not have permission to use this command.", ephemeral=True)
+        return
+
+    guild = bot.get_channel(int(config.ON_BOARDING_CHANNEL_ID[0])).guild
+    success = await service.gsheet_bot.batch_assign_free_vip(dbcon, guild)
+    if success:
+        await interaction.followup.send("Successfully updated trade volume table.", ephemeral=True)
+    else:
+        await interaction.followup.send("Failed to update trade volume table. Please try again.", ephemeral=True)
+
+
+@bot.tree.command(name="batch_revoke_free_vip", description="Batch revoke Free VIP Role")
+async def batch_revoke_free_vip(interaction: discord.Interaction):
+    await interaction.response.defer(ephemeral=True)
+    if str(interaction.channel.id) not in config.ON_BOARDING_CHANNEL_ID:
+        return True
+    player_id = str(interaction.user.id)
+    if not dbcon.is_admin(player_id):
+        await interaction.followup.send("You do not have permission to use this command.", ephemeral=True)
+        return
+
+    guild = bot.get_channel(int(config.ON_BOARDING_CHANNEL_ID[0])).guild
+    success = await service.gsheet_bot.batch_revoke_free_vip(dbcon, guild)
+    if success:
+        await interaction.followup.send("Successfully updated trade volume table.", ephemeral=True)
+    else:
+        await interaction.followup.send("Failed to update trade volume table. Please try again.", ephemeral=True)
+
+
+@bot.tree.command(name="manual_assign_free_vip", description="Manual assign Free VIP Role")
+async def manual_assign_free_vip(interaction: discord.Interaction):
+    if str(interaction.channel.id) not in config.ON_BOARDING_CHANNEL_ID:
+        return True
+    player_id = str(interaction.user.id)
+    if not dbcon.is_vip_admin(player_id):
+        await interaction.response.send_message("You do not have permission to use this command.", ephemeral=True)
+        return
+
+    guild = bot.get_channel(int(config.ON_BOARDING_CHANNEL_ID[0])).guild
+    modal = ManualAssignFreeVipModal(dbcon, guild)
+    await interaction.response.send_modal(modal)
 
 
 async def clear_expired():
@@ -291,7 +344,7 @@ async def run_vip():
         description=ms.VIP_DESCRIPTION.format(config.VIP_ROLE_ID, config.SUPPORT_CHANNEL_ID, config.SUPPORT_CHANNEL_CH_ID),
         color=0xE733FF  # Purple color
     )
-    view = RedeemVIPView(dbcon, config.SUPPORT_CHANNEL_ID, config.SUPPORT_CHANNEL_CH_ID)
+    view = RedeemVIPView(dbcon, config.SUPPORT_CHANNEL_ID)
     await channel_en.send(embed=embed, view=view)
 
     channel_ch = bot.get_channel(int(config.ON_BOARDING_CHANNEL_ID[1]))
@@ -300,7 +353,7 @@ async def run_vip():
         description=ms.VIP_DESCRIPTION_CH.format(config.VIP_ROLE_ID, config.SUPPORT_CHANNEL_ID, config.SUPPORT_CHANNEL_CH_ID),
         color=0xE733FF  # Purple color
     )
-    view = RedeemVIPViewCH(dbcon, config.SUPPORT_CHANNEL_ID, config.SUPPORT_CHANNEL_CH_ID)
+    view = RedeemVIPViewCH(dbcon, config.SUPPORT_CHANNEL_ID)
     await channel_ch.send(embed=embed, view=view)
 
 

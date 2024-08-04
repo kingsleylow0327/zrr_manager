@@ -2,6 +2,7 @@ import discord
 from dto.license_dto import LicenseDTO
 from util.date_dictionary import expriy_date_parse as ed
 
+
 async def create_new_account(dbcon, dto:LicenseDTO, guild):
     expiry_date = ed(dto.validity)
     user_account_list = dbcon.get_all_player_status(dto.userId)
@@ -16,7 +17,8 @@ async def create_new_account(dbcon, dto:LicenseDTO, guild):
     role = discord.utils.get(guild.roles, name=dto.trader)
     await member.add_roles(role)
     dbcon.register_license(dto, new_name)
-    
+
+
 def get_new_name(account_list):
         original_name = account_list[0].get("player_id")
         current_num = 2

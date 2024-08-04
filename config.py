@@ -37,3 +37,6 @@ class Config():
         self.SUPPORT_CHANNEL_CH_ID = os.getenv('SUPPORT_CHANNEL_CH_ID')
         self.ON_BOARDING_CHANNEL_ID = os.getenv('ON_BOARDING_CHANNEL_ID').split(",")
         self.VIP_ROLE_ID = os.getenv('VIP_ROLE_ID')
+        self.GBOT_GOOGLE_SERVICE_ACCOUNT = os.getenv('GBOT_GOOGLE_SERVICE_ACCOUNT')
+        self.GBOT_GSHEET_ID = os.getenv('GBOT_GSHEET_ID')
+        self.GBOT_MINIMUM_VOLUME_THRESHOLD = os.getenv('GBOT_MINIMUM_VOLUME_THRESHOLD')
