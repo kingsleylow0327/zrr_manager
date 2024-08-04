@@ -35,3 +35,6 @@ class Config():
         self.TRADE_VOLUME_TABLE = os.getenv('TRADE_VOLUME_TABLE')
         self.SUPPORT_CHANNEL_ID = os.getenv('SUPPORT_CHANNEL_ID')
         self.ON_BOARDING_CHANNEL_ID = os.getenv('ON_BOARDING_CHANNEL_ID').split(",")
+        self.GBOT_GOOGLE_SERVICE_ACCOUNT = os.getenv('GBOT_GOOGLE_SERVICE_ACCOUNT')
+        self.GBOT_GSHEET_ID = os.getenv('GBOT_GSHEET_ID')
+        self.GBOT_MINIMUM_VOLUME_THRESHOLD = os.getenv('GBOT_MINIMUM_VOLUME_THRESHOLD')
