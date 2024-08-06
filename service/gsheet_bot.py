@@ -70,13 +70,19 @@ async def batch_assign_free_vip(dbcon, guild):
         logger.info("No pass user to be updated.")
         return True
 
+    trade_volumes = dbcon.fetch_all_user_trade_volumes()
+    if trade_volumes is None:
+        trade_volumes = []
+
+    trade_volumes_dict = {str(record['discord_id']).strip(): record['volume'] for record in trade_volumes}
+
     update_scripts = []
     insert_scripts = []
     free_vip_discord_ids = []
 
     for _, row in df_pass.iterrows():
         uuid = row['uuid']
-        discord_id = row['discord_id']
+        discord_id = str(row['discord_id']).strip()
         volume = row['volume']
         status = row['status']
 
@@ -87,7 +93,7 @@ async def batch_assign_free_vip(dbcon, guild):
         free_vip_discord_ids.append(discord_id)
 
         # Group all insert/update trade volume table
-        if dbcon.fetch_user_trade_volume_by_discord_id(discord_id):
+        if discord_id in trade_volumes_dict:
             update_scripts.append((discord_id, volume))
         else:
             insert_scripts.append((uuid, discord_id, volume))
@@ -111,13 +117,19 @@ async def batch_revoke_free_vip(dbcon, guild):
         logger.info("No fail user to be updated.")
         return True
 
+    trade_volumes = dbcon.fetch_all_user_trade_volumes()
+    if trade_volumes is None:
+        trade_volumes = []
+
+    trade_volumes_dict = {str(record['discord_id']).strip(): record['volume'] for record in trade_volumes}
+
     update_scripts = []
     insert_scripts = []
     revoke_free_vip_discord_ids = []
 
     for _, row in df_fail.iterrows():
         uuid = row['uuid']
-        discord_id = row['discord_id']
+        discord_id = str(row['discord_id']).strip()
         volume = row['volume']
         status = row['status']
 
@@ -128,7 +140,7 @@ async def batch_revoke_free_vip(dbcon, guild):
         revoke_free_vip_discord_ids.append(discord_id)
 
         # Group all insert/update trade volume table
-        if dbcon.fetch_user_trade_volume_by_discord_id(discord_id):
+        if discord_id in trade_volumes_dict:
             update_scripts.append((discord_id, volume))
         else:
             insert_scripts.append((uuid, discord_id, volume))
@@ -165,46 +177,48 @@ def execute_updates_and_inserts(dbcon, update_scripts, insert_scripts):
 
 
 async def assign_free_vip(guild, free_vip_discord_ids):
+    role = fetch_role_by_guild(guild)
+    if role is None:
+        return
+
     for discord_id in free_vip_discord_ids:
-        try:
-            member = guild.get_member(int(discord_id))
-        except ValueError:
-            logger.info(f"Invalid Discord ID: {discord_id}")
-            return
+        member = fetch_member_info_by_guild_and_discord_id(guild, discord_id)
 
-        if member is None:
-            logger.info(f"Member with Discord ID {discord_id} not found in server.")
-            return
-
-        role = get(guild.roles, name=free_vip_role)
-        if role is None:
-            logger.info(f"Role {free_vip_role} not found in server.")
-            return
-
-        if role in member.roles:
-            logger.info(f"Retained role {role} for {member.name}.")
-        elif role not in member.roles:
+        if role not in member.roles:
             await member.add_roles(role)
             logger.info(f"Assigned role {role} to {member.name}.")
 
 
 async def revoke_free_vip_role(guild, revoke_free_vip_discord_ids):
+    role = fetch_role_by_guild(guild)
+    if role is None:
+        return
+
     for discord_id in revoke_free_vip_discord_ids:
-        try:
-            member = guild.get_member(int(discord_id))
-        except ValueError:
-            logger.info(f"Invalid Discord ID: {discord_id}")
-            return
-
-        if member is None:
-            logger.info(f"Member with Discord ID {discord_id} not found in server.")
-            return
-
-        role = get(guild.roles, name=free_vip_role)
-        if role is None:
-            logger.info(f"Role {free_vip_role} not found in server.")
-            return
+        member = fetch_member_info_by_guild_and_discord_id(guild, discord_id)
 
         if role in member.roles:
             await member.remove_roles(role)
             logger.info(f"Revoke role {free_vip_role} from {member.name}.")
+
+
+def fetch_role_by_guild(guild):
+    role = get(guild.roles, name=free_vip_role)
+    if role is None:
+        logger.info(f"Role {free_vip_role} not found in server.")
+        return None
+    return role
+
+
+def fetch_member_info_by_guild_and_discord_id(guild, discord_id):
+    try:
+        member = guild.get_member(int(discord_id))
+    except ValueError:
+        logger.info(f"Invalid Discord ID: {discord_id}")
+        return None
+
+    if member is None:
+        logger.info(f"Member with Discord ID {discord_id} not found in server.")
+        return None
+
+    return member
