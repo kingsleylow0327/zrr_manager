@@ -264,21 +264,26 @@ class ZonixDB():
         sql = f"""SELECT * FROM {self.config.TRADE_VOLUME_TABLE} 
         WHERE discord_id='{discord_id}'"""
         return self.dbcon_manager(sql)
-    
+
+    def get_trade_volume_by_uuid(self, uuid):
+        sql = f"""SELECT * FROM {self.config.TRADE_VOLUME_TABLE} 
+        WHERE uuid='{uuid}'"""
+        return self.dbcon_manager(sql)
+
     def update_expiry_date_by_discord_id(self, discord_id, expiry_date):
         sql = f"""
         UPDATE {self.config.TRADE_VOLUME_TABLE}
         SET vip_expired_date = '{expiry_date}'
         WHERE discord_id ='{discord_id}'"""
         return self.dbcon_manager(sql)
-    
+
     def insert_user_into_trade_volume_table(self, uuid, discord_id, date):
         sql = f"""INSERT INTO {self.config.TRADE_VOLUME_TABLE}
         (uuid, discord_id, vip_expired_date)
         VALUES
         ('{uuid}', '{discord_id}', '{date}')"""
         return self.dbcon_manager(sql)
-    
+
     def insert_solely_uid(self, uuid):
         sql = f"""INSERT INTO {self.config.TRADE_VOLUME_TABLE}
         (uuid)
@@ -298,7 +303,24 @@ class ZonixDB():
         WHERE uuid ='{uuid}'"""
         return self.dbcon_manager(sql)
 
-    def fetch_user_trade_volume_by_discord_id(self, discord_id):
-        sql = f"""SELECT volume FROM {self.config.TRADE_VOLUME_TABLE} 
-                  WHERE discord_id='{discord_id}'"""
+    def fetch_all_user_trade_volumes(self):
+        sql = f"""SELECT discord_id, volume
+        FROM {self.config.TRADE_VOLUME_TABLE}
+        """
+        return self.dbcon_manager(sql, get_all=True)
+
+    def update_trade_volume_table_by_discord_id(self, update_cases_volume, update_discord_ids):
+        sql = f"""
+        UPDATE {self.config.TRADE_VOLUME_TABLE}
+        SET volume = CASE discord_id
+        {update_cases_volume}
+        END
+        WHERE discord_id IN ({update_discord_ids});
+        """
+        return self.dbcon_manager(sql)
+
+    def insert_trade_volume_table(self, insert_values):
+        sql = f"""INSERT INTO {self.config.TRADE_VOLUME_TABLE}
+        (uuid, discord_id, volume )
+        VALUES {insert_values}"""
         return self.dbcon_manager(sql)

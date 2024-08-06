@@ -4,4 +4,4 @@ venv
 
 # JetBrains
 .idea
-__pycache__
+*.pyc
