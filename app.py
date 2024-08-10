@@ -1,7 +1,6 @@
 # bot.py
 import asyncio
 import discord
-
 import message as ms
 import schedule
 import json
@@ -255,10 +254,10 @@ async def give_vip(interaction: discord.Interaction, uid: str):
         return True
     uid_detail = dbcon.check_uid_exist_from_trade_volume_table(uid)
     if uid_detail:
-        await interaction.response.edit_message(content="This BingX UID already existed", delete_after=1)
+        await interaction.followup.send(content="This BingX UID already existed")
     else:
         dbcon.insert_solely_uid(uid)
-        await interaction.response.edit_message(content=f"New UID {uid} added", delete_after=1)
+        await interaction.followup.send(content=f"New UID {uid} added")
 
 
 async def clear_expired():
