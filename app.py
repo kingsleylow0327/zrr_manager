@@ -49,7 +49,7 @@ def within_valid_period(date_time):
 async def on_ready():
     await bot.tree.sync()
     logger.info("Manager Ready")
-    bot.add_view(RedeemVIPView(dbcon, config.SUPPORT_CHANNEL_ID))
+    bot.add_view(RedeemVIPView(dbcon, config.SUPPORT_CHANNEL_ID, config.SUPPORT_CHANNEL_CH_ID))
     await run_vip()
     await run_scheduler()
 
@@ -291,7 +291,7 @@ async def run_vip():
         description=ms.VIP_DESCRIPTION,
         color=0xE733FF  # Purple color
     )
-    view = RedeemVIPView(dbcon, config.SUPPORT_CHANNEL_ID)
+    view = RedeemVIPView(dbcon, config.SUPPORT_CHANNEL_ID, config.SUPPORT_CHANNEL_CH_ID)
     await channel_en.send(embed=embed, view=view)
 
     channel_ch = bot.get_channel(int(config.ON_BOARDING_CHANNEL_ID[1]))
@@ -300,7 +300,7 @@ async def run_vip():
         description=ms.VIP_DESCRIPTION_CH,
         color=0xE733FF  # Purple color
     )
-    view = RedeemVIPViewCH(dbcon, config.SUPPORT_CHANNEL_ID)
+    view = RedeemVIPViewCH(dbcon, config.SUPPORT_CHANNEL_ID, config.SUPPORT_CHANNEL_CH_ID)
     await channel_ch.send(embed=embed, view=view)
 
 
