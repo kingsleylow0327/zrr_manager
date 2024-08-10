@@ -37,11 +37,13 @@ dbcon = ZonixDB(config)
 
 GUILD_ID = int(config.GUILD_ID)
 
+
 def within_valid_period(date_time):
     current_date = datetime.now()
     if current_date.day in range(1, 8):
         return (date_time.month <= current_date.month and date_time.year <= current_date.year)
     return False
+
 
 @bot.event
 async def on_ready():
@@ -50,6 +52,7 @@ async def on_ready():
     bot.add_view(RedeemVIPView(dbcon, config.SUPPORT_CHANNEL_ID))
     await run_vip()
     await run_scheduler()
+
 
 # License command
 @bot.event
@@ -74,6 +77,7 @@ async def on_message(message):
             logger.error(e)
     await bot.process_commands(message)
 
+
 @bot.tree.command(name="clearex", description="AutoTrade Manager Command")
 async def clearex(interaction: discord.Interaction):
     if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
@@ -87,6 +91,7 @@ async def clearex(interaction: discord.Interaction):
     await clear_expired()
     return True
 
+
 @bot.tree.command(name="activate", description="Activate User")
 async def activate(interaction: discord.Interaction):
     if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
@@ -96,6 +101,7 @@ async def activate(interaction: discord.Interaction):
         return
     await interaction.response.send_modal(ActivateModal(dbcon))
 
+
 @bot.tree.command(name="extend", description="Extend Users Expiry")
 async def extend(interaction: discord.Interaction):
     if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
@@ -104,6 +110,7 @@ async def extend(interaction: discord.Interaction):
         await interaction.response.send_message("This function only limit to Admin", ephemeral=True)
         return
     await interaction.response.send_modal(ExtendModal(dbcon))
+
 
 @bot.tree.command(name="atm", description="AutoTrade Manager")
 async def atm(interaction: discord.Interaction):
@@ -120,6 +127,7 @@ async def atm(interaction: discord.Interaction):
     embeded_status_list = status_view.compute()
     await interaction.followup.send(content="Welcome to AutoTrade Manager", embeds=embeded_status_list, view=MasterView(dbcon, user_account_list, license_list), ephemeral=True)
 
+
 @bot.tree.command(name="api", description="API setup")
 async def register(interaction: discord.Interaction, account_name: str, key: str, secret: str):
     if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
@@ -131,6 +139,7 @@ async def register(interaction: discord.Interaction, account_name: str, key: str
         return
     dbcon.set_player_api(player_id, key, secret, account_name)
     await interaction.followup.send(content="API Set", ephemeral=True)
+
 
 @bot.tree.command(name="redeemvip", description="Redeem Vip")
 async def vip(interaction: discord.Interaction):
@@ -145,8 +154,9 @@ async def vip(interaction: discord.Interaction):
         title=ms.VIP_TITTLE,
         description=ms.VIP_DESCRIPTION,
         color=0xE733FF  # Purple color
-    )   
+    )
     await interaction.followup.send(content="", embed=embed, view=RedeemVIPView(dbcon, support_channel_id))
+
 
 @bot.tree.command(name="status", description="Check Status")
 async def status(interaction: discord.Interaction, id:str):
@@ -165,14 +175,14 @@ async def status(interaction: discord.Interaction, id:str):
     if not trader_api_list:
         await interaction.followup.send(ms.NON_REGISTERED, ephemeral=True)
         return
-    
+
     embed_list = []
     count = 1
     for trader_api in trader_api_list:
         embed = discord.Embed(title=f"# Your AutoTrade Account {count} Status", description="")
         bingx = BINGX(trader_api.get("api_key"), trader_api.get("api_secret"))
         response = bingx.get_wallet()
-        
+
         uid = "❌"
         msg_api = "❌"
         msg_wallet_min = "❌"
@@ -208,8 +218,9 @@ async def status(interaction: discord.Interaction, id:str):
         embed.add_field(name=f"Expiry Date: `{expiry}`", value="", inline=False)
         embed_list.append(embed)
         count += 1
-    
+
     await interaction.followup.send(embeds=embed_list, ephemeral=True)
+
 
 @bot.tree.command(name="givevip", description="Give VIP")
 async def give_vip(interaction: discord.Interaction, id:str, day:str):
@@ -232,23 +243,23 @@ async def give_vip(interaction: discord.Interaction, id:str, day:str):
         member = guild.get_member(int(id))
         role = discord.utils.get(interaction.guild.roles, name="FREE_VIP")
         await member.add_roles(role)
-        await interaction.followup.send(content=f"User {id} have bocome VIP until {new_exipry_date}", ephemeral=True)
+        await interaction.followup.send(content=f"User {id} have become VIP until {new_exipry_date}", ephemeral=True)
+
 
 @bot.tree.command(name="adduid", description="Add UID")
-async def give_vip(interaction: discord.Interaction, uid:str):
+async def give_vip(interaction: discord.Interaction, uid: str):
     await interaction.response.defer(ephemeral=True)
-    if str(interaction.channel.id) not in config.ON_BOARDING_CHANNEL_ID:
-        return True
     player_id = str(interaction.user.id)
     if not dbcon.is_vip_admin(player_id):
         return True
     uid_detail = dbcon.check_uid_exist_from_trade_volume_table(uid)
     if uid_detail:
-        await interaction.followup.send(content="This BingX UID already existed", ephemeral=True)
+        await interaction.followup.send(content="This BingX UID already existed")
     else:
         dbcon.insert_solely_uid(uid)
-        await interaction.followup.send(content=f"New UID {uid} added", ephemeral=True)
-    
+        await interaction.followup.send(content=f"New UID {uid} added")
+
+
 async def clear_expired():
     logger.info("Cron Job:Clearing Start")
     expired_player_list = dbcon.get_expired_user()
@@ -272,13 +283,14 @@ async def clear_expired():
 # Main Program Run here
 schedule.every().day.at('00:00').do(lambda: asyncio.create_task(clear_expired()))
 
+
 async def run_vip():
     channel_en = bot.get_channel(int(config.ON_BOARDING_CHANNEL_ID[0]))
     embed = discord.Embed(
         title=ms.VIP_TITTLE,
         description=ms.VIP_DESCRIPTION,
         color=0xE733FF  # Purple color
-    )     
+    )
     view = RedeemVIPView(dbcon, config.SUPPORT_CHANNEL_ID)
     await channel_en.send(embed=embed, view=view)
 
@@ -287,9 +299,10 @@ async def run_vip():
         title=ms.VIP_TITTLE_CH,
         description=ms.VIP_DESCRIPTION_CH,
         color=0xE733FF  # Purple color
-    )     
+    )
     view = RedeemVIPViewCH(dbcon, config.SUPPORT_CHANNEL_ID)
     await channel_ch.send(embed=embed, view=view)
+
 
 async def run_scheduler():
     while True:
