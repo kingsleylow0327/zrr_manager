@@ -125,7 +125,7 @@ VIP_DESCRIPTION = """
 
 By claiming this limited-time VIP access, you fully understand the inherent risks of cryptocurrency trading and acknowledge that past performance is not indicative of future results. Engage wisely and take advantage of expert insights to enhance your trading strategies.
 
-If you trade volume is > 300K monthly, then you will entitled @VIP Access. 
+If you trade volume is > 300K monthly, then you will entitled <@&{}> Access. 
 Trade Volume will be counted every month, we will notify you when your VIP access is expiring.
 
 Please contact <#{}> or <#{}> if you think this is a mistake.
@@ -138,7 +138,7 @@ VIP_DESCRIPTION_CH = """
 
 通过领取此限时 VIP 体验，您完全理解加密货币交易的固有风险，并承认过去的表现并不代表未来的结果。请明智地参与，并利用交易员的见解来增强您的交易策略。
 
-如果您的月交易量超过30万, 那么您将获得VIP访问权限。
+如果您的月交易量超过300k, 那么您将获得<@&{}>访问权限。
 交易量将每月统计, 我们会在您的VIP访问权限即将到期时通知您。
 
 如果您认为这是一个错误, 请联系 <#{}> 或 <#{}>

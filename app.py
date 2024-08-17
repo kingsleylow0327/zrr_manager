@@ -152,7 +152,7 @@ async def vip(interaction: discord.Interaction):
     support_channel_id = config.SUPPORT_CHANNEL_ID
     embed = discord.Embed(
         title=ms.VIP_TITTLE,
-        description=ms.VIP_DESCRIPTION.format(config.SUPPORT_CHANNEL_ID, config.SUPPORT_CHANNEL_CH_ID),
+        description=ms.VIP_DESCRIPTION.format(config.VIP_ROLE_ID, config.SUPPORT_CHANNEL_ID, config.SUPPORT_CHANNEL_CH_ID),
         color=0xE733FF  # Purple color
     )
     await interaction.followup.send(content="", embed=embed, view=RedeemVIPView(dbcon, support_channel_id))
@@ -288,7 +288,7 @@ async def run_vip():
     channel_en = bot.get_channel(int(config.ON_BOARDING_CHANNEL_ID[0]))
     embed = discord.Embed(
         title=ms.VIP_TITTLE,
-        description=ms.VIP_DESCRIPTION.format(config.SUPPORT_CHANNEL_ID, config.SUPPORT_CHANNEL_CH_ID),
+        description=ms.VIP_DESCRIPTION.format(config.VIP_ROLE_ID, config.SUPPORT_CHANNEL_ID, config.SUPPORT_CHANNEL_CH_ID),
         color=0xE733FF  # Purple color
     )
     view = RedeemVIPView(dbcon, config.SUPPORT_CHANNEL_ID, config.SUPPORT_CHANNEL_CH_ID)
@@ -297,7 +297,7 @@ async def run_vip():
     channel_ch = bot.get_channel(int(config.ON_BOARDING_CHANNEL_ID[1]))
     embed = discord.Embed(
         title=ms.VIP_TITTLE_CH,
-        description=ms.VIP_DESCRIPTION_CH.format(config.SUPPORT_CHANNEL_ID, config.SUPPORT_CHANNEL_CH_ID),
+        description=ms.VIP_DESCRIPTION_CH.format(config.VIP_ROLE_ID, config.SUPPORT_CHANNEL_ID, config.SUPPORT_CHANNEL_CH_ID),
         color=0xE733FF  # Purple color
     )
     view = RedeemVIPViewCH(dbcon, config.SUPPORT_CHANNEL_ID, config.SUPPORT_CHANNEL_CH_ID)

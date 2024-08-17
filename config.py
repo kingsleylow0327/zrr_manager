@@ -36,3 +36,4 @@ class Config():
         self.SUPPORT_CHANNEL_ID = os.getenv('SUPPORT_CHANNEL_ID')
         self.SUPPORT_CHANNEL_CH_ID = os.getenv('SUPPORT_CHANNEL_CH_ID')
         self.ON_BOARDING_CHANNEL_ID = os.getenv('ON_BOARDING_CHANNEL_ID').split(",")
+        self.VIP_ROLE_ID = os.getenv('VIP_ROLE_ID')
