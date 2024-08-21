@@ -242,26 +242,30 @@ class ZonixDB():
 
     # TRADE_VOLUME_TABLE
     def check_uid_exist_from_trade_volume_table(self, uid):
-        sql = f"""SELECT id FROM {self.config.TRADE_VOLUME_TABLE} 
+        sql = f"""
+        SELECT id FROM {self.config.TRADE_VOLUME_TABLE} 
         WHERE uuid='{uid}'"""
         ret = self.dbcon_manager(sql, get_all=True)
         return ret and len(ret) != 0
     
     def check_discord_id_exist_from_trade_volume_table(self, discord_id):
-        sql = f"""SELECT id FROM {self.config.TRADE_VOLUME_TABLE} 
+        sql = f"""
+        SELECT id FROM {self.config.TRADE_VOLUME_TABLE} 
         WHERE discord_id='{discord_id}'"""
         ret = self.dbcon_manager(sql, get_all=True)
         return ret and len(ret) != 0
     
     def check_uuid_exist_from_trade_volume_table(self, uuid):
-        sql = f"""SELECT uuid FROM {self.config.TRADE_VOLUME_TABLE} 
+        sql = f"""
+        SELECT uuid FROM {self.config.TRADE_VOLUME_TABLE} 
         WHERE uuid='{uuid}'
         AND discord_id is NULL"""
         ret = self.dbcon_manager(sql, get_all=True)
         return ret and len(ret) != 0
 
     def get_trade_volume_by_id(self, discord_id):
-        sql = f"""SELECT * FROM {self.config.TRADE_VOLUME_TABLE} 
+        sql = f"""
+        SELECT * FROM {self.config.TRADE_VOLUME_TABLE} 
         WHERE discord_id='{discord_id}'"""
         return self.dbcon_manager(sql)
     
@@ -273,32 +277,56 @@ class ZonixDB():
         return self.dbcon_manager(sql)
     
     def insert_user_into_trade_volume_table(self, uuid, discord_id, date):
-        sql = f"""INSERT INTO {self.config.TRADE_VOLUME_TABLE}
+        sql = f"""
+        INSERT INTO {self.config.TRADE_VOLUME_TABLE}
         (uuid, discord_id, vip_expired_date)
         VALUES
         ('{uuid}', '{discord_id}', '{date}')"""
         return self.dbcon_manager(sql)
     
     def insert_solely_uid(self, uuid):
-        sql = f"""INSERT INTO {self.config.TRADE_VOLUME_TABLE}
+        sql = f"""
+        INSERT INTO {self.config.TRADE_VOLUME_TABLE}
         (uuid)
         VALUES
         ('{uuid}')"""
         return self.dbcon_manager(sql)
 
     def update_user_from_trade_volume_table(self, uuid, discord_id):
-        sql = f"""UPDATE {self.config.TRADE_VOLUME_TABLE}
+        sql = f"""
+        UPDATE {self.config.TRADE_VOLUME_TABLE}
         SET discord_id = '{discord_id}'
         WHERE uuid ='{uuid}'"""
         return self.dbcon_manager(sql)
     
     def update_user_from_trade_volume_table_with_date(self, uuid, discord_id, date):
-        sql = f"""UPDATE {self.config.TRADE_VOLUME_TABLE}
+        sql = f"""
+        UPDATE {self.config.TRADE_VOLUME_TABLE}
         SET discord_id = '{discord_id}', vip_expired_date = '{date}'
         WHERE uuid ='{uuid}'"""
         return self.dbcon_manager(sql)
 
     def fetch_user_trade_volume_by_discord_id(self, discord_id):
-        sql = f"""SELECT volume FROM {self.config.TRADE_VOLUME_TABLE} 
-                  WHERE discord_id='{discord_id}'"""
+        sql = f"""
+        SELECT volume FROM {self.config.TRADE_VOLUME_TABLE} 
+        WHERE discord_id='{discord_id}'"""
         return self.dbcon_manager(sql)
+
+    def fetch_expired_vips(self):
+        sql = f"""
+        SELECT discord_id
+        FROM {self.config.TRADE_VOLUME_TABLE}
+        WHERE DATE(vip_expired_date) = CURDATE()
+        """
+        result = self.dbcon_manager(sql, get_all=True)
+        return [row['discord_id'] for row in result] if result else []
+
+    def fetch_seven_days_expiry_vips(self):
+        sql = f"""
+        SELECT discord_id
+        FROM {self.config.TRADE_VOLUME_TABLE}
+        WHERE vip_expired_date = DATE_ADD(CURDATE(), INTERVAL 7 DAY)
+        """
+        result = self.dbcon_manager(sql, get_all=True)
+        return [row['discord_id'] for row in result] if result else []
+
