@@ -312,21 +312,19 @@ class ZonixDB():
         WHERE discord_id='{discord_id}'"""
         return self.dbcon_manager(sql)
 
-    def fetch_expired_vips(self):
-        sql = f"""
-        SELECT discord_id
-        FROM {self.config.TRADE_VOLUME_TABLE}
-        WHERE DATE(vip_expired_date) = CURDATE()
-        """
+    def fetch_vips_by_expiry(self, days=0):
+        if days == 0:
+            sql = f"""
+            SELECT discord_id
+            FROM {self.config.TRADE_VOLUME_TABLE}
+            WHERE DATE(vip_expired_date) = CURDATE()
+            """
+        else:
+            sql = f"""
+            SELECT discord_id
+            FROM {self.config.TRADE_VOLUME_TABLE}
+            WHERE DATE(vip_expired_date) = DATE_ADD(CURDATE(), INTERVAL {days} DAY)
+            """
+
         result = self.dbcon_manager(sql, get_all=True)
         return [row['discord_id'] for row in result] if result else []
-
-    def fetch_seven_days_expiry_vips(self):
-        sql = f"""
-        SELECT discord_id
-        FROM {self.config.TRADE_VOLUME_TABLE}
-        WHERE vip_expired_date = DATE_ADD(CURDATE(), INTERVAL 7 DAY)
-        """
-        result = self.dbcon_manager(sql, get_all=True)
-        return [row['discord_id'] for row in result] if result else []
-
