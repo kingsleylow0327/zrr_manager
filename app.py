@@ -280,9 +280,40 @@ async def clear_expired():
     dbcon.unfollow_trader(player_name_list)
     logger.info("Cron Job:Clearing Expired User Done")
 
+
+async def notify_expiring_expired_vips():
+    logger.info("Cron Job: Notifying expiry and expiry soon VIPs")
+
+    guild = bot.get_guild(GUILD_ID)
+
+    # Notify users whose VIP has expired today
+    expired_user_ids = dbcon.fetch_vips_by_expiry()
+
+    for expired_user_id in expired_user_ids:
+        member = guild.get_member(int(expired_user_id))
+        if member:
+            try:
+                await member.send("Your VIP experience has expired.")
+                logger.info(f"Sent VIP expired notice to {expired_user_id}")
+            except Exception as e:
+                logger.error(f"Failed to send expired message to {expired_user_id}: {e}")
+
+    # Notify users whose VIP is expiring in 7 days
+    expiring_user_ids = dbcon.fetch_vips_by_expiry(days=7)
+
+    for expiring_user_id in expiring_user_ids:
+        member = guild.get_member(int(expiring_user_id))
+        if member:
+            try:
+                await member.send("Your VIP experience will expire in 7 days.")
+                logger.info(f"Sent VIP expiration notice to {expiring_user_id}")
+            except Exception as e:
+                logger.error(f"Failed to send expiration message to {expiring_user_id}: {e}")
+
+
 # Main Program Run here
 schedule.every().day.at('00:00').do(lambda: asyncio.create_task(clear_expired()))
-
+schedule.every().day.at('00:00').do(lambda: asyncio.create_task(notify_expiring_expired_vips()))
 
 async def run_vip():
     channel_en = bot.get_channel(int(config.ON_BOARDING_CHANNEL_ID[0]))
