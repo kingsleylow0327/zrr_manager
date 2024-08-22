@@ -50,8 +50,7 @@ async def on_ready():
     await bot.tree.sync()
     logger.info("Manager Ready")
     bot.add_view(RedeemVIPView(dbcon, config.SUPPORT_CHANNEL_ID, config.SUPPORT_CHANNEL_CH_ID))
-    # await run_vip()
-    await notify_expiring_expired_vips()
+    await run_vip()
     await run_scheduler()
 
 
@@ -288,16 +287,16 @@ async def notify_expiring_expired_vips():
     guild = bot.get_guild(GUILD_ID)
 
     # Notify users whose VIP has expired today
-    # expired_user_ids = dbcon.fetch_vips_by_expiry()
+    expired_user_ids = dbcon.fetch_vips_by_expiry()
 
-    # for expired_user_id in expired_user_ids:
-    #     member = guild.get_member(int(expired_user_id))
-    #     if member:
-    #         try:
-    #             await member.send("Your VIP experience has expired.")
-    #             logger.info(f"Sent VIP expired notice to {expired_user_id}")
-    #         except Exception as e:
-    #             logger.error(f"Failed to send expired message to {expired_user_id}: {e}")
+    for expired_user_id in expired_user_ids:
+        member = guild.get_member(int(expired_user_id))
+        if member:
+            try:
+                await member.send("Your VIP experience has expired.")
+                logger.info(f"Sent VIP expired notice to {expired_user_id}")
+            except Exception as e:
+                logger.error(f"Failed to send expired message to {expired_user_id}: {e}")
 
     # Notify users whose VIP is expiring in 7 days
     expiring_user_ids = dbcon.fetch_vips_by_expiry(days=7)
