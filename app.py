@@ -299,13 +299,14 @@ async def notify_expiring_expired_vips():
                 logger.error(f"Failed to send expired message to {expired_user_id}: {e}")
 
     # Notify users whose VIP is expiring in 7 days
-    expiring_user_ids = dbcon.fetch_vips_by_expiry(days=7)
+    notification_day = 3
+    expiring_user_ids = dbcon.fetch_vips_by_expiry(days=notification_day)
 
     for expiring_user_id in expiring_user_ids:
         member = guild.get_member(int(expiring_user_id))
         if member:
             try:
-                await member.send("Your VIP experience will expire in 7 days.")
+                await member.send(f"Your VIP experience will expire in {notification_day} days.")
                 logger.info(f"Sent VIP expiration notice to {expiring_user_id}")
             except Exception as e:
                 logger.error(f"Failed to send expiration message to {expiring_user_id}: {e}")
