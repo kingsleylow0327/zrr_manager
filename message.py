@@ -10,6 +10,11 @@ You have not registered any account with us
 Please Contact ZRR Admin
 """
 
+NO_ALGO_STRATEGY="""
+No algo strategies at this moment
+Please be patient
+"""
+
 SELECT_TRADER_MESSAGE="""
 ***❗❗❗NOTE❗❗❗***:
 You have selected ***{}*** as your next trader
@@ -142,4 +147,12 @@ VIP_DESCRIPTION_CH = """
 交易量将每月统计, 我们会在您的VIP访问权限即将到期时通知您。
 
 如果您认为这是一个错误, 请联系 <#{}> 或 <#{}>
+"""
+
+ATM_TITLE = """
+Welcome to AutoTrade & AlgoTrade Manager
+"""
+
+ATM_DESCRIPTION = """
+Description
 """

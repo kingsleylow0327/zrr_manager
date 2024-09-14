@@ -328,3 +328,57 @@ class ZonixDB():
 
         result = self.dbcon_manager(sql, get_all=True)
         return [row['discord_id'] for row in result] if result else []
+
+    # strategies
+    def set_follower_strategy(self, strategy_list, follower_id):
+        sql = """
+        INSERT INTO {} (player_id, follower_id, platform, type) 
+        VALUES ('{}', '{}', '{}', {});
+        """.format(
+            self.config.FOLLOWER_TABLE, strategy_list, follower_id, 'bingx', 1
+        )
+
+        return self.dbcon_manager(sql)
+
+    def update_follower_strategy(self, strategy_list, follower_id):
+        sql = f"""
+            UPDATE {self.config.FOLLOWER_TABLE}
+            SET player_id = '{strategy_list}', following_time = NOW()
+            WHERE 
+            follower_id = '{follower_id}'
+            AND platform = 'bingx'
+            AND type = 1
+            """
+
+        return self.dbcon_manager(sql, get_all=True)
+
+    def clear_follower_strategy(self, follower_id):
+        sql = f"""
+        UPDATE {self.config.FOLLOWER_TABLE}
+        SET player_id = ''
+        WHERE 
+        follower_id = '{follower_id}'
+        AND platform = 'bingx'
+        AND type = 1
+        """
+
+        return self.dbcon_manager(sql)
+
+    def get_all_active_strategies(self):
+        sql = f"""
+        SELECT id, name FROM {self.config.STRATEGIES_TABLE}
+        WHERE 
+        deleted_at IS NULL
+        """
+
+        return self.dbcon_manager(sql, get_all=True)
+
+    def get_active_strategy_where(self, attribute, data):
+        sql = f"""
+        SELECT * FROM {self.config.STRATEGIES_TABLE}
+        WHERE 
+        deleted_at is NULL
+        AND {attribute} = {data}
+        """
+
+        return self.dbcon_manager(sql)

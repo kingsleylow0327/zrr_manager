@@ -13,6 +13,7 @@ from modal.extend_modal import ExtendModal
 from service.new_account import create_new_account
 from service.resubscribe import resubscribe
 from service.cancel_subscribe import cancel_subscribe
+from view.atm_view import AutoTradeManagerView
 from view.master_view import MasterView
 from view.status_view import StatusView
 from view.redeem_vip_view import RedeemVIPView, RedeemVIPViewCH
@@ -51,6 +52,7 @@ async def on_ready():
     logger.info("Manager Ready")
     bot.add_view(RedeemVIPView(dbcon, config.SUPPORT_CHANNEL_ID, config.SUPPORT_CHANNEL_CH_ID))
     await run_vip()
+    await run_atm()
     await run_scheduler()
 
 
@@ -334,6 +336,17 @@ async def run_vip():
     )
     view = RedeemVIPViewCH(dbcon, config.SUPPORT_CHANNEL_ID, config.SUPPORT_CHANNEL_CH_ID)
     await channel_ch.send(embed=embed, view=view)
+
+
+async def run_atm():
+    channel_en = bot.get_channel(int(config.COMMAND_CHANNEL_ID))
+    embed = discord.Embed(
+        title=ms.ATM_TITLE,
+        description=ms.ATM_DESCRIPTION.format(config.VIP_ROLE_ID, config.SUPPORT_CHANNEL_ID),
+        color=0xE733FF  # Purple color
+    )
+    view = AutoTradeManagerView(dbcon)
+    await channel_en.send(embed=embed, view=view)
 
 
 async def run_scheduler():
