@@ -347,7 +347,7 @@ class ZonixDB():
             WHERE 
             follower_id = '{follower_id}'
             AND platform = 'bingx'
-            AND type = 1
+            AND type = 'strategy'
             """
 
         return self.dbcon_manager(sql, get_all=True)
@@ -359,7 +359,7 @@ class ZonixDB():
         WHERE 
         follower_id = '{follower_id}'
         AND platform = 'bingx'
-        AND type = 1
+        AND type = 'strategy'
         """
 
         return self.dbcon_manager(sql)
