@@ -13,8 +13,7 @@ from modal.extend_modal import ExtendModal
 from service.new_account import create_new_account
 from service.resubscribe import resubscribe
 from service.cancel_subscribe import cancel_subscribe
-from view.master_view import MasterView
-from view.status_view import StatusView
+from view.atm_view import AutoTradeManagerView
 from view.redeem_vip_view import RedeemVIPView, RedeemVIPViewCH
 from config import Config
 from sql_con import ZonixDB
@@ -51,6 +50,7 @@ async def on_ready():
     logger.info("Manager Ready")
     bot.add_view(RedeemVIPView(dbcon, config.SUPPORT_CHANNEL_ID, config.SUPPORT_CHANNEL_CH_ID))
     await run_vip()
+    await run_atm()
     await run_scheduler()
 
 
@@ -110,22 +110,6 @@ async def extend(interaction: discord.Interaction):
         await interaction.response.send_message("This function only limit to Admin", ephemeral=True)
         return
     await interaction.response.send_modal(ExtendModal(dbcon))
-
-
-@bot.tree.command(name="atm", description="AutoTrade Manager")
-async def atm(interaction: discord.Interaction):
-    await interaction.response.defer(ephemeral=True)
-    if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
-        return True
-    player_id = str(interaction.user.id)
-    user_account_list = dbcon.get_all_player_status(player_id)
-    license_list = dbcon.get_license(player_id)
-    if not user_account_list and not license_list:
-        await interaction.followup.send(content=ms.NO_ACCOUNT, ephemeral=True)
-        return
-    status_view = StatusView(dbcon, interaction, user_account_list, player_id)
-    embeded_status_list = status_view.compute()
-    await interaction.followup.send(content="Welcome to AutoTrade Manager", embeds=embeded_status_list, view=MasterView(dbcon, user_account_list, license_list), ephemeral=True)
 
 
 @bot.tree.command(name="api", description="API setup")
@@ -334,6 +318,17 @@ async def run_vip():
     )
     view = RedeemVIPViewCH(dbcon, config.SUPPORT_CHANNEL_ID, config.SUPPORT_CHANNEL_CH_ID)
     await channel_ch.send(embed=embed, view=view)
+
+
+async def run_atm():
+    channel_en = bot.get_channel(int(config.COMMAND_CHANNEL_ID))
+    embed = discord.Embed(
+        title=ms.ATM_TITLE,
+        description=ms.ATM_DESCRIPTION.format(config.VIP_ROLE_ID, config.SUPPORT_CHANNEL_ID),
+        color=0xE733FF  # Purple color
+    )
+    view = AutoTradeManagerView(dbcon)
+    await channel_en.send(embed=embed, view=view)
 
 
 async def run_scheduler():

@@ -130,7 +130,7 @@ class ZonixDB():
         """
         return self.dbcon_manager(sql, get_all=True)
     
-    def get_all_player_status(self, player_id):
+    def get_all_player_status(self, player_id, product="atm"):
         sql = f"""SELECT a.player_id, a.api_key, a.api_secret, ifnull(t.trader_name, f.player_id) as trader_name, f.player_id as trader_discord_id, f.following_time, f.damage_cost, a.expiry_date
         FROM {self.config.API_TABLE} as a
         LEFT JOIN {self.config.FOLLOWER_TABLE} as f
@@ -138,7 +138,9 @@ class ZonixDB():
         LEFT JOIN {self.config.TRADER_CHANNEL_TABLE} as t
         ON f.player_id = t.trader_id
         WHERE
-        a.discord_id = '{player_id}';
+        a.discord_id = '{player_id}'
+        and
+        f.type = '{product}';
         """
         return self.dbcon_manager(sql, get_all=True)
     
@@ -328,3 +330,57 @@ class ZonixDB():
 
         result = self.dbcon_manager(sql, get_all=True)
         return [row['discord_id'] for row in result] if result else []
+
+    # strategies
+    def set_follower_strategy(self, strategy_list, follower_id):
+        sql = """
+        INSERT INTO {} (player_id, follower_id, platform, type) 
+        VALUES ('{}', '{}', '{}', {});
+        """.format(
+            self.config.FOLLOWER_TABLE, strategy_list, follower_id, 'bingx', 1
+        )
+
+        return self.dbcon_manager(sql)
+
+    def update_follower_strategy(self, strategy_list, follower_id):
+        sql = f"""
+            UPDATE {self.config.FOLLOWER_TABLE}
+            SET player_id = '{strategy_list}', following_time = NOW()
+            WHERE 
+            follower_id = '{follower_id}'
+            AND platform = 'bingx'
+            AND type = 'strategy'
+            """
+
+        return self.dbcon_manager(sql, get_all=True)
+
+    def clear_follower_strategy(self, follower_id):
+        sql = f"""
+        UPDATE {self.config.FOLLOWER_TABLE}
+        SET player_id = ''
+        WHERE 
+        follower_id = '{follower_id}'
+        AND platform = 'bingx'
+        AND type = 'strategy'
+        """
+
+        return self.dbcon_manager(sql)
+
+    def get_all_active_strategies(self):
+        sql = f"""
+        SELECT id, name FROM {self.config.STRATEGIES_TABLE}
+        WHERE 
+        deleted_at IS NULL
+        """
+
+        return self.dbcon_manager(sql, get_all=True)
+
+    def get_active_strategy_where(self, attribute, data):
+        sql = f"""
+        SELECT * FROM {self.config.STRATEGIES_TABLE}
+        WHERE 
+        deleted_at is NULL
+        AND {attribute} = {data}
+        """
+
+        return self.dbcon_manager(sql)
