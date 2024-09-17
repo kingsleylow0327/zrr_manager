@@ -154,5 +154,4 @@ Welcome to AutoTrade & AlgoTrade Manager
 """
 
 ATM_DESCRIPTION = """
-Description
 """
