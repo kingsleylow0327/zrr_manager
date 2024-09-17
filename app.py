@@ -14,8 +14,6 @@ from service.new_account import create_new_account
 from service.resubscribe import resubscribe
 from service.cancel_subscribe import cancel_subscribe
 from view.atm_view import AutoTradeManagerView
-from view.master_view import MasterView
-from view.status_view import StatusView
 from view.redeem_vip_view import RedeemVIPView, RedeemVIPViewCH
 from config import Config
 from sql_con import ZonixDB
@@ -112,22 +110,6 @@ async def extend(interaction: discord.Interaction):
         await interaction.response.send_message("This function only limit to Admin", ephemeral=True)
         return
     await interaction.response.send_modal(ExtendModal(dbcon))
-
-
-@bot.tree.command(name="atm", description="AutoTrade Manager")
-async def atm(interaction: discord.Interaction):
-    await interaction.response.defer(ephemeral=True)
-    if interaction.channel.id != int(config.COMMAND_CHANNEL_ID):
-        return True
-    player_id = str(interaction.user.id)
-    user_account_list = dbcon.get_all_player_status(player_id)
-    license_list = dbcon.get_license(player_id)
-    if not user_account_list and not license_list:
-        await interaction.followup.send(content=ms.NO_ACCOUNT, ephemeral=True)
-        return
-    status_view = StatusView(dbcon, interaction, user_account_list, player_id)
-    embeded_status_list = status_view.compute()
-    await interaction.followup.send(content="Welcome to AutoTrade Manager", embeds=embeded_status_list, view=MasterView(dbcon, user_account_list, license_list), ephemeral=True)
 
 
 @bot.tree.command(name="api", description="API setup")
