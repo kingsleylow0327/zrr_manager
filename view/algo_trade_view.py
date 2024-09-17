@@ -2,8 +2,6 @@ import discord
 import message as ms
 from view.account_select_view import AccountSelectView
 
-from view.algo_strategy_view import AlgoStrategyView
-
 class AlgoTradeView(discord.ui.View):
 
     def __init__(self, dbcon, user_account_list):
@@ -20,8 +18,7 @@ class AlgoTradeView(discord.ui.View):
         if not strategies:
             await interaction.followup.send(content=ms.NO_ALGO_STRATEGY, ephemeral=True)
             return
-
-        await interaction.response.send_message(content="Select your algo strategies:", view=AlgoStrategyView(self.dbcon, strategies), ephemeral=True)
+        await interaction.response.edit_message(content=f"Account Selection", view=AccountSelectView(self.dbcon, self.user_account_list, "strategy", strategies=strategies))
 
     @discord.ui.button(label="Set/Reset API", style=discord.ButtonStyle.red)
     async def set_reset_api_button(self, interaction: discord.Interaction, button: discord.ui.Button):

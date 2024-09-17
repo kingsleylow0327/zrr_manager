@@ -7,18 +7,20 @@ from modal.api_modal import APIModal
 from view.trader_view import TraderSelectView
 from view.damage_view import DamageSelectView
 from view.license_select_view import LicenseSelectView
+from view.algo_strategy_view import AlgoStrategyView
 
 class AccountSelectView(discord.ui.View):
-    def __init__(self, dbcon, user_account_list, stage, license_list=None):
+    def __init__(self, dbcon, user_account_list, stage, license_list=None, strategies=None):
         super().__init__()
-        self.add_item(UserDropDown(dbcon, user_account_list, stage, license_list))
+        self.add_item(UserDropDown(dbcon, user_account_list, stage, license_list, strategies))
 
 class UserDropDown(discord.ui.Select):
-    def __init__(self, dbcon, user_account_list, stage, license_list=None):
+    def __init__(self, dbcon, user_account_list, stage, license_list=None, strategies=None):
         self.dbcon = dbcon
         self.stage = stage
         self.player_dict = {}
         self.license_list = license_list
+        self.strategies = strategies
 
         account_options = []
         for account in user_account_list:
@@ -48,6 +50,11 @@ class UserDropDown(discord.ui.Select):
                                                                           selected_account,
                                                                           player,
                                                                           following_trader_id))
+        elif self.stage == "strategy":
+            await interaction.response.edit_message(content="Select your algo strategies:",
+                                                    embed=None,
+                                                    view=AlgoStrategyView(self.dbcon, self.strategies, selected_account))
+
         elif self.stage == "damage":
             await interaction.response.edit_message(content=ms.SELECTED_ACCOUNT.format(selected_account),
                                                     embed=None,

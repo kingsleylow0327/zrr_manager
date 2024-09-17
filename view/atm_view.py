@@ -33,7 +33,7 @@ class AutoTradeManagerView(discord.ui.View):
         await interaction.response.defer(ephemeral=True)
 
         player_id = str(interaction.user.id)
-        user_account_list = self.dbcon.get_all_player_status(player_id)
+        user_account_list = self.dbcon.get_all_player_status(player_id, "strategy")
 
         if not user_account_list:
             await interaction.followup.send(content=ms.NO_ACCOUNT, ephemeral=True)
