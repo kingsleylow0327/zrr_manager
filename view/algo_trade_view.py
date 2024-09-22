@@ -25,6 +25,13 @@ class AlgoTradeView(discord.ui.View):
 
         await interaction.response.edit_message(content=f"Account Selection", view=AccountSelectView(self.dbcon, self.user_account_list, "api"))
 
+    @discord.ui.button(label="Set Damage", style=discord.ButtonStyle.blurple)
+    async def damage_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.edit_message(content=f"Account Selection",
+                                                view=AccountSelectView(self.dbcon,
+                                                                       self.user_account_list,
+                                                                       "damage"))
+        
     @discord.ui.button(label="Done!", style=discord.ButtonStyle.gray)
     async def done_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.edit_message(view=None, delete_after=1)

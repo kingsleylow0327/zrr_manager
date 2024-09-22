@@ -24,7 +24,7 @@ class AutoTradeManagerView(discord.ui.View):
             await interaction.followup.send(content=ms.NO_ACCOUNT, ephemeral=True)
             return
 
-        status_view = StatusView(self.dbcon, interaction, user_account_list, player_id)
+        status_view = StatusView(self.dbcon, interaction, user_account_list, player_id, "atm")
         embedded_status_list = status_view.compute()
         await interaction.followup.send(content="Welcome to AutoTrade Manager", embeds=embedded_status_list, view=MasterView(self.dbcon, user_account_list, license_list), ephemeral=True)
     
@@ -38,6 +38,8 @@ class AutoTradeManagerView(discord.ui.View):
         if not user_account_list:
             await interaction.followup.send(content=ms.NO_ACCOUNT, ephemeral=True)
             return
-
-        await interaction.followup.send(content="Welcome to AlgoTrade Manager",  view=AlgoTradeView(self.dbcon, user_account_list), ephemeral=True)
+        
+        status_view = StatusView(self.dbcon, interaction, user_account_list, player_id, "strategy")
+        embedded_status_list = status_view.compute()
+        await interaction.followup.send(content="Welcome to AlgoTrade Manager", embeds=embedded_status_list, view=AlgoTradeView(self.dbcon, user_account_list), ephemeral=True)
         
