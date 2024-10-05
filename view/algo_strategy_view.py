@@ -33,7 +33,7 @@ class AlgoStrategySelect(discord.ui.Select):
 
         try:
             if selected_strategies:
-                self.parent_view.dbcon.update_follower_strategy(', '.join(selected_strategies), discord_id)
+                self.parent_view.dbcon.update_follower_strategy(','.join(selected_strategies), discord_id)
                 await interaction.response.edit_message(content="Algo strategies successfully updated!", 
                                                         embed=None,
                                                         delete_after=5)
