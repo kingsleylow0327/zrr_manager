@@ -2,6 +2,7 @@ import discord
 import message as ms
 from datetime import date
 from modal.vip_redeemtion import VIPRedeemtionModal, VIPRedeemtionModalCH
+from modal.propw_vip_redeemtion import PropWVIPRedeemtionModal, PropWVIPRedeemtionModalCH
 from modal.uuid_submission_modal import UUIDSubmissionModal, UUIDSubmissionModalCH
 
 
@@ -39,6 +40,23 @@ class RedeemVIPView(discord.ui.View):
             return
         await interaction.response.send_modal(UUIDSubmissionModal(self.dbcon, self.support_channel_id, self.support_channel_ch_id))
     
+    @discord.ui.button(label="PropW 30 Days Free VIP", style=discord.ButtonStyle.blurple, custom_id="propw_button")
+    async def propWRedeemButton(self, interaction: discord.Interaction, button: discord.ui.Button):
+        discord_id = interaction.user.id
+        trade_detail = self.dbcon.get_propw_by_id(discord_id)
+        
+        # Expired
+        if trade_detail and trade_detail.get("expired_date") and trade_detail.get("expired_date") < date.today():
+            await interaction.response.send_message(ms.PROPW_EXPIRED_VIP.format(self.support_channel_id, self.support_channel_ch_id), ephemeral=True)
+            return
+
+        # Already registered
+        if trade_detail and trade_detail.get("expired_date") != None:
+            await interaction.response.send_message(ms.PROPW_REDEEMED_VIP.format(self.support_channel_id, self.support_channel_ch_id), ephemeral=True)
+            return
+        
+        await interaction.response.send_modal(PropWVIPRedeemtionModal(self.dbcon, self.support_channel_id, self.support_channel_ch_id))
+  
     # @discord.ui.button(label="Check Volume", style=discord.ButtonStyle.red, custom_id="volume_button")
     # async def check_volume(self, interaction: discord.Interaction, button: discord.ui.Button):
     #     player_id = str(interaction.user.id)
@@ -80,3 +98,21 @@ class RedeemVIPViewCH(discord.ui.View):
             await interaction.response.send_message(ms.NO_UUID_CH.format(self.support_channel_id, self.support_channel_ch_id), ephemeral=True)
             return
         await interaction.response.send_modal(UUIDSubmissionModalCH(self.dbcon, self.support_channel_id, self.support_channel_ch_id))
+    
+    @discord.ui.button(label="PropW 30 天免费VIP体验", style=discord.ButtonStyle.blurple, custom_id="propw_button") 
+    async def propWRedeemButton(self, interaction: discord.Interaction, button: discord.ui.Button):
+        discord_id = interaction.user.id
+        trade_detail = self.dbcon.get_propw_by_id(discord_id)
+        
+        # Expired
+        if trade_detail and trade_detail.get("expired_date") and trade_detail.get("expired_date") < date.today():
+            await interaction.response.send_message(ms.PROPW_EXPIRED_VIP_CH.format(self.support_channel_id, self.support_channel_ch_id), ephemeral=True)
+            return
+
+        # Already registered
+        if trade_detail and trade_detail.get("expired_date") != None:
+            await interaction.response.send_message(ms.PROPW_REDEEMED_VIP_CH.format(self.support_channel_id, self.support_channel_ch_id), ephemeral=True)
+            return
+        
+        await interaction.response.send_modal(PropWVIPRedeemtionModalCH(self.dbcon, self.support_channel_id, self.support_channel_ch_id))
+  

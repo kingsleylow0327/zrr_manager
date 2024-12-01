@@ -264,10 +264,24 @@ class ZonixDB():
         AND discord_id is NULL"""
         ret = self.dbcon_manager(sql, get_all=True)
         return ret and len(ret) != 0
+    
+    def check_uuid_exist_from_propw_table(self, uuid):
+        sql = f"""
+        SELECT propw_uid FROM {self.config.PROPW_TABLE} 
+        WHERE propw_uid='{uuid}'
+        AND discord_id is NULL"""
+        ret = self.dbcon_manager(sql, get_all=True)
+        return ret and len(ret) != 0
 
     def get_trade_volume_by_id(self, discord_id):
         sql = f"""
         SELECT * FROM {self.config.TRADE_VOLUME_TABLE} 
+        WHERE discord_id='{discord_id}'"""
+        return self.dbcon_manager(sql)
+    
+    def get_propw_by_id(self, discord_id):
+        sql = f"""
+        SELECT * FROM {self.config.PROPW_TABLE} 
         WHERE discord_id='{discord_id}'"""
         return self.dbcon_manager(sql)
     
@@ -306,6 +320,13 @@ class ZonixDB():
         UPDATE {self.config.TRADE_VOLUME_TABLE}
         SET discord_id = '{discord_id}', vip_expired_date = '{date}'
         WHERE uuid ='{uuid}'"""
+        return self.dbcon_manager(sql)
+    
+    def update_user_from_propw_table_with_date(self, uuid, discord_id, date):
+        sql = f"""
+        UPDATE {self.config.PROPW_TABLE}
+        SET discord_id = '{discord_id}', expired_date = '{date}'
+        WHERE propw_uid ='{uuid}'"""
         return self.dbcon_manager(sql)
 
     def fetch_user_trade_volume_by_discord_id(self, discord_id):

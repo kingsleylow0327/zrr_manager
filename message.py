@@ -78,16 +78,28 @@ EXPIRED_VIP = """
 You have redeem FREE VIP previously and it's expired, please contact <#{}> or <#{}>if you think this is an mistake
 """
 
+PROPW_EXPIRED_VIP = """
+You have redeem 30VIP previously and it's expired, please contact <#{}> or <#{}>if you think this is an mistake
+"""
+
 EXPIRED_VIP_CH = """
 您之前已经领取过7天免费VIP并已经过期, 无法再次领取。如果您认为这是一个错误, 请联系 <#{}> 或 <#{}>
+"""
+
+PROPW_EXPIRED_VIP_CH = """
+您之前已经领取过30天免费VIP并已经过期, 无法再次领取。如果您认为这是一个错误, 请联系 <#{}> 或 <#{}>
 """
 
 REDEEMED_VIP = """
 You have redeem FREE VIP previously and not eligible to redeem again, please contact <#{}> or <#{}> if you think this is an mistake
 """
 
-REDEEMED_VIP_CH = """
-您之前已经领取过7天免费VIP, 无法再次领取。如果您认为这是一个错误, 请联系 <#{}> 或 <#{}>
+PROPW_REDEEMED_VIP = """
+You have redeem 30VIP previously and not eligible to redeem again, please contact <#{}> or <#{}> if you think this is an mistake
+"""
+
+PROPW_REDEEMED_VIP_CH = """
+您之前已经领取过30天免费VIP, 无法再次领取。如果您认为这是一个错误, 请联系 <#{}> 或 <#{}>
 """
 
 NO_UUID = """
@@ -95,15 +107,23 @@ Your UID is invalid, please contact <#{}> or <#{}> if you think this is an mista
 """
 
 NO_UUID_CH = """
-您的BingX UID无效, 或者如果您认为这是一个错误, 请联系 <#{}> 或 <#{}>。
+您的 UID无效, 或者如果您认为这是一个错误, 请联系 <#{}> 或 <#{}>。
 """
 
 VIP_SUCCESS = """
 Your have submited your UID, enjoy your 7 Days @FREE-VIP and access to our premium features.
 """
 
+PROPW_SUCCESS = """
+Your have submited your UID, enjoy your 30 Days @VIP30 and access to our premium features.
+"""
+
 VIP_SUCCESS_CH = """
 您已提交您的UID, 你将会获得7天 @FREE-VIP 体验。
+"""
+
+PROPW_SUCCESS_CH = """
+您已提交您的UID, 你将会获得30天 @VIP30 体验。
 """
 
 USED_UUID = """
