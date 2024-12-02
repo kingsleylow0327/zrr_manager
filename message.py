@@ -153,6 +153,10 @@ By claiming this limited-time VIP access, you fully understand the inherent risk
 If you trade volume is > 300K monthly, then you will entitled <@&{}> Access. 
 Trade Volume will be counted every month, we will notify you when your VIP access is expiring.
 
+If you take the 100K PropW Challenge between December 1, 2024, and December 31, 2024, you can claim 30 days of VIP access from us too!
+<a:animatedarrowright:1224308096835256361>Referral link must be under UC.
+<a:animatedarrowright:1224308096835256361>Limited time only.
+
 Please contact <#{}> or <#{}> if you think this is a mistake.
 """
 
@@ -165,6 +169,10 @@ VIP_DESCRIPTION_CH = """
 
 如果您的月交易量超过300k, 那么您将获得<@&{}>访问权限。
 交易量将每月统计, 我们会在您的VIP访问权限即将到期时通知您。
+
+如果您在2024年12月1日至2024年12月31日期间参加100K PropW挑战赛，您还可以获得30天的VIP访问权限！
+<a:animatedarrowright:1224308096835256361>推荐链接必须在UC下。 
+<a:animatedarrowright:1224308096835256361>限时提供。
 
 如果您认为这是一个错误, 请联系 <#{}> 或 <#{}>
 """
