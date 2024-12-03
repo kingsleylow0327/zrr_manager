@@ -412,4 +412,4 @@ class ZonixDB():
         for t in tupples:
             self.dbcon_manager(sql_format.format(self.config.PROPW_TABLE, t[0], t[1]))
         now = datetime.datetime.now()
-        logger.info("PropW Table Update Done at, {now}")
+        logger.info(f"PropW Table Update Done at, {now}")
