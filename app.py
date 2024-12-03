@@ -13,6 +13,7 @@ from modal.extend_modal import ExtendModal
 from service.new_account import create_new_account
 from service.resubscribe import resubscribe
 from service.cancel_subscribe import cancel_subscribe
+from service.gsheet import GSheet
 from view.atm_view import AutoTradeManagerView
 from view.redeem_vip_view import RedeemVIPView, RedeemVIPViewCH
 from config import Config
@@ -243,6 +244,16 @@ async def give_vip(interaction: discord.Interaction, uid: str):
         dbcon.insert_solely_uid(uid)
         await interaction.followup.send(content=f"New UID {uid} added")
 
+
+@bot.tree.command(name="updatepropw", description="Update PropW table")
+async def update_propw(interaction: discord.Interaction):
+    await interaction.response.defer(ephemeral=True)
+    player_id = str(interaction.user.id)
+    if not dbcon.is_vip_admin(player_id):
+        return True
+    gsheet_service = GSheet(dbcon, config)
+    gsheet_service.store_to_db()
+    await interaction.followup.send(content="PropW table Updated")
 
 async def clear_expired():
     logger.info("Cron Job:Clearing Start")

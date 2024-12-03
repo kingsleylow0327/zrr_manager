@@ -1,6 +1,7 @@
 from mysql.connector import pooling
 from logger import Logger
 from dto.license_dto import LicenseDTO
+import datetime
 
 # Logger setup
 logger_mod = Logger("DB")
@@ -35,7 +36,7 @@ class ZonixDB():
             logger.warning("DB Pool Failed")
             return None
     
-    def dbcon_manager(self, sql, get_all=False):
+    def dbcon_manager(self, sql:str, get_all=False):
         connection_object = self.pool.get_connection()
         row = None
         with connection_object as connection:
@@ -405,3 +406,10 @@ class ZonixDB():
         """
 
         return self.dbcon_manager(sql)
+    
+    def update_propw_table(self, tupples):
+        sql_format = """INSERT INTO {} (propw_uid, amount) VALUES ('{}','{}') ON DUPLICATE KEY UPDATE amount = VALUES(amount);\n"""
+        for t in tupples:
+            self.dbcon_manager(sql_format.format(self.config.PROPW_TABLE, t[0], t[1]))
+        now = datetime.datetime.now()
+        logger.info("PropW Table Update Done at, {now}")
