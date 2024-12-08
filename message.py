@@ -148,16 +148,18 @@ VIP_DESCRIPTION = """
 <a:animatedarrowright:1224308096835256361> Weekly MMM Strategy LiveTrade.
 <a:animatedarrowright:1224308096835256361> Weekly GTM Strategy LiveTrade.
 
-By claiming this limited-time VIP access, you fully understand the inherent risks of cryptocurrency trading and acknowledge that past performance is not indicative of future results. Engage wisely and take advantage of expert insights to enhance your trading strategies.
-
-If you trade volume is > 300K monthly, then you will entitled <@&{}> Access. 
+<:bingx:1225424645331750965> <a:bingx:1225424645331750965> <a:bingx:1225424645331750965>
+If you trade volume is **> 300K monthly**, then you will entitled <@&{}> Access.
 Trade Volume will be counted every month, we will notify you when your VIP access is expiring.
 
-If you take the 100K PropW Challenge between December 1, 2024, and December 31, 2024, you can claim 30 days of VIP access from us too!
-<a:animatedarrowright:1224308096835256361>Referral link must be under UC.
-<a:animatedarrowright:1224308096835256361>Limited time only.
+<:propw:1312995757355302943> <a:propw:1312995757355302943> <a:propw:1312995757355302943>
+If you take the **100K PropW Challenge** between **1 DEC 2024 - 31 DEC 2024**, you can claim **30 days of <@&1312790308009934920>**
+<a:animatedarrowright:1224308096835256361> Your PropW account must be registered using UC's referral link. Find all the links here: **“PropW 15% off audition fees.”** <#1307666886804111451>
+<a:animatedarrowright:1224308096835256361> **Limited-time offer - don't miss out!**
 
-Please contact <#{}> or <#{}> if you think this is a mistake.
+By claiming this limited-time VIP access, you fully understand the inherent risks of cryptocurrency trading and acknowledge that past performance is not indicative of future results. Engage wisely and take advantage of expert insights to enhance your trading strategies.
+
+Please contact :sos: <#{}> or :sos:<#{}> if you think this is a mistake.
 """
 
 VIP_DESCRIPTION_CH = """
@@ -167,9 +169,11 @@ VIP_DESCRIPTION_CH = """
 
 通过领取此限时 VIP 体验，您完全理解加密货币交易的固有风险，并承认过去的表现并不代表未来的结果。请明智地参与，并利用交易员的见解来增强您的交易策略。
 
+<:bingx:1225424645331750965> <a:bingx:1225424645331750965> <a:bingx:1225424645331750965>
 如果您的月交易量超过300k, 那么您将获得<@&{}>访问权限。
 交易量将每月统计, 我们会在您的VIP访问权限即将到期时通知您。
 
+<:propw:1312995757355302943> <a:propw:1312995757355302943> <a:propw:1312995757355302943>
 如果您在2024年12月1日至2024年12月31日期间参加100K PropW挑战赛，您还可以获得30天的VIP访问权限！
 <a:animatedarrowright:1224308096835256361>推荐链接必须在UC下。 
 <a:animatedarrowright:1224308096835256361>限时提供。
