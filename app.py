@@ -302,7 +302,7 @@ async def clear_expired_user_by_role(role:str):
             try:
                 await user.send(f"Your {role} experience is Expired.")
             except Exception as e:
-                logger.info(f"Unable to send message to user: {int(player_info.get("discord_id"))}")
+                logger.info(f"Unable to send message to user: {int(player_info.get('discord_id'))}")
             await user.remove_roles(target_role)
     logger.info(f"Cron Job: Clearing Expired {role} User Done")
 
