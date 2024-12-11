@@ -251,9 +251,12 @@ async def update_propw(interaction: discord.Interaction):
     player_id = str(interaction.user.id)
     if not dbcon.is_vip_admin(player_id):
         return True
+    await update_propw_routine()
+    await interaction.followup.send(content="PropW table Updated")
+
+async def update_propw_routine():
     gsheet_service = GSheet(dbcon, config)
     gsheet_service.store_to_db()
-    await interaction.followup.send(content="PropW table Updated")
 
 async def clear_expired():
     logger.info("Cron Job:Clearing Start")
@@ -275,6 +278,34 @@ async def clear_expired():
     dbcon.unfollow_trader(player_name_list)
     logger.info("Cron Job:Clearing Expired User Done")
 
+@bot.tree.command(name="clear_vip", description="clear vip")
+async def clear_vip_expired(interaction: discord.Interaction, role: str):
+    role = role.upper()
+    await interaction.response.defer(ephemeral=True)
+    await clear_expired_user_by_role(role)
+    await interaction.followup.send(content=f"Expired user with role: {role} cleared")
+
+async def clear_expired_user_by_role(role:str):
+    logger.info(f"Cron Job: Clearing {role} Start")
+    expired_player_list = dbcon.get_expired_vip_user(role)
+    logger.info(f"Cron Job: {len(expired_player_list)} user to be cleared")
+    if not expired_player_list:
+        logger.info(f"Cron Job: Clearing {role} Expired User Done")
+        return True
+    guild = bot.get_channel(int(config.COMMAND_CHANNEL_ID)).guild
+    for player_info in expired_player_list:
+        user = guild.get_member(int(player_info.get("discord_id")))
+        if not user:
+            continue
+        target_role = discord.utils.get(guild.roles, name=role)
+        if target_role in user.roles:
+            await user.send(f"Your {role} experience is Expired.")
+            await user.remove_roles(target_role)
+    logger.info(f"Cron Job: Clearing Expired {role} User Done")
+
+async def clear_vip_routine():
+    await clear_expired_user_by_role("VIP")
+    await clear_expired_user_by_role("VIP30")
 
 async def notify_expiring_expired_vips():
     logger.info("Cron Job: Notifying expiry and expiry soon VIPs")
@@ -282,16 +313,16 @@ async def notify_expiring_expired_vips():
     guild = bot.get_guild(GUILD_ID)
 
     # Notify users whose VIP has expired today
-    expired_user_ids = dbcon.fetch_vips_by_expiry()
+    # expired_user_ids = dbcon.fetch_vips_by_expiry()
 
-    for expired_user_id in expired_user_ids:
-        member = guild.get_member(int(expired_user_id))
-        if member:
-            try:
-                await member.send("Your VIP experience has expired.")
-                logger.info(f"Sent VIP expired notice to {expired_user_id}")
-            except Exception as e:
-                logger.error(f"Failed to send expired message to {expired_user_id}: {e}")
+    # for expired_user_id in expired_user_ids:
+    #     member = guild.get_member(int(expired_user_id))
+    #     if member:
+    #         try:
+    #             await member.send("Your VIP experience has expired.")
+    #             logger.info(f"Sent VIP expired notice to {expired_user_id}")
+    #         except Exception as e:
+    #             logger.error(f"Failed to send expired message to {expired_user_id}: {e}")
 
     # Notify users whose VIP is expiring in 7 days
     notification_day = 3
@@ -310,6 +341,8 @@ async def notify_expiring_expired_vips():
 # Main Program Run here
 schedule.every().day.at('00:00').do(lambda: asyncio.create_task(clear_expired()))
 schedule.every().day.at('00:00').do(lambda: asyncio.create_task(notify_expiring_expired_vips()))
+schedule.every().day.at('00:00').do(lambda: asyncio.create_task(clear_vip_routine()))
+schedule.every().day.at('00:00').do(lambda: asyncio.create_task(update_propw_routine()))
 
 async def run_vip():
     channel_en = bot.get_channel(int(config.ON_BOARDING_CHANNEL_ID[0]))

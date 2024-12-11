@@ -115,6 +115,14 @@ class ZonixDB():
         """
         return self.dbcon_manager(sql, get_all=True)
     
+    def get_expired_vip_user(self, role):
+        sql = f"""SELECT * FROM {self.config.TRADE_VOLUME_TABLE} where vip_expired_date <= NOW()
+        """
+        if role == "VIP30":
+            sql = f"""SELECT * FROM {self.config.PROPW_TABLE} where expired_date <= NOW()
+            """
+        return self.dbcon_manager(sql, get_all=True)
+    
     def unfollow_trader(self, player_list):
         sql = f"""UPDATE {self.config.FOLLOWER_TABLE}
         SET player_id = ''
