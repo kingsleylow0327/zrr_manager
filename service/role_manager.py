@@ -31,10 +31,10 @@ class RoleManager():
             if user:
                 await user.add_roles(role)
                 update_user_list.append(user_id)
-            logger.info(f"{user.get("discord_id")} gained/pro-long role {role_name}")
+            logger.info(f"""{user.get("discord_id")} gained/pro-long role {role_name}""")
         if len(update_user_list) > 0:
             self.dbcon.update_bingx_table_expired_date(",".join(update_user_list))
-        logger.info(f"{len(update_user_list)} user have gain {role_name}/pro-long their expiry")
+        logger.info(f"""{len(update_user_list)} user have gain {role_name}/pro-long their expiry""")
         
     
     async def remove_role(self, role_name):
