@@ -116,10 +116,10 @@ class ZonixDB():
         return self.dbcon_manager(sql, get_all=True)
     
     def get_expired_vip_user(self, role):
-        sql = f"""SELECT * FROM {self.config.TRADE_VOLUME_TABLE} where vip_expired_date <= NOW()
+        sql = f"""SELECT * FROM {self.config.TRADE_VOLUME_TABLE} where vip_expired_date <= NOW() and discord_id IS NOT NULL
         """
         if role == "VIP30":
-            sql = f"""SELECT * FROM {self.config.PROPW_TABLE} where expired_date <= NOW()
+            sql = f"""SELECT * FROM {self.config.PROPW_TABLE} where expired_date <= NOW() and discord_id IS NOT NULL
             """
         return self.dbcon_manager(sql, get_all=True)
     
@@ -416,8 +416,27 @@ class ZonixDB():
         return self.dbcon_manager(sql)
     
     def update_propw_table(self, tupples):
-        sql_format = """INSERT INTO {} (propw_uid, amount) VALUES ('{}','{}') ON DUPLICATE KEY UPDATE amount = VALUES(amount);\n"""
+        sql_format = """INSERT INTO {} (propw_uid, amount) VALUES ('{}','{}') ON DUPLICATE KEY UPDATE amount = VALUES(amount);"""
         for t in tupples:
             self.dbcon_manager(sql_format.format(self.config.PROPW_TABLE, t[0], t[1]))
         now = datetime.datetime.now()
         logger.info(f"PropW Table Update Done at, {now}")
+
+    def update_bingx_table(self, tupples):
+        sql_format = """INSERT INTO {} (uuid, volume) VALUES ('{}', '{}') ON DUPLICATE KEY UPDATE volume = VALUES(volume);"""
+        for t in tupples:
+            self.dbcon_manager(sql_format.format(self.config.TRADE_VOLUME_TABLE, t[0], t[1]))
+        now = datetime.datetime.now()
+        logger.info(f"BingX Table Update Done at, {now}")
+    
+    def get_bingx_table_with_uid(self):
+        sql = f"""SELECT * FROM {self.config.TRADE_VOLUME_TABLE} where discord_id IS NOT NULL;"""
+        return self.dbcon_manager(sql, get_all=True)
+    
+    def get_propw_table_with_uid(self):
+        sql = f"""SELECT * FROM {self.config.PROPW_TABLE} where discord_id IS NOT NULL;"""
+        return self.dbcon_manager(sql, get_all=True)
+    
+    def update_bingx_table_expired_date(self, user_list):
+        sql = f"""UPDATE {self.config.TRADE_VOLUME_TABLE} set vip_expired_date = DATE_ADD(NOW(), INTERVAL 30 DAY) where discord_id in ({user_list})"""
+        return self.dbcon_manager(sql)

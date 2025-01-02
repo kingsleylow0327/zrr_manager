@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 from logger import Logger
 from modal.activate_modal import ActivateModal
 from modal.extend_modal import ExtendModal
+from service.role_manager import RoleManager
 from service.new_account import create_new_account
 from service.resubscribe import resubscribe
 from service.cancel_subscribe import cancel_subscribe
@@ -254,9 +255,26 @@ async def update_propw(interaction: discord.Interaction):
     await update_propw_routine()
     await interaction.followup.send(content="PropW table Updated")
 
+@bot.tree.command(name="updatebingx", description="Update BingX table")
+async def update_bingx(interaction: discord.Interaction):
+    await interaction.response.defer(ephemeral=True)
+    player_id = str(interaction.user.id)
+    if not dbcon.is_vip_admin(player_id):
+        return True
+    # await update_bingx_routine()
+    guild = bot.get_guild(GUILD_ID)
+    give_role_service = RoleManager(dbcon, guild, interaction)
+    give_role_service.get_bingx_user()
+    await give_role_service.give_role("VIP")
+    await interaction.followup.send(content="Bingx table Updated")
+
 async def update_propw_routine():
     gsheet_service = GSheet(dbcon, config)
-    gsheet_service.store_to_db()
+    gsheet_service.store_to_propw_db()
+
+async def update_bingx_routine():
+    gsheet_service = GSheet(dbcon, config)
+    gsheet_service.store_to_bingx_db()
 
 async def clear_expired():
     logger.info("Cron Job:Clearing Start")
