@@ -429,8 +429,8 @@ class ZonixDB():
         now = datetime.datetime.now()
         logger.info(f"BingX Table Update Done at, {now}")
     
-    def get_bingx_table_with_uid(self):
-        sql = f"""SELECT * FROM {self.config.TRADE_VOLUME_TABLE} where discord_id IS NOT NULL;"""
+    def get_bingx_table_with_uid(self, amount):
+        sql = f"""SELECT * FROM {self.config.TRADE_VOLUME_TABLE} where discord_id IS NOT NULL and volume >= {amount};"""
         return self.dbcon_manager(sql, get_all=True)
     
     def get_propw_table_with_uid(self):
