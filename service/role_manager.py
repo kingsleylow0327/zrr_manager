@@ -39,11 +39,12 @@ class RoleManager():
     
     async def remove_role(self, role_name):
         role = discord.utils.get(self.interaction.guild.roles, name=role_name)
-        role = discord.utils.get(self.interaction.guild.roles, name=role_name)
+        free_vip_role = discord.utils.get(self.interaction.guild.roles, name="FREE_VIP")
         user_amount = len(self.user_list)
         for user in self.user_list:
             user_id = user.get("discord_id")
             user = self.guild.get_member(int(user_id))
             if user:
                 await user.remove_roles(role)
+                await user.remove_roles(free_vip_role)
         logger.info(f"{user_amount} user have been removed from {role_name}")
