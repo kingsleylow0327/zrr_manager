@@ -277,12 +277,12 @@ async def update_bingx_routine():
     gsheet_service.store_to_bingx_db()
 
 async def clear_expired():
-    logger.info("Cron Job:Clearing Start")
+    logger.info("Cron Job: Autotrade Clearing Start")
     expired_player_list = dbcon.get_expired_user()
     player_name_list = []
     logger.info(f"Cron Job:{len(player_name_list)} user to be cleared")
     if not expired_player_list:
-        logger.info("Cron Job:Clearing Expired User Done")
+        logger.info("Cron Job: Autotrade Clearing Expired User Done")
         return True
     guild = bot.get_channel(int(config.COMMAND_CHANNEL_ID)).guild
     for player_info in expired_player_list:
@@ -294,7 +294,7 @@ async def clear_expired():
         player_name_list.append(f"""\'{player_info.get("player_id")}\'""")
     player_name_list = f"({','.join(player_name_list)})"
     dbcon.unfollow_trader(player_name_list)
-    logger.info("Cron Job:Clearing Expired User Done")
+    logger.info("Cron Job: Autotrade Clearing Expired User Done")
 
 @bot.tree.command(name="clear_vip", description="clear vip")
 async def clear_vip_expired(interaction: discord.Interaction, role: str):
@@ -360,7 +360,7 @@ async def notify_expiring_expired_vips():
 
 
 # Main Program Run here
-schedule.every().day.at('00:00').do(lambda: asyncio.create_task(clear_expired()))
+# schedule.every().day.at('00:00').do(lambda: asyncio.create_task(clear_expired()))
 schedule.every().day.at('00:00').do(lambda: asyncio.create_task(notify_expiring_expired_vips()))
 schedule.every().day.at('00:00').do(lambda: asyncio.create_task(clear_vip_routine()))
 # schedule.every().day.at('00:00').do(lambda: asyncio.create_task(update_propw_routine()))
