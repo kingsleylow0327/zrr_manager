@@ -363,7 +363,7 @@ async def notify_expiring_expired_vips():
 # schedule.every().day.at('00:00').do(lambda: asyncio.create_task(clear_expired()))
 schedule.every().day.at('00:00').do(lambda: asyncio.create_task(notify_expiring_expired_vips()))
 schedule.every().day.at('00:00').do(lambda: asyncio.create_task(clear_vip_routine()))
-# schedule.every().day.at('00:00').do(lambda: asyncio.create_task(update_propw_routine()))
+schedule.every().day.at('00:00').do(lambda: asyncio.create_task(update_propw_routine()))
 
 async def run_vip():
     channel_en = bot.get_channel(int(config.ON_BOARDING_CHANNEL_ID[0]))
