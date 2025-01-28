@@ -57,13 +57,13 @@ class RedeemVIPView(discord.ui.View):
         
         await interaction.response.send_modal(PropWVIPRedeemtionModal(self.dbcon, self.support_channel_id, self.support_channel_ch_id))
   
-    @discord.ui.button(label="Check Volume", style=discord.ButtonStyle.red, custom_id="volume_button")
-    async def check_volume(self, interaction: discord.Interaction, button: discord.ui.Button):
-        player_id = str(interaction.user.id)
-        volume_detail = self.dbcon.fetch_user_trade_volume_by_discord_id(player_id)
-        final_volume = volume_detail.get('volume') if volume_detail and volume_detail.get('volume') else "--"
-        embeded_volume = discord.Embed(title=f"Your Open Trade Volume for this Month: {final_volume} USDT \n")
-        await interaction.response.send_message(embed=embeded_volume, ephemeral=True)
+    # @discord.ui.button(label="Check Volume", style=discord.ButtonStyle.red, custom_id="volume_button")
+    # async def check_volume(self, interaction: discord.Interaction, button: discord.ui.Button):
+    #     player_id = str(interaction.user.id)
+    #     volume_detail = self.dbcon.fetch_user_trade_volume_by_discord_id(player_id)
+    #     final_volume = volume_detail.get('volume') if volume_detail and volume_detail.get('volume') else "--"
+    #     embeded_volume = discord.Embed(title=f"Your Open Trade Volume for this Month: {final_volume} USDT \n")
+    #     await interaction.response.send_message(embed=embeded_volume, ephemeral=True)
 
 class RedeemVIPViewCH(discord.ui.View):
 
