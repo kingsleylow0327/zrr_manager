@@ -39,7 +39,7 @@ class GSheet():
     def df_to_tupples_propw(self, df, header):
         jiant_tupple = []
         for _, row in df.iterrows():
-            small_tupple = (int(row[header[0]]), int(row[header[1]]))
+            small_tupple = (int(float(row[header[0]])), int(float(row[header[1]])))
             jiant_tupple.append(small_tupple)
         return jiant_tupple
     
