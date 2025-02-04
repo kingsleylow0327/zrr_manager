@@ -261,7 +261,7 @@ async def update_bingx(interaction: discord.Interaction):
     player_id = str(interaction.user.id)
     if not dbcon.is_vip_admin(player_id):
         return True
-    # await update_bingx_routine()
+    await update_bingx_routine()
     guild = bot.get_guild(GUILD_ID)
     give_role_service = RoleManager(dbcon, guild, interaction)
     give_role_service.get_bingx_user()

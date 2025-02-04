@@ -146,7 +146,6 @@ VIP_DESCRIPTION = """
 <a:animatedarrowright:1224308096835256361> Daily Live Trade & Market Analysis.
 <a:animatedarrowright:1224308096835256361> Weekly TAP Beginner LiveTrade.
 <a:animatedarrowright:1224308096835256361> Weekly MMM Strategy LiveTrade.
-<a:animatedarrowright:1224308096835256361> Weekly GTM Strategy LiveTrade.
 
 <:bingx:1225424645331750965> <a:bingx:1225424645331750965> <a:bingx:1225424645331750965>
 If you trade volume is **> 300K monthly**, then you will entitled <@&{}> Access.
@@ -165,7 +164,6 @@ Please contact :sos: <#{}> or :sos:<#{}> if you think this is a mistake.
 VIP_DESCRIPTION_CH = """
 <a:animatedarrowright:1224308096835256361> 每日3场ZRR交易员直播实盘交易及市场分析
 <a:animatedarrowright:1224308096835256361> MMM策略直播实盘分析
-<a:animatedarrowright:1224308096835256361> GTM 天时地利人和策略直播实盘分析
 
 通过领取此限时 VIP 体验，您完全理解加密货币交易的固有风险，并承认过去的表现并不代表未来的结果。请明智地参与，并利用交易员的见解来增强您的交易策略。
 
