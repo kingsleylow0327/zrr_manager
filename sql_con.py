@@ -39,15 +39,16 @@ class ZonixDB():
     def dbcon_manager(self, sql:str, get_all=False):
         connection_object = self.pool.get_connection()
         row = None
-        with connection_object as connection:
-            with connection.cursor(dictionary=True) as cursor:
-                try:
-                    cursor.execute(sql)
-                    row = cursor.fetchall() if get_all else cursor.fetchone()
-                    connection.commit()
-                except Exception as e:
-                    logger.warning(sql)
-                    logger.warning(e)
+        try:
+            with connection_object.cursor(dictionary=True) as cursor:
+                cursor.execute(sql)
+                row = cursor.fetchall() if get_all else cursor.fetchone()
+                connection_object.commit()
+        except Exception as e:
+            logger.warning(sql)
+            logger.warning(e)
+        finally:
+            connection_object.close()
         if not row:
             return None
         return row
