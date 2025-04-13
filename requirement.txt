@@ -9,7 +9,7 @@ certifi==2024.7.4
 charset-normalizer==3.3.2
 click==8.1.7
 croniter==2.0.3
-discord.py==2.3.2
+discord.py==2.5.2
 discord.py-pagination==0.0.5
 exceptiongroup==1.2.2
 Flask==3.0.3
