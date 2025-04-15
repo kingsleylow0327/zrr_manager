@@ -227,7 +227,7 @@ async def give_vip(interaction: discord.Interaction, id:str, day:str):
         # Give Role
         guild = bot.get_guild(GUILD_ID)
         member = guild.get_member(int(id))
-        role = discord.utils.get(interaction.guild.roles, name="FREE_VIP")
+        role = discord.utils.get(interaction.guild.roles, name="VIP")
         await member.add_roles(role)
         await interaction.followup.send(content=f"User {id} have become VIP until {new_exipry_date}", ephemeral=True)
 
