@@ -115,7 +115,7 @@ Your have submited your UID, enjoy your 7 Days @FREE-VIP and access to our premi
 """
 
 PROPW_SUCCESS = """
-Your have submited your UID, enjoy your 30 Days @VIP30 and access to our premium features.
+Your have submited your UID, enjoy your 30 Days @{} and access to our premium features.
 """
 
 VIP_SUCCESS_CH = """
@@ -123,7 +123,7 @@ VIP_SUCCESS_CH = """
 """
 
 PROPW_SUCCESS_CH = """
-您已提交您的UID, 你将会获得30天 @VIP30 体验。
+您已提交您的UID, 你将会获得30天 @{} 体验。
 """
 
 USED_UUID = """
@@ -135,48 +135,81 @@ USED_UUID_CH = """
 """
 
 VIP_TITTLE = """
-Claim your FREE 7 Days VIP Access
+🎉 Claim Your FREE 7-Day VIP Access!
 """
 
 VIP_TITTLE_CH = """
-马上领取7天VIP体验
+🎉 领取你的免费 7 天 VIP 访问权限！
 """
 
 VIP_DESCRIPTION = """
-<a:animatedarrowright:1224308096835256361> Daily Live Trade & Market Analysis.
-<a:animatedarrowright:1224308096835256361> Weekly TAP Beginner LiveTrade.
-<a:animatedarrowright:1224308096835256361> Weekly MMM Strategy LiveTrade.
+<a:animatedarrowright:1224308096835256361> Daily Live Trades & Market Analysis
+<a:animatedarrowright:1224308096835256361> Weekly TAP Beginner Live Trades
+<a:animatedarrowright:1224308096835256361> Weekly MMM Strategy Live Trades
 
-<:bingx:1225424645331750965> <a:bingx:1225424645331750965> <a:bingx:1225424645331750965>
-If you trade volume is **> 300K monthly**, then you will entitled <@&{}> Access.
-Trade Volume will be counted every month, we will notify you when your VIP access is expiring.
+⸻
 
-<:propw:1312995757355302943> <a:propw:1312995757355302943> <a:propw:1312995757355302943>
-If you take the **100K PropW Challenge** between **1st Jan to 31 March 2025**, you can claim **30 days of <@&1312790308009934920>**
-<a:animatedarrowright:1224308096835256361> Your PropW account must be registered using UC's referral link. Find all the links here: **“PropW 15% off audition fees.”** <#1307666886804111451>
-<a:animatedarrowright:1224308096835256361> **Limited-time offer - don't miss out!**
+🔶 BingX | Bitget 🔶
 
-By claiming this limited-time VIP access, you fully understand the inherent risks of cryptocurrency trading and acknowledge that past performance is not indicative of future results. Engage wisely and take advantage of expert insights to enhance your trading strategies.
+If your monthly trading volume exceeds 300K, you'sre entitled to <@&1265980898570928141> / <@&1366801023800185013> Access.
+<a:animatedarrowright:1224308096835256361> Volume is tracked monthly.
+<a:animatedarrowright:1224308096835256361> You'll be notified when your VIP access is expiring.
+<a:animatedarrowright:1224308096835256361> Applies to both BingX and Bitget users.
 
-Please contact :sos: <#{}> or :sos:<#{}> if you think this is a mistake.
+⸻
+
+🔷 Pionex 🔷
+
+If you take the 100K Pionex Prop Trading Challenge between 1st May - 31st May 2025, you can claim 30 Days of <@&1312790308009934920> Access.
+
+<a:animatedarrowright:1224308096835256361> Your Pionex account must be registered using UnityCrypto's referral link.
+<a:animatedarrowright:1224308096835256361> Referral links are available in #announcement channels.
+<a:animatedarrowright:1224308096835256361> Limited-time offer—don't miss out!
+
+⸻
+
+⚠️ Please Note:
+• By claiming this VIP access, you acknowledge the inherent risks in crypto trading. 
+• Past performance does not guarantee future results. Trade wisely and leverage expert insights.
+• We update all VIP access status every Monday—stay tuned!
+
+📩 If you believe you've been missed, please reach out via:
+🔧 <#1219304738844315648>  or  <#1228967268122361897>
 """
 
 VIP_DESCRIPTION_CH = """
-<a:animatedarrowright:1224308096835256361> 每日3场ZRR交易员直播实盘交易及市场分析
-<a:animatedarrowright:1224308096835256361> MMM策略直播实盘分析
+<a:animatedarrowright:1224308096835256361> 每日实盘交易 & 市场分析
+<a:animatedarrowright:1224308096835256361> 每周 TAP 新手实盘教学
+<a:animatedarrowright:1224308096835256361> 每周 MMM 策略实盘教学
 
-通过领取此限时 VIP 体验，您完全理解加密货币交易的固有风险，并承认过去的表现并不代表未来的结果。请明智地参与，并利用交易员的见解来增强您的交易策略。
+⸻
 
-<:bingx:1225424645331750965> <a:bingx:1225424645331750965> <a:bingx:1225424645331750965>
-如果您的月交易量超过300k, 那么您将获得<@&{}>访问权限。
-交易量将每月统计, 我们会在您的VIP访问权限即将到期时通知您。
+🔶 BingX | Bitget 🔶
 
-<:propw:1312995757355302943> <a:propw:1312995757355302943> <a:propw:1312995757355302943>
-如果您在2025年1月1日至2025年3月31日期间参加100K PropW挑战赛，您还可以获得30天的VIP访问权限！
-<a:animatedarrowright:1224308096835256361>推荐链接必须在UC下。 
-<a:animatedarrowright:1224308096835256361>限时提供。
+若你每月的交易量超过 30 万美金，即可获得 <@&1265980898570928141> / <@&1366801023800185013> 访问权限：
+<a:animatedarrowright:1224308096835256361> 每月自动追踪交易量
+<a:animatedarrowright:1224308096835256361> 我们会在 VIP 即将到期时通知你
+<a:animatedarrowright:1224308096835256361> 适用于 BingX 和 Bitget 用户
 
-如果您认为这是一个错误, 请联系 <#{}> 或 <#{}>
+⸻
+
+🔷 Pionex 🔷
+
+若你在 2025 年 5 月 1 日至 5 月 31 日 期间参加 Pionex 100K Prop Trading 挑战赛，即可领取 30 天 <@&1312790308009934920> 访问权限。
+
+<a:animatedarrowright:1224308096835256361> 你的 Pionex 账号必须使用 UnityCrypto 的推荐链接注册
+<a:animatedarrowright:1224308096835256361> 推荐链接可在 #announcement 频道中获取
+<a:animatedarrowright:1224308096835256361> 限时优惠，切勿错过！
+
+⸻
+
+⚠️ 请注意：
+• 领取 VIP 权限即表示你了解并接受加密交易的相关风险。
+• 过往表现不代表未来结果，请理性交易，并善用专家见解提升策略。
+• 我们将于每周一更新所有 VIP 状态，请持续关注！
+
+📩 若你认为自己被遗漏，请通过以下渠道联系我们：
+🔧 <#1228967268122361897>  or  <#1219304738844315648>
 """
 
 ATM_TITLE = """

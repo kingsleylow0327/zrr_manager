@@ -34,6 +34,8 @@ class Config():
         self.IS_TEST=os.getenv('IS_TEST')
         self.TRADE_VOLUME_TABLE = os.getenv('TRADE_VOLUME_TABLE')
         self.PROPW_TABLE = os.getenv('PROPW_TABLE')
+        self.BITGET_TABLE = os.getenv('BITGET_TABLE')
+        self.PIONEX_TABLE = os.getenv('PIONEX_TABLE')
         self.GBOT_GSHEET_ID = os.getenv('GBOT_GSHEET_ID')
         self.CREDENTIALS_FILE = os.getenv('GBOT_GOOGLE_SERVICE_ACCOUNT', 'config/services_account.json')
         self.SUPPORT_CHANNEL_ID = os.getenv('SUPPORT_CHANNEL_ID')

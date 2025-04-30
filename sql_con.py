@@ -282,6 +282,22 @@ class ZonixDB():
         AND discord_id is NULL"""
         ret = self.dbcon_manager(sql, get_all=True)
         return ret and len(ret) != 0
+    
+    def check_uuid_exist_from_bitget_table(self, uuid):
+        sql = f"""
+        SELECT bitget_uid FROM {self.config.BITGET_TABLE} 
+        WHERE bitget_uid='{uuid}'
+        AND discord_id is NULL"""
+        ret = self.dbcon_manager(sql, get_all=True)
+        return ret and len(ret) != 0
+    
+    def check_uuid_exist_from_pionex_table(self, uuid):
+        sql = f"""
+        SELECT pionex_uid FROM {self.config.PIONEX_TABLE} 
+        WHERE pionex_uid='{uuid}'
+        AND discord_id is NULL"""
+        ret = self.dbcon_manager(sql, get_all=True)
+        return ret and len(ret) != 0
 
     def get_trade_volume_by_id(self, discord_id):
         sql = f"""
@@ -292,6 +308,18 @@ class ZonixDB():
     def get_propw_by_id(self, discord_id):
         sql = f"""
         SELECT * FROM {self.config.PROPW_TABLE} 
+        WHERE discord_id='{discord_id}'"""
+        return self.dbcon_manager(sql)
+    
+    def get_bitget_by_id(self, discord_id):
+        sql = f"""
+        SELECT * FROM {self.config.BITGET_TABLE} 
+        WHERE discord_id='{discord_id}'"""
+        return self.dbcon_manager(sql)
+    
+    def get_pionex_by_id(self, discord_id):
+        sql = f"""
+        SELECT * FROM {self.config.PIONEX_TABLE} 
         WHERE discord_id='{discord_id}'"""
         return self.dbcon_manager(sql)
     
@@ -337,6 +365,20 @@ class ZonixDB():
         UPDATE {self.config.PROPW_TABLE}
         SET discord_id = '{discord_id}', expired_date = '{date}'
         WHERE propw_uid ='{uuid}'"""
+        return self.dbcon_manager(sql)
+    
+    def update_user_from_bitget_table_with_date(self, uuid, discord_id, date):
+        sql = f"""
+        UPDATE {self.config.BITGET_TABLE}
+        SET discord_id = '{discord_id}', expired_date = '{date}'
+        WHERE bitget_uid ='{uuid}'"""
+        return self.dbcon_manager(sql)
+    
+    def update_user_from_pionex_table_with_date(self, uuid, discord_id, date):
+        sql = f"""
+        UPDATE {self.config.PIONEX_TABLE}
+        SET discord_id = '{discord_id}', expired_date = '{date}'
+        WHERE pionex_uid ='{uuid}'"""
         return self.dbcon_manager(sql)
 
     def fetch_user_trade_volume_by_discord_id(self, discord_id):
@@ -415,6 +457,13 @@ class ZonixDB():
         """
 
         return self.dbcon_manager(sql)
+    
+    def update_bitget_table(self, tupples):
+        sql_format = """INSERT INTO {} (propw_uid, amount) VALUES ('{}','{}') ON DUPLICATE KEY UPDATE amount = VALUES(amount);"""
+        for t in tupples:
+            self.dbcon_manager(sql_format.format(self.config.PROPW_TABLE, t[0], t[1]))
+        now = datetime.datetime.now()
+        logger.info(f"PropW Table Update Done at, {now}")
     
     def update_propw_table(self, tupples):
         sql_format = """INSERT INTO {} (propw_uid, amount) VALUES ('{}','{}') ON DUPLICATE KEY UPDATE amount = VALUES(amount);"""
