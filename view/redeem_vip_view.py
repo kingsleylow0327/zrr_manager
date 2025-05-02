@@ -15,7 +15,7 @@ class RedeemVIPView(discord.ui.View):
         self.support_channel_id = support_channel_id
         self.support_channel_ch_id = support_channel_ch_id
 
-    @discord.ui.button(label="Get My 7 Days VIP Access", style=discord.ButtonStyle.blurple, custom_id="redeem_button")
+    @discord.ui.button(label="Claim VIP via BingX UID", style=discord.ButtonStyle.blurple, custom_id="redeem_button")
     async def RedeemButton(self, interaction: discord.Interaction, button: discord.ui.Button):
         discord_id = interaction.user.id
         trade_detail = self.dbcon.get_trade_volume_by_id(discord_id)
@@ -32,16 +32,16 @@ class RedeemVIPView(discord.ui.View):
         
         await interaction.response.send_modal(VIPRedeemtionModal(self.dbcon, self.support_channel_id, self.support_channel_ch_id))
     
-    @discord.ui.button(label="Edit UID", style=discord.ButtonStyle.green, custom_id="edit_uid_button")
-    async def uuidSubmissionButton(self, interaction: discord.Interaction, button: discord.ui.Button):
-        discord_id = interaction.user.id
-        trade_detail = self.dbcon.get_trade_volume_by_id(discord_id)
-        if not trade_detail:
-            await interaction.response.send_message(ms.NO_UUID.format(self.support_channel_id, self.support_channel_ch_id), ephemeral=True)
-            return
-        await interaction.response.send_modal(UUIDSubmissionModal(self.dbcon, self.support_channel_id, self.support_channel_ch_id))
+    # @discord.ui.button(label="Edit UID", style=discord.ButtonStyle.green, custom_id="edit_uid_button")
+    # async def uuidSubmissionButton(self, interaction: discord.Interaction, button: discord.ui.Button):
+    #     discord_id = interaction.user.id
+    #     trade_detail = self.dbcon.get_trade_volume_by_id(discord_id)
+    #     if not trade_detail:
+    #         await interaction.response.send_message(ms.NO_UUID.format(self.support_channel_id, self.support_channel_ch_id), ephemeral=True)
+    #         return
+    #     await interaction.response.send_modal(UUIDSubmissionModal(self.dbcon, self.support_channel_id, self.support_channel_ch_id))
     
-    @discord.ui.button(label="Bitget 30 Days Free VIP", style=discord.ButtonStyle.blurple, custom_id="bitget_button")
+    @discord.ui.button(label="Claim VIP via Bitget UID", style=discord.ButtonStyle.blurple, custom_id="bitget_button")
     async def bitgetRedeemButton(self, interaction: discord.Interaction, button: discord.ui.Button):
         discord_id = interaction.user.id
         trade_detail = self.dbcon.get_bitget_by_id(discord_id)
@@ -58,7 +58,7 @@ class RedeemVIPView(discord.ui.View):
         
         await interaction.response.send_modal(BitGetVIPRedeemtionModal(self.dbcon, self.support_channel_id, self.support_channel_ch_id))
     
-    @discord.ui.button(label="Pionex 30 Days Free VIP", style=discord.ButtonStyle.blurple, custom_id="pionex_button")
+    @discord.ui.button(label="Claim 30 Days VIP using Pionex UID", style=discord.ButtonStyle.blurple, custom_id="pionex_button")
     async def pionexRedeemButton(self, interaction: discord.Interaction, button: discord.ui.Button):
         discord_id = interaction.user.id
         trade_detail = self.dbcon.get_pionex_by_id(discord_id)
@@ -84,7 +84,7 @@ class RedeemVIPViewCH(discord.ui.View):
         self.support_channel_id = support_channel_id
         self.support_channel_ch_id = support_channel_ch_id
 
-    @discord.ui.button(label="领取 7 天免费VIP体验", style=discord.ButtonStyle.blurple, custom_id="redeem_button")
+    @discord.ui.button(label="通过BingX领取VIP体验", style=discord.ButtonStyle.blurple, custom_id="redeem_button")
     async def RedeemButton(self, interaction: discord.Interaction, button: discord.ui.Button):
         discord_id = interaction.user.id
         trade_detail = self.dbcon.get_trade_volume_by_id(discord_id)
@@ -101,16 +101,16 @@ class RedeemVIPViewCH(discord.ui.View):
         
         await interaction.response.send_modal(VIPRedeemtionModalCH(self.dbcon, self.support_channel_id, self.support_channel_ch_id))
     
-    @discord.ui.button(label="更改UID", style=discord.ButtonStyle.green, custom_id="edit_uid_button")
-    async def uuidSubmissionButton(self, interaction: discord.Interaction, button: discord.ui.Button):
-        discord_id = interaction.user.id
-        trade_detail = self.dbcon.get_trade_volume_by_id(discord_id)
-        if not trade_detail:
-            await interaction.response.send_message(ms.NO_UUID_CH.format(self.support_channel_id, self.support_channel_ch_id), ephemeral=True)
-            return
-        await interaction.response.send_modal(UUIDSubmissionModalCH(self.dbcon, self.support_channel_id, self.support_channel_ch_id))
+    # @discord.ui.button(label="更改UID", style=discord.ButtonStyle.green, custom_id="edit_uid_button")
+    # async def uuidSubmissionButton(self, interaction: discord.Interaction, button: discord.ui.Button):
+    #     discord_id = interaction.user.id
+    #     trade_detail = self.dbcon.get_trade_volume_by_id(discord_id)
+    #     if not trade_detail:
+    #         await interaction.response.send_message(ms.NO_UUID_CH.format(self.support_channel_id, self.support_channel_ch_id), ephemeral=True)
+    #         return
+    #     await interaction.response.send_modal(UUIDSubmissionModalCH(self.dbcon, self.support_channel_id, self.support_channel_ch_id))
     
-    @discord.ui.button(label="Bitget 30 天免费VIP体验", style=discord.ButtonStyle.blurple, custom_id="bitget_button") 
+    @discord.ui.button(label="通过Bitget领取VIP体验", style=discord.ButtonStyle.blurple, custom_id="bitget_button") 
     async def bitgetRedeemButton(self, interaction: discord.Interaction, button: discord.ui.Button):
         discord_id = interaction.user.id
         trade_detail = self.dbcon.get_bitget_by_id(discord_id)
@@ -127,7 +127,7 @@ class RedeemVIPViewCH(discord.ui.View):
         
         await interaction.response.send_modal(BitGetVIPRedeemtionModalCH(self.dbcon, self.support_channel_id, self.support_channel_ch_id))
     
-    @discord.ui.button(label="Pionex 30 天免费VIP体验", style=discord.ButtonStyle.blurple, custom_id="pionex_button") 
+    @discord.ui.button(label="通过Pionex领取30天VIP体验", style=discord.ButtonStyle.blurple, custom_id="pionex_button") 
     async def pionexRedeemButton(self, interaction: discord.Interaction, button: discord.ui.Button):
         discord_id = interaction.user.id
         trade_detail = self.dbcon.get_pionex_by_id(discord_id)
