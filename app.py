@@ -361,8 +361,8 @@ async def notify_expiring_expired_vips():
 
 # Main Program Run here
 # schedule.every().day.at('00:00').do(lambda: asyncio.create_task(clear_expired()))
-schedule.every().day.at('00:00').do(lambda: asyncio.create_task(notify_expiring_expired_vips()))
-schedule.every().day.at('00:00').do(lambda: asyncio.create_task(clear_vip_routine()))
+# schedule.every().day.at('00:00').do(lambda: asyncio.create_task(notify_expiring_expired_vips()))
+# schedule.every().day.at('00:00').do(lambda: asyncio.create_task(clear_vip_routine()))
 # schedule.every().day.at('00:00').do(lambda: asyncio.create_task(update_propw_routine()))
 
 async def run_vip():
@@ -396,9 +396,9 @@ async def run_atm():
     await channel_en.send(embed=embed, view=view)
 
 
-async def run_scheduler():
-    while True:
-        schedule.run_pending()
-        await asyncio.sleep(1)
+# async def run_scheduler():
+#     while True:
+#         schedule.run_pending()
+#         await asyncio.sleep(1)
 
 bot.run(config.TOKEN)
