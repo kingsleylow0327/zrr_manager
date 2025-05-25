@@ -117,7 +117,7 @@ class ZonixDB():
         return self.dbcon_manager(sql, get_all=True)
     
     def get_expired_vip_user(self, role):
-        sql = f"""SELECT * FROM {self.config.TRADE_VOLUME_TABLE} where vip_expired_date <= NOW() and discord_id IS NOT NULL
+        sql = f"""SELECT * FROM {self.config.TRADE_VOLUME_TABLE} where expired_date <= NOW() and discord_id IS NOT NULL
         """
         if role == "VIP30":
             sql = f"""SELECT * FROM {self.config.PROPW_TABLE} where expired_date <= NOW() and discord_id IS NOT NULL
@@ -326,14 +326,14 @@ class ZonixDB():
     def update_expiry_date_by_discord_id(self, discord_id, expiry_date):
         sql = f"""
         UPDATE {self.config.TRADE_VOLUME_TABLE}
-        SET vip_expired_date = '{expiry_date}'
+        SET expired_date = '{expiry_date}'
         WHERE discord_id ='{discord_id}'"""
         return self.dbcon_manager(sql)
     
     def insert_user_into_trade_volume_table(self, uuid, discord_id, date):
         sql = f"""
         INSERT INTO {self.config.TRADE_VOLUME_TABLE}
-        (uuid, discord_id, vip_expired_date)
+        (uuid, discord_id, expired_date)
         VALUES
         ('{uuid}', '{discord_id}', '{date}')"""
         return self.dbcon_manager(sql)
@@ -356,7 +356,7 @@ class ZonixDB():
     def update_user_from_trade_volume_table_with_date(self, uuid, discord_id, date):
         sql = f"""
         UPDATE {self.config.TRADE_VOLUME_TABLE}
-        SET discord_id = '{discord_id}', vip_expired_date = '{date}'
+        SET discord_id = '{discord_id}', expired_date = '{date}'
         WHERE uuid ='{uuid}'"""
         return self.dbcon_manager(sql)
     
@@ -392,13 +392,13 @@ class ZonixDB():
             sql = f"""
             SELECT discord_id
             FROM {self.config.TRADE_VOLUME_TABLE}
-            WHERE DATE(vip_expired_date) = CURDATE()
+            WHERE DATE(expired_date) = CURDATE()
             """
         else:
             sql = f"""
             SELECT discord_id
             FROM {self.config.TRADE_VOLUME_TABLE}
-            WHERE DATE(vip_expired_date) = DATE_ADD(CURDATE(), INTERVAL {days} DAY)
+            WHERE DATE(expired_date) = DATE_ADD(CURDATE(), INTERVAL {days} DAY)
             """
 
         result = self.dbcon_manager(sql, get_all=True)
@@ -488,5 +488,5 @@ class ZonixDB():
         return self.dbcon_manager(sql, get_all=True)
     
     def update_bingx_table_expired_date(self, user_list):
-        sql = f"""UPDATE {self.config.TRADE_VOLUME_TABLE} set vip_expired_date = DATE_ADD(NOW(), INTERVAL 30 DAY) where discord_id in ({user_list})"""
+        sql = f"""UPDATE {self.config.TRADE_VOLUME_TABLE} set expired_date = DATE_ADD(NOW(), INTERVAL 30 DAY) where discord_id in ({user_list})"""
         return self.dbcon_manager(sql)

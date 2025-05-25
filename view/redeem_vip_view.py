@@ -21,12 +21,12 @@ class RedeemVIPView(discord.ui.View):
         trade_detail = self.dbcon.get_trade_volume_by_id(discord_id)
         
         # Expired
-        if trade_detail and trade_detail.get("vip_expired_date") and trade_detail.get("vip_expired_date") < date.today():
+        if trade_detail and trade_detail.get("expired_date") and trade_detail.get("expired_date") < date.today():
             await interaction.response.send_message(ms.EXPIRED_VIP.format(self.support_channel_id, self.support_channel_ch_id), ephemeral=True)
             return
 
         # Already registered
-        if trade_detail and trade_detail.get("vip_expired_date") != None:
+        if trade_detail and trade_detail.get("expired_date") != None:
             await interaction.response.send_message(ms.REDEEMED_VIP.format(self.support_channel_id, self.support_channel_ch_id), ephemeral=True)
             return
         
@@ -90,12 +90,12 @@ class RedeemVIPViewCH(discord.ui.View):
         trade_detail = self.dbcon.get_trade_volume_by_id(discord_id)
         
         # Expired
-        if trade_detail and trade_detail.get("vip_expired_date") and trade_detail.get("vip_expired_date") < date.today():
+        if trade_detail and trade_detail.get("expired_date") and trade_detail.get("expired_date") < date.today():
             await interaction.response.send_message(ms.EXPIRED_VIP_CH.format(self.support_channel_id, self.support_channel_ch_id), ephemeral=True)
             return
 
         # Already registered
-        if trade_detail and trade_detail.get("vip_expired_date") != None:
+        if trade_detail and trade_detail.get("expired_date") != None:
             await interaction.response.send_message(ms.REDEEMED_VIP_CH.format(self.support_channel_id, self.support_channel_ch_id), ephemeral=True)
             return
         
