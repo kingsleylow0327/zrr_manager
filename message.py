@@ -158,16 +158,6 @@ If your monthly trading volume exceeds 300K, you'sre entitled to <@&126598089857
 
 ⸻
 
-🔷 Pionex 🔷
-
-If you take the 100K Pionex Prop Trading Challenge between 1st May - 31st May 2025, you can claim 30 Days of <@&1312790308009934920> Access.
-
-<a:animatedarrowright:1224308096835256361> Your Pionex account must be registered using UnityCrypto's referral link.
-<a:animatedarrowright:1224308096835256361> Referral links are available in #announcement channels.
-<a:animatedarrowright:1224308096835256361> Limited-time offer—don't miss out!
-
-⸻
-
 ⚠️ Please Note:
 • By claiming this VIP access, you acknowledge the inherent risks in crypto trading. 
 • Past performance does not guarantee future results. Trade wisely and leverage expert insights.

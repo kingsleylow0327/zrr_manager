@@ -57,24 +57,7 @@ class RedeemVIPView(discord.ui.View):
             return
         
         await interaction.response.send_modal(BitGetVIPRedeemtionModal(self.dbcon, self.support_channel_id, self.support_channel_ch_id))
-    
-    @discord.ui.button(label="Claim 30 Days VIP using Pionex UID", style=discord.ButtonStyle.blurple, custom_id="pionex_button")
-    async def pionexRedeemButton(self, interaction: discord.Interaction, button: discord.ui.Button):
-        discord_id = interaction.user.id
-        trade_detail = self.dbcon.get_pionex_by_id(discord_id)
-        
-        # Expired
-        if trade_detail and trade_detail.get("expired_date") and trade_detail.get("expired_date") < date.today():
-            await interaction.response.send_message(ms.PROPW_EXPIRED_VIP.format(self.support_channel_id, self.support_channel_ch_id), ephemeral=True)
-            return
 
-        # Already registered
-        if trade_detail and trade_detail.get("expired_date") != None:
-            await interaction.response.send_message(ms.PROPW_REDEEMED_VIP.format(self.support_channel_id, self.support_channel_ch_id), ephemeral=True)
-            return
-        
-        await interaction.response.send_modal(PionexVIPRedeemtionModal(self.dbcon, self.support_channel_id, self.support_channel_ch_id))
- 
 
 class RedeemVIPViewCH(discord.ui.View):
 
@@ -126,21 +109,3 @@ class RedeemVIPViewCH(discord.ui.View):
             return
         
         await interaction.response.send_modal(BitGetVIPRedeemtionModalCH(self.dbcon, self.support_channel_id, self.support_channel_ch_id))
-    
-    @discord.ui.button(label="通过Pionex领取30天VIP体验", style=discord.ButtonStyle.blurple, custom_id="pionex_button") 
-    async def pionexRedeemButton(self, interaction: discord.Interaction, button: discord.ui.Button):
-        discord_id = interaction.user.id
-        trade_detail = self.dbcon.get_pionex_by_id(discord_id)
-        
-        # Expired
-        if trade_detail and trade_detail.get("expired_date") and trade_detail.get("expired_date") < date.today():
-            await interaction.response.send_message(ms.PROPW_EXPIRED_VIP_CH.format(self.support_channel_id, self.support_channel_ch_id), ephemeral=True)
-            return
-
-        # Already registered
-        if trade_detail and trade_detail.get("expired_date") != None:
-            await interaction.response.send_message(ms.PROPW_REDEEMED_VIP_CH.format(self.support_channel_id, self.support_channel_ch_id), ephemeral=True)
-            return
-        
-        await interaction.response.send_modal(PionexVIPRedeemtionModalCH(self.dbcon, self.support_channel_id, self.support_channel_ch_id))
-  
