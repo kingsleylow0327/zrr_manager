@@ -53,7 +53,7 @@ async def on_ready():
     bot.add_view(RedeemVIPView(dbcon, config.SUPPORT_CHANNEL_ID, config.SUPPORT_CHANNEL_CH_ID))
     await run_vip()
     # await run_atm()
-    await run_scheduler()
+    # await run_scheduler()
 
 
 # License command
