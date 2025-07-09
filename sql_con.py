@@ -1,3 +1,5 @@
+import aiomysql
+import asyncio
 from mysql.connector import pooling
 from logger import Logger
 from dto.license_dto import LicenseDTO
@@ -16,6 +18,7 @@ class ZonixDB():
             config.DB_USERNAME,
             config.DB_PASSWORD,
             config.POOL_SIZE)
+        self.async_pool = None
  
     def _create_pool(self, host, port, database, user, password, size):
         try:
@@ -36,6 +39,19 @@ class ZonixDB():
             logger.warning("DB Pool Failed")
             return None
     
+    async def init_async_pool(self):
+        self.async_pool = await aiomysql.create_pool(
+            host=self.config.DB_ADDRESS,
+            port=int(self.config.DB_PORT),
+            user=self.config.DB_USERNAME,
+            password=self.config.DB_PASSWORD,
+            db=self.config.DB_SCHEMA,
+            minsize=1,
+            maxsize=int(self.config.POOL_SIZE),
+            autocommit=True
+        )
+        logger.info("Async DB Pool Created")
+    
     def dbcon_manager(self, sql:str, get_all=False):
         connection_object = self.pool.get_connection()
         row = None
@@ -52,6 +68,18 @@ class ZonixDB():
         if not row:
             return None
         return row
+    
+    async def async_dbcon_manager(self, sql: str, get_all=False):
+        async with self.async_pool.acquire() as conn:
+            async with conn.cursor(aiomysql.DictCursor) as cursor:
+                try:
+                    await cursor.execute(sql)
+                    row = await cursor.fetchall() if get_all else await cursor.fetchone()
+                    return row if row else None
+                except Exception as e:
+                    logger.warning(sql)
+                    logger.warning(e)
+                    return None
     
     def get_trader_list(self, following_trader_id=None):
         sql = f"""SELECT t.*, f.count FROM {self.config.TRADER_CHANNEL_TABLE} as t
@@ -457,13 +485,21 @@ class ZonixDB():
         """
 
         return self.dbcon_manager(sql)
-    
-    def update_bitget_table(self, tupples):
-        sql_format = """INSERT INTO {} (propw_uid, amount) VALUES ('{}','{}') ON DUPLICATE KEY UPDATE amount = VALUES(amount);"""
-        for t in tupples:
-            self.dbcon_manager(sql_format.format(self.config.PROPW_TABLE, t[0], t[1]))
+
+    async def update_bitget_table(self, tupples):
+        sql_format = """INSERT INTO bitget_table (uuid, volume) VALUES ('{}', '{}') ON DUPLICATE KEY UPDATE volume = VALUES(volume);"""
+        queries = [sql_format.format(self.config.TRADE_VOLUME_TABLE, t[0], t[1]) for t in tupples]
+        tasks = [self.async_dbcon_manager(query, get_all=True) for query in queries]
+        await asyncio.gather(*tasks)
         now = datetime.datetime.now()
-        logger.info(f"PropW Table Update Done at, {now}")
+        logger.info(f"BITGET Table Update Done at, {now}")
+    
+    def update_pionex_table(self, tupples):
+        sql_format = """INSERT INTO {} (pionex_uid, amount) VALUES ('{}', '{}') ON DUPLICATE KEY UPDATE pionex_uid = VALUES(pionex_uid), amount = VALUES(amount);"""
+        for t in tupples:
+            self.dbcon_manager(sql_format.format(self.config.PIONEX_TABLE, t[0], t[1]))
+        now = datetime.datetime.now()
+        logger.info(f"Pionex Table Update Done at, {now}")
     
     def update_propw_table(self, tupples):
         sql_format = """INSERT INTO {} (propw_uid, amount) VALUES ('{}','{}') ON DUPLICATE KEY UPDATE amount = VALUES(amount);"""
@@ -471,16 +507,21 @@ class ZonixDB():
             self.dbcon_manager(sql_format.format(self.config.PROPW_TABLE, t[0], t[1]))
         now = datetime.datetime.now()
         logger.info(f"PropW Table Update Done at, {now}")
-
-    def update_bingx_table(self, tupples):
+    
+    async def update_bingx_table(self, tupples):
         sql_format = """INSERT INTO {} (uuid, volume) VALUES ('{}', '{}') ON DUPLICATE KEY UPDATE volume = VALUES(volume);"""
-        for t in tupples:
-            self.dbcon_manager(sql_format.format(self.config.TRADE_VOLUME_TABLE, t[0], t[1]))
+        queries = [sql_format.format(self.config.TRADE_VOLUME_TABLE, t[0], t[1]) for t in tupples]
+        tasks = [self.async_dbcon_manager(query, get_all=True) for query in queries]
+        await asyncio.gather(*tasks)
         now = datetime.datetime.now()
         logger.info(f"BingX Table Update Done at, {now}")
     
-    def get_bingx_table_with_uid(self, amount):
-        sql = f"""SELECT * FROM {self.config.TRADE_VOLUME_TABLE} where discord_id IS NOT NULL and volume >= {amount};"""
+    def get_bingx_table_with_volume(self, amount):
+        sql = f"""SELECT discord_id FROM {self.config.TRADE_VOLUME_TABLE} where discord_id IS NOT NULL and volume >= {amount};"""
+        return self.dbcon_manager(sql, get_all=True)
+    
+    def get_bitget_table_with_volume(self, amount):
+        sql = f"""SELECT discord_id FROM {self.config.BITGET_TABLE} where discord_id IS NOT NULL and volume >= {amount};"""
         return self.dbcon_manager(sql, get_all=True)
     
     def get_propw_table_with_uid(self):
@@ -488,5 +529,16 @@ class ZonixDB():
         return self.dbcon_manager(sql, get_all=True)
     
     def update_bingx_table_expired_date(self, user_list):
-        sql = f"""UPDATE {self.config.TRADE_VOLUME_TABLE} set expired_date = DATE_ADD(NOW(), INTERVAL 30 DAY) where discord_id in ({user_list})"""
+        sql = f"""UPDATE {self.config.TRADE_VOLUME_TABLE} set expired_date = DATE_ADD(NOW(), INTERVAL 30 DAY), status = 'vip' where discord_id in ({user_list})"""
+        return self.dbcon_manager(sql)
+    
+    def update_bitget_table_expired_date(self, user_list):
+        sql = f"""UPDATE {self.config.BITGET_TABLE} set expired_date = DATE_ADD(NOW(), INTERVAL 30 DAY), status = 'vip' where discord_id in ({user_list})"""
+        return self.dbcon_manager(sql)
+    
+    def update_x_expired_date_by_discord_id(self, table, discord_id, expiry_date):
+        sql = f"""
+        UPDATE {table}
+        SET expired_date = '{expiry_date}'
+        WHERE discord_id ='{discord_id}'"""
         return self.dbcon_manager(sql)

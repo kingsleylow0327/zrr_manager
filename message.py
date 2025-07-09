@@ -111,7 +111,7 @@ NO_UUID_CH = """
 """
 
 VIP_SUCCESS = """
-Your have submited your UID, enjoy your 7 Days @FREE-VIP and access to our premium features.
+Your have submited your UID, enjoy your @VIP and access to our premium features.
 """
 
 PROPW_SUCCESS = """
@@ -119,7 +119,7 @@ Your have submited your UID, enjoy your 30 Days @{} and access to our premium fe
 """
 
 VIP_SUCCESS_CH = """
-您已提交您的UID, 你将会获得7天 @FREE-VIP 体验。
+您已提交您的UID, 你将会获得 @VIP 体验。
 """
 
 PROPW_SUCCESS_CH = """
@@ -204,6 +204,10 @@ VIP_DESCRIPTION_CH = """
 
 ATM_TITLE = """
 Welcome to AutoTrade & AlgoTrade Manager
+"""
+
+ADMIN_TITTLE = """
+UC Admin Panel
 """
 
 ATM_DESCRIPTION = """

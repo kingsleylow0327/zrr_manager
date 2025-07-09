@@ -16,6 +16,7 @@ from service.resubscribe import resubscribe
 from service.cancel_subscribe import cancel_subscribe
 from service.gsheet import GSheet
 from view.atm_view import AutoTradeManagerView
+from view.admin_view import AdminView
 from view.redeem_vip_view import RedeemVIPView, RedeemVIPViewCH
 from config import Config
 from sql_con import ZonixDB
@@ -35,6 +36,7 @@ config = Config()
 
 # DB Setup
 dbcon = ZonixDB(config)
+invite_cache = {}
 
 GUILD_ID = int(config.GUILD_ID)
 
@@ -48,12 +50,16 @@ def within_valid_period(date_time):
 
 @bot.event
 async def on_ready():
+    await dbcon.init_async_pool()
     await bot.tree.sync()
-    logger.info("Manager Ready")
     bot.add_view(RedeemVIPView(dbcon, config.SUPPORT_CHANNEL_ID, config.SUPPORT_CHANNEL_CH_ID))
+    for guild in bot.guilds:
+        invite_cache[guild.id] = await guild.invites()
+    await run_admin()
     await run_vip()
     # await run_atm()
     # await run_scheduler()
+    logger.info("Manager Ready")
 
 
 # License command
@@ -394,6 +400,16 @@ async def run_atm():
     )
     view = AutoTradeManagerView(dbcon)
     await channel_en.send(embed=embed, view=view)
+
+async def run_admin():
+    admin_channel = bot.get_channel(int(config.ADMIN_CHANNEL_ID))
+    embed = discord.Embed(
+        title=ms.ADMIN_TITTLE,
+        description=ms.ATM_DESCRIPTION.format(config.VIP_ROLE_ID, config.SUPPORT_CHANNEL_ID),
+        color=0xE733FF  # Purple color
+    )
+    view = AdminView(dbcon, config)
+    await admin_channel.send(embed=embed, view=view)
 
 
 # async def run_scheduler():

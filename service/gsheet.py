@@ -6,9 +6,12 @@ from google.oauth2.service_account import Credentials
 CREDENTIALS_FILE = os.getenv('GBOT_GOOGLE_SERVICE_ACCOUNT', 'config/services_account.json')
 GBOT_GSHEET_ID = "1ss4RoFEIpXSg5PfT0YxkK-od8l3rNTLIRBcU0iCYGgk"
 PROPW_EXPECTED_HEADERS = ['propw_uid','Amount']
+BITGET_EXPECTED_HEADERS = ['UID','Trading Volume (USDT)']
+PIONEX_EXPECTED_HEADERS = ['purchase_date', 'uid','Amount']
 BINGX_EXPECTED_HEADERS = ['UID','Trading Volume (USDT)']
-SHEET_MAPPING = {"BINGX":2,
-                 "PROPW":1}
+SHEET_MAPPING = {"BINGX":4,
+                 "BITGET":1,
+                 "PIONEX":2}
 
 class GSheet():
     def __init__(self, dbcon, config):
@@ -54,6 +57,24 @@ class GSheet():
             small_tupple = (int(float(row[header[0]])), int(float(row[header[1]])))
             jiant_tupple.append(small_tupple)
         return jiant_tupple
+    
+    def df_to_tupples_bitget(self, df, header):
+        jiant_tupple = []
+        for _, row in df.iterrows():
+            if (row[header[0]] == ''):
+                break
+            small_tupple = (row[header[0]], int(float(row[header[1]] if row[header[1]].strip() != '' else 0)))
+            jiant_tupple.append(small_tupple)
+        return jiant_tupple
+    
+    def df_to_tupples_pionex(self, df, header):
+        jiant_tupple = []
+        for _, row in df.iterrows():
+            if (row[header[1]] == ''):
+                break
+            small_tupple = (int(float(row[header[1]])), int(float(row[header[2]])))
+            jiant_tupple.append(small_tupple)
+        return jiant_tupple
 
     def store_to_propw_db(self):
         worksheet = self.get_worksheet(GBOT_GSHEET_ID, SHEET_MAPPING.get("PROPW"))
@@ -61,9 +82,22 @@ class GSheet():
         tupple_data = self.df_to_tupples_propw(df, PROPW_EXPECTED_HEADERS)
         self.dbcon.update_propw_table(tupple_data)
     
-    def store_to_bingx_db(self):
+    async def store_to_bingx_db(self):
         worksheet = self.get_worksheet(GBOT_GSHEET_ID, SHEET_MAPPING.get("BINGX"))
-        df = self.get_all_user(worksheet, BINGX_EXPECTED_HEADERS, 3)
+        df = self.get_all_user(worksheet, BINGX_EXPECTED_HEADERS, 2)
         tupple_data = self.df_to_tupples_bingx(df, BINGX_EXPECTED_HEADERS)
-        self.dbcon.update_bingx_table(tupple_data)
+        await self.dbcon.update_bingx_table(tupple_data)
+    
+    def store_to_bitget_db(self):
+        worksheet = self.get_worksheet(GBOT_GSHEET_ID, SHEET_MAPPING.get("BITGET"))
+        df = self.get_all_user(worksheet, BITGET_EXPECTED_HEADERS, 0)
+        tupple_data = self.df_to_tupples_propw(df, BITGET_EXPECTED_HEADERS)
+        self.dbcon.update_bitget_table(tupple_data)
+    
+    def store_to_bitget_db(self):
+        worksheet = self.get_worksheet(GBOT_GSHEET_ID, SHEET_MAPPING.get("PIONEX"))
+        df = self.get_all_user(worksheet, PIONEX_EXPECTED_HEADERS, 0)
+        tupple_data = self.df_to_tupples_propw(df, PIONEX_EXPECTED_HEADERS)
+        self.dbcon.update_pionex_table(tupple_data)
+
 

@@ -12,6 +12,7 @@ class Config():
         self.SENDER_CHANNEL_ID = os.getenv('SENDER_CHANNEL_ID')
         self.RECEIVER_CHANNEL_ID = os.getenv('RECEIVER_CHANNEL_ID')
         self.COMMAND_CHANNEL_ID = os.getenv('COMMAND_CHANNEL_ID')
+        self.ADMIN_CHANNEL_ID = os.getenv('ADMIN_CHANNEL_ID')
         self.LICENCE_CHANNEL_ID = os.getenv('LICENCE_CHANNEL_ID')
         self.GUILD_ID = os.getenv('GUILD_ID')
         self.DB_ADDRESS = os.getenv('DB_ADDRESS')
