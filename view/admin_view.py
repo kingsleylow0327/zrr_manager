@@ -1,5 +1,4 @@
 import discord
-from modal.add_vip_role_modal import AddVipRoleModal
 from service.gsheet import GSheet
 
 
