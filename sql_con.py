@@ -144,12 +144,16 @@ class ZonixDB():
         """
         return self.dbcon_manager(sql, get_all=True)
     
-    def get_expired_vip_user(self, role):
-        sql = f"""SELECT * FROM {self.config.TRADE_VOLUME_TABLE} where expired_date <= NOW() and discord_id IS NOT NULL
+    def get_expired_vip_user(self, table_name):
+        sql = f"""SELECT * FROM {table_name} where expired_date <= NOW() and discord_id IS NOT NULL and status = 'vip'
         """
-        if role == "VIP30":
-            sql = f"""SELECT * FROM {self.config.PROPW_TABLE} where expired_date <= NOW() and discord_id IS NOT NULL
-            """
+        return self.dbcon_manager(sql, get_all=True)
+    
+    def remove_vip_flag(self, table_name, uuid_list):
+        sql = f"""UPDATE {table_name}
+        SET status = null
+        WHERE uuid IN {uuid_list}
+        """
         return self.dbcon_manager(sql, get_all=True)
     
     def unfollow_trader(self, player_list):

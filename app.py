@@ -40,6 +40,11 @@ invite_cache = {}
 
 GUILD_ID = int(config.GUILD_ID)
 
+ROLE_TABLE_MAP = {
+    "VIPB": config.BITGET_TABLE,
+    "VIP": config.TRADE_VOLUME_TABLE
+}
+
 
 def within_valid_period(date_time):
     current_date = datetime.now()
@@ -58,7 +63,7 @@ async def on_ready():
     await run_admin()
     await run_vip()
     # await run_atm()
-    # await run_scheduler()
+    await run_scheduler()
     logger.info("Manager Ready")
 
 
@@ -292,23 +297,20 @@ async def clear_expired():
     dbcon.unfollow_trader(player_name_list)
     logger.info("Cron Job: Autotrade Clearing Expired User Done")
 
-@bot.tree.command(name="clear_vip", description="clear vip")
-async def clear_vip_expired(interaction: discord.Interaction, role: str):
-    role = role.upper()
-    await interaction.response.defer(ephemeral=True)
-    await clear_expired_user_by_role(role)
-    await interaction.followup.send(content=f"Expired user with role: {role} cleared")
-
 async def clear_expired_user_by_role(role:str):
     logger.info(f"Cron Job: Clearing {role} Start")
-    expired_player_list = dbcon.get_expired_vip_user(role)
-    logger.info(f"Cron Job: {len(expired_player_list)} user to be cleared")
-    if not expired_player_list:
+    table_name = ROLE_TABLE_MAP.get(role)
+    expired_user_list = dbcon.get_expired_vip_user(table_name)
+    if not expired_user_list:
         logger.info(f"Cron Job: Clearing {role} Expired User Done")
         return True
+    logger.info(f"Cron Job: {len(expired_user_list)} user to be cleared")
     guild = bot.get_channel(int(config.COMMAND_CHANNEL_ID)).guild
-    for player_info in expired_player_list:
-        user = guild.get_member(int(player_info.get("discord_id")))
+    uuid_list = []
+    for user_info in expired_user_list:
+        discord_id = int(user_info.get("discord_id"))
+        uuid_list.append(user_info.get('uuid'))
+        user = guild.get_member(discord_id)
         if not user:
             continue
         target_role = discord.utils.get(guild.roles, name=role)
@@ -316,8 +318,10 @@ async def clear_expired_user_by_role(role:str):
             try:
                 await user.send(f"Your {role} experience is Expired.")
             except Exception as e:
-                logger.info(f"Unable to send message to user: {int(player_info.get('discord_id'))}")
+                logger.info(f"Unable to send message to user: {discord_id}")
             await user.remove_roles(target_role)
+    uuid_list = f"({','.join(uuid_list)})"
+    dbcon.remove_vip_flag(table_name, uuid_list)
     logger.info(f"Cron Job: Clearing Expired {role} User Done")
 
 async def clear_vip_routine():
@@ -358,7 +362,7 @@ async def notify_expiring_expired_vips():
 # Main Program Run here
 # schedule.every().day.at('00:00').do(lambda: asyncio.create_task(clear_expired()))
 # schedule.every().day.at('00:00').do(lambda: asyncio.create_task(notify_expiring_expired_vips()))
-# schedule.every().day.at('00:00').do(lambda: asyncio.create_task(clear_vip_routine()))
+schedule.every().day.at('00:00').do(lambda: asyncio.create_task(clear_vip_routine()))
 
 async def run_vip():
     channel_en = bot.get_channel(int(config.ON_BOARDING_CHANNEL_ID[0]))
@@ -401,9 +405,9 @@ async def run_admin():
     await admin_channel.send(embed=embed, view=view)
 
 
-# aync def run_scheduler():
-#     while True:
-#         schedule.run_pending()
-#         await asyncio.sleep(1)
+async def run_scheduler():
+    while True:
+        schedule.run_pending()
+        await asyncio.sleep(1)
 
 bot.run(config.TOKEN)
