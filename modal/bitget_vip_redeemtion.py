@@ -11,25 +11,16 @@ class BitGetVIPRedeemtionModal(discord.ui.Modal, title=TITLE):
         self.dbcon = dbcon
         self.support_channel_id = support_channel_id
         self.support_channel_ch_id = support_channel_ch_id
+        self.table_name = dbcon.config.BITGET_TABLE
+        self.no_uuid_message = ms.NO_UUID.format(self.support_channel_id, self.support_channel_ch_id)
+        self.role_name = "VIPB"
         super().__init__(title=TITLE, timeout=120)
 
     uuid = discord.ui.TextInput(label="BitGet Account UID", placeholder="BitGet Account UID", style=discord.TextStyle.short)
 
     async def on_submit(self, interaction: Interaction):
-        uuid = self.uuid.value
-        discord_id = interaction.user.id
-        if not self.dbcon.check_uuid_exist_from_bitget_table(uuid):
-            await interaction.response.send_message(ms.NO_UUID.format(self.support_channel_id, self.support_channel_ch_id), ephemeral=True)
-        else:
-            today = (date.today() + timedelta(days=30)).strftime("%Y-%m-%d")
-            self.dbcon.update_user_from_bitget_table_with_date(uuid, discord_id, today)
-
-            # Give Role
-            user = interaction.user
-            role = discord.utils.get(interaction.guild.roles, name="VIPB")
-            await user.add_roles(role)
-            await interaction.response.send_message(ms.PROPW_SUCCESS.format("VIPB"), ephemeral=True)
-
+        await interaction.response.defer(ephemeral=True)
+        await vip_redeem(interaction, self.uuid.value, self.dbcon, self.no_uuid_message, self.table_name, self.role_name)
 
 class BitGetVIPRedeemtionModalCH(discord.ui.Modal, title=TITLE_CH):
 
@@ -37,21 +28,30 @@ class BitGetVIPRedeemtionModalCH(discord.ui.Modal, title=TITLE_CH):
         self.dbcon = dbcon
         self.support_channel_id = support_channel_id
         self.support_channel_ch_id = support_channel_ch_id
+        self.table_name = dbcon.config.BITGET_TABLE
+        self.no_uuid_message = ms.NO_UUID_CH.format(self.support_channel_id, self.support_channel_ch_id)
+        self.role_name = "VIPB"
         super().__init__(title=TITLE, timeout=120)
 
     uuid = discord.ui.TextInput(label="BitGet 账户 UID", placeholder="BitGet 账户 UID", style=discord.TextStyle.short)
 
     async def on_submit(self, interaction: Interaction):
-        uuid = self.uuid.value
-        discord_id = interaction.user.id
-        if not self.dbcon.check_uuid_exist_from_bitget_table(uuid):
-            await interaction.response.send_message(ms.NO_UUID_CH.format(self.support_channel_id, self.support_channel_ch_id), ephemeral=True)
-        else:
-            today = (date.today() + timedelta(days=30)).strftime("%Y-%m-%d")
-            self.dbcon.update_user_from_bitget_table_with_date(uuid, discord_id, today)
+        await interaction.response.defer(ephemeral=True)
+        await vip_redeem(interaction, self.uuid.value, self.dbcon, self.no_uuid_message, self.table_name, self.role_name)
 
-            # Give Role
-            user = interaction.user
-            role = discord.utils.get(interaction.guild.roles, name="VIPB")
-            await user.add_roles(role)
-            await interaction.response.send_message(ms.PROPW_SUCCESS_CH.format("VIPB"), ephemeral=True)
+
+async def vip_redeem(interaction, uuid, dbcon, no_uuid_message, table_name, role_name):
+    discord_id = interaction.user.id
+    user_info = dbcon.get_bitget_table_by_uuid(uuid)
+
+    if user_info == None:
+        await interaction.followup.send(no_uuid_message, ephemeral=True)
+
+    else:
+        expiry_date = (date.today() + timedelta(days=30)).strftime("%Y-%m-%d")
+        dbcon.update_user_from_vip_tables_with_date(table_name, uuid, discord_id, expiry_date)
+        # Give Role
+        user = interaction.user
+        role = discord.utils.get(interaction.guild.roles, name=role_name)
+        await user.add_roles(role)
+        await interaction.followup.send(ms.VIP_SUCCESS, ephemeral=True)

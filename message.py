@@ -94,6 +94,10 @@ REDEEMED_VIP = """
 You have redeem FREE VIP previously and not eligible to redeem again, please contact <#{}> or <#{}> if you think this is an mistake
 """
 
+REDEEMED_VIP_CH = """
+您之前已经领取过30天免费VIP, 无法再次领取。如果您认为这是一个错误, 请联系 <#{}> 或 <#{}>
+"""
+
 PROPW_REDEEMED_VIP = """
 You have redeem 30VIP previously and not eligible to redeem again, please contact <#{}> or <#{}> if you think this is an mistake
 """

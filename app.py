@@ -251,16 +251,6 @@ async def give_vip(interaction: discord.Interaction, uid: str):
         dbcon.insert_solely_uid(uid)
         await interaction.followup.send(content=f"New UID {uid} added")
 
-
-@bot.tree.command(name="updatepropw", description="Update PropW table")
-async def update_propw(interaction: discord.Interaction):
-    await interaction.response.defer(ephemeral=True)
-    player_id = str(interaction.user.id)
-    if not dbcon.is_vip_admin(player_id):
-        return True
-    await update_propw_routine()
-    await interaction.followup.send(content="PropW table Updated")
-
 @bot.tree.command(name="updatebingx", description="Update BingX table")
 async def update_bingx(interaction: discord.Interaction):
     await interaction.response.defer(ephemeral=True)
@@ -369,7 +359,6 @@ async def notify_expiring_expired_vips():
 # schedule.every().day.at('00:00').do(lambda: asyncio.create_task(clear_expired()))
 # schedule.every().day.at('00:00').do(lambda: asyncio.create_task(notify_expiring_expired_vips()))
 # schedule.every().day.at('00:00').do(lambda: asyncio.create_task(clear_vip_routine()))
-# schedule.every().day.at('00:00').do(lambda: asyncio.create_task(update_propw_routine()))
 
 async def run_vip():
     channel_en = bot.get_channel(int(config.ON_BOARDING_CHANNEL_ID[0]))
@@ -412,7 +401,7 @@ async def run_admin():
     await admin_channel.send(embed=embed, view=view)
 
 
-# async def run_scheduler():
+# aync def run_scheduler():
 #     while True:
 #         schedule.run_pending()
 #         await asyncio.sleep(1)

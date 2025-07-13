@@ -295,13 +295,17 @@ class ZonixDB():
         ret = self.dbcon_manager(sql, get_all=True)
         return ret and len(ret) != 0
     
-    def check_uuid_exist_from_trade_volume_table(self, uuid):
+    def get_trade_volume_table_by_uuid(self, uuid):
         sql = f"""
-        SELECT uuid FROM {self.config.TRADE_VOLUME_TABLE} 
-        WHERE uuid='{uuid}'
-        AND discord_id is NULL"""
-        ret = self.dbcon_manager(sql, get_all=True)
-        return ret and len(ret) != 0
+        SELECT * FROM {self.config.TRADE_VOLUME_TABLE} 
+        WHERE uuid='{uuid}'"""
+        return self.dbcon_manager(sql, get_all=False)
+    
+    def get_bitget_table_by_uuid(self, uuid):
+        sql = f"""
+        SELECT * FROM {self.config.BITGET_TABLE} 
+        WHERE uuid='{uuid}'"""
+        return self.dbcon_manager(sql, get_all=False)
     
     def check_uuid_exist_from_propw_table(self, uuid):
         sql = f"""
@@ -313,8 +317,8 @@ class ZonixDB():
     
     def check_uuid_exist_from_bitget_table(self, uuid):
         sql = f"""
-        SELECT bitget_uid FROM {self.config.BITGET_TABLE} 
-        WHERE bitget_uid='{uuid}'
+        SELECT uuid FROM {self.config.BITGET_TABLE} 
+        WHERE uuid='{uuid}'
         AND discord_id is NULL"""
         ret = self.dbcon_manager(sql, get_all=True)
         return ret and len(ret) != 0
@@ -381,10 +385,10 @@ class ZonixDB():
         WHERE uuid ='{uuid}'"""
         return self.dbcon_manager(sql)
     
-    def update_user_from_trade_volume_table_with_date(self, uuid, discord_id, date):
+    def update_user_from_vip_tables_with_date(self, table, uuid, discord_id, date):
         sql = f"""
-        UPDATE {self.config.TRADE_VOLUME_TABLE}
-        SET discord_id = '{discord_id}', expired_date = '{date}'
+        UPDATE {table}
+        SET discord_id = '{discord_id}', expired_date = '{date}', status = 'vip'
         WHERE uuid ='{uuid}'"""
         return self.dbcon_manager(sql)
     
@@ -398,8 +402,8 @@ class ZonixDB():
     def update_user_from_bitget_table_with_date(self, uuid, discord_id, date):
         sql = f"""
         UPDATE {self.config.BITGET_TABLE}
-        SET discord_id = '{discord_id}', expired_date = '{date}'
-        WHERE bitget_uid ='{uuid}'"""
+        SET discord_id = '{discord_id}', expired_date = '{date}', status = 'vip'
+        WHERE uuid ='{uuid}'"""
         return self.dbcon_manager(sql)
     
     def update_user_from_pionex_table_with_date(self, uuid, discord_id, date):
@@ -515,6 +519,14 @@ class ZonixDB():
         await asyncio.gather(*tasks)
         now = datetime.datetime.now()
         logger.info(f"BingX Table Update Done at, {now}")
+
+    async def update_bitget_table(self, tupples):
+        sql_format = """INSERT INTO {} (uuid, volume) VALUES ('{}', '{}') ON DUPLICATE KEY UPDATE volume = VALUES(volume);"""
+        queries = [sql_format.format(self.config.BITGET_TABLE, t[0], t[1]) for t in tupples]
+        tasks = [self.async_dbcon_manager(query, get_all=True) for query in queries]
+        await asyncio.gather(*tasks)
+        now = datetime.datetime.now()
+        logger.info(f"BingX Table Update Done at, {now}")
     
     def get_bingx_table_with_volume(self, amount):
         sql = f"""SELECT discord_id FROM {self.config.TRADE_VOLUME_TABLE} where discord_id IS NOT NULL and volume >= {amount};"""
@@ -528,12 +540,16 @@ class ZonixDB():
         sql = f"""SELECT * FROM {self.config.PROPW_TABLE} where discord_id IS NOT NULL;"""
         return self.dbcon_manager(sql, get_all=True)
     
-    def update_bingx_table_expired_date(self, user_list):
-        sql = f"""UPDATE {self.config.TRADE_VOLUME_TABLE} set expired_date = DATE_ADD(NOW(), INTERVAL 30 DAY), status = 'vip' where discord_id in ({user_list})"""
+    def give_bingx_vip(self, user_list, day_interval):
+        sql = f"""UPDATE {self.config.TRADE_VOLUME_TABLE} set expired_date = DATE_ADD(NOW(), INTERVAL {day_interval} DAY), status = 'vip' where discord_id in ({user_list})"""
         return self.dbcon_manager(sql)
     
-    def update_bitget_table_expired_date(self, user_list):
-        sql = f"""UPDATE {self.config.BITGET_TABLE} set expired_date = DATE_ADD(NOW(), INTERVAL 30 DAY), status = 'vip' where discord_id in ({user_list})"""
+    def update_bingx_table_expired_date(self, user_list, day_interval):
+        sql = f"""UPDATE {self.config.TRADE_VOLUME_TABLE} set expired_date = DATE_ADD(NOW(), INTERVAL {day_interval} DAY), status = 'vip' where discord_id in ({user_list})"""
+        return self.dbcon_manager(sql)
+    
+    def update_bitget_table_expired_date(self, user_list, day_interval):
+        sql = f"""UPDATE {self.config.BITGET_TABLE} set expired_date = DATE_ADD(NOW(), INTERVAL {day_interval} DAY), status = 'vip' where discord_id in ({user_list})"""
         return self.dbcon_manager(sql)
     
     def update_x_expired_date_by_discord_id(self, table, discord_id, expiry_date):

@@ -18,7 +18,7 @@ class UUIDSubmissionModal(discord.ui.Modal, title=TITLE):
         uuid = self.uuid.value
         discord_id = interaction.user.id
 
-        if not self.dbcon.check_uuid_exist_from_trade_volume_table(uuid):
+        if not self.dbcon.get_trade_volume_table_by_uuid(uuid):
             await interaction.response.send_message(ms.NO_UUID.format(self.support_channel_id, self.support_channel_ch_id), ephemeral=True)
             return
         else:
@@ -39,7 +39,7 @@ class UUIDSubmissionModalCH(discord.ui.Modal, title=TITLE_CH):
         uuid = self.uuid.value
         discord_id = interaction.user.id
 
-        if not self.dbcon.check_uuid_exist_from_trade_volume_table(uuid):
+        if not self.dbcon.get_trade_volume_table_by_uuid(uuid):
             await interaction.response.send_message(ms.NO_UUID_CH.format(self.support_channel_id, self.support_channel_ch_id), ephemeral=True)
             return
         else:

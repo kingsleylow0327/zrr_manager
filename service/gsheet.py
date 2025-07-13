@@ -38,15 +38,6 @@ class GSheet():
         df = pd.DataFrame(data, columns=header)
         df[target_header[1]] = df[target_header[1]].str.replace(',', '', regex=True)
         return df
-
-    def df_to_tupples_propw(self, df, header):
-        jiant_tupple = []
-        for _, row in df.iterrows():
-            if (row[header[0]] == ''):
-                break
-            small_tupple = (int(float(row[header[0]])), int(float(row[header[1]])))
-            jiant_tupple.append(small_tupple)
-        return jiant_tupple
     
     def df_to_tupples_bingx(self, df, header):
         df = df[header]
@@ -88,16 +79,10 @@ class GSheet():
         tupple_data = self.df_to_tupples_bingx(df, BINGX_EXPECTED_HEADERS)
         await self.dbcon.update_bingx_table(tupple_data)
     
-    def store_to_bitget_db(self):
+    async def store_to_bitget_db(self):
         worksheet = self.get_worksheet(GBOT_GSHEET_ID, SHEET_MAPPING.get("BITGET"))
-        df = self.get_all_user(worksheet, BITGET_EXPECTED_HEADERS, 0)
-        tupple_data = self.df_to_tupples_propw(df, BITGET_EXPECTED_HEADERS)
-        self.dbcon.update_bitget_table(tupple_data)
-    
-    def store_to_bitget_db(self):
-        worksheet = self.get_worksheet(GBOT_GSHEET_ID, SHEET_MAPPING.get("PIONEX"))
-        df = self.get_all_user(worksheet, PIONEX_EXPECTED_HEADERS, 0)
-        tupple_data = self.df_to_tupples_propw(df, PIONEX_EXPECTED_HEADERS)
-        self.dbcon.update_pionex_table(tupple_data)
+        df = self.get_all_user(worksheet, BITGET_EXPECTED_HEADERS, 2)
+        tupple_data = self.df_to_tupples_bitget(df, BITGET_EXPECTED_HEADERS)
+        await self.dbcon.update_bitget_table(tupple_data)
 
 

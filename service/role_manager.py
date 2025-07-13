@@ -33,7 +33,7 @@ class RoleManager():
                 update_user_list.append(user_id)
                 logger.info(f"""{user_id} gained/pro-long role {role_name}""")
         if len(update_user_list) > 0:
-            self.dbcon.update_bingx_table_expired_date(",".join(update_user_list))
+            self.dbcon.update_bingx_table_expired_date(",".join(update_user_list), 30)
         logger.info(f"""{len(update_user_list)} user have gain {role_name}/pro-long their expiry""")
         
     
