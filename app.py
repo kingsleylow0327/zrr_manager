@@ -326,7 +326,7 @@ async def clear_expired_user_by_role(role:str):
 
 async def clear_vip_routine():
     await clear_expired_user_by_role("VIP")
-    await clear_expired_user_by_role("VIP30")
+    await clear_expired_user_by_role("VIPB")
 
 async def notify_expiring_expired_vips():
     logger.info("Cron Job: Notifying expiry and expiry soon VIPs")
