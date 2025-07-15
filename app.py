@@ -366,22 +366,38 @@ schedule.every().day.at('00:00').do(lambda: asyncio.create_task(clear_vip_routin
 
 async def run_vip():
     channel_en = bot.get_channel(int(config.ON_BOARDING_CHANNEL_ID[0]))
+    last_message_info = dbcon.get_from_channel_table('vip')
+    if last_message_info.get('message_id') != None and last_message_info.get('message_id') != '':
+        try:
+            msg = await channel_en.fetch_message(int(last_message_info.get('message_id')))
+            await msg.delete()
+        except:
+            pass
     embed = discord.Embed(
         title=ms.VIP_TITTLE,
         description=ms.VIP_DESCRIPTION,
         color=0xE733FF  # Purple color
     )
     view = RedeemVIPView(dbcon, config.SUPPORT_CHANNEL_ID, config.SUPPORT_CHANNEL_CH_ID)
-    await channel_en.send(embed=embed, view=view)
+    message = await channel_en.send(embed=embed, view=view)
+    dbcon.update_channel_table('vip', int(message.id))
 
     channel_ch = bot.get_channel(int(config.ON_BOARDING_CHANNEL_ID[1]))
+    last_message_info_ch = dbcon.get_from_channel_table('vip_ch')
+    if last_message_info_ch.get('message_id') != None and last_message_info_ch.get('message_id') != '':
+        try:
+            msg = await channel_ch.fetch_message(int(last_message_info_ch.get('message_id')))
+            await msg.delete()
+        except:
+            pass
     embed = discord.Embed(
         title=ms.VIP_TITTLE_CH,
         description=ms.VIP_DESCRIPTION_CH,
         color=0xE733FF  # Purple color
     )
     view = RedeemVIPViewCH(dbcon, config.SUPPORT_CHANNEL_ID, config.SUPPORT_CHANNEL_CH_ID)
-    await channel_ch.send(embed=embed, view=view)
+    message_ch = await channel_ch.send(embed=embed, view=view)
+    dbcon.update_channel_table('vip_ch', int(message_ch.id))
 
 
 async def run_atm():
@@ -396,13 +412,21 @@ async def run_atm():
 
 async def run_admin():
     admin_channel = bot.get_channel(int(config.ADMIN_CHANNEL_ID))
+    last_message_info = dbcon.get_from_channel_table('admin')
+    if last_message_info.get('message_id') != None and last_message_info.get('message_id') != '0':
+        try:
+            msg = await admin_channel.fetch_message(int(last_message_info.get('message_id')))
+            await msg.delete()
+        except:
+            pass
     embed = discord.Embed(
         title=ms.ADMIN_TITTLE,
         description=ms.ATM_DESCRIPTION.format(config.VIP_ROLE_ID, config.SUPPORT_CHANNEL_ID),
         color=0xE733FF  # Purple color
     )
     view = AdminView(dbcon, config)
-    await admin_channel.send(embed=embed, view=view)
+    message = await admin_channel.send(embed=embed, view=view)
+    dbcon.update_channel_table('admin', int(message.id))
 
 
 async def run_scheduler():

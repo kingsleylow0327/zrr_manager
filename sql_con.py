@@ -562,3 +562,14 @@ class ZonixDB():
         SET expired_date = '{expiry_date}'
         WHERE discord_id ='{discord_id}'"""
         return self.dbcon_manager(sql)
+    
+    def get_from_channel_table(self, key):
+        sql = f"""SELECT * FROM channel_table where name = '{key}';"""
+        return self.dbcon_manager(sql)
+    
+    def update_channel_table(self, key, message_id):
+        sql = f"""
+        UPDATE channel_table
+        SET message_id = '{message_id}'
+        WHERE name = '{key}'"""
+        return self.dbcon_manager(sql)
