@@ -187,16 +187,6 @@ VIP_DESCRIPTION_CH = """
 
 ⸻
 
-🔷 Pionex 🔷
-
-若你在 2025 年 5 月 1 日至 5 月 31 日 期间参加 Pionex 100K Prop Trading 挑战赛，即可领取 30 天 <@&1312790308009934920> 访问权限。
-
-<a:animatedarrowright:1224308096835256361> 你的 Pionex 账号必须使用 UnityCrypto 的推荐链接注册
-<a:animatedarrowright:1224308096835256361> 推荐链接可在 #announcement 频道中获取
-<a:animatedarrowright:1224308096835256361> 限时优惠，切勿错过！
-
-⸻
-
 ⚠️ 请注意：
 • 领取 VIP 权限即表示你了解并接受加密交易的相关风险。
 • 过往表现不代表未来结果，请理性交易，并善用专家见解提升策略。
