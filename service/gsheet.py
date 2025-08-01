@@ -55,8 +55,6 @@ class GSheet():
         for _, row in df.iterrows():
             if (row[header[0]] == ''):
                 break
-            if int(float(row[header[1]])) < MIN_TRADE_VOLUME:
-                continue
             small_json = { 
                 header[0]: int(float(row[header[0]])),
                 header[1]: int(float(row[header[1]])),
@@ -71,8 +69,6 @@ class GSheet():
         for _, row in df.iterrows():
             if (row[header[0]] == ''):
                 break
-            if int(float(row[header[1]])) < MIN_TRADE_VOLUME:
-                continue
             small_json = { 
                 header[0]: int(float(row[header[0]])),
                 header[1]: int(float(row[header[1]]))
