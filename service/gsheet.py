@@ -8,11 +8,11 @@ GBOT_GSHEET_ID = "1ss4RoFEIpXSg5PfT0YxkK-od8l3rNTLIRBcU0iCYGgk"
 PROPW_EXPECTED_HEADERS = ['propw_uid','Amount']
 BITGET_EXPECTED_HEADERS = ['UID','Trading Volume (USDT)']
 PIONEX_EXPECTED_HEADERS = ['purchase_date', 'uid','Amount']
-BINGX_EXPECTED_HEADERS = ['UID','Trading Volume (USDT)']
-SHEET_MAPPING = {"BINGX":4,
-                 "BITGET":1,
-                 "PIONEX":2}
-
+VIP_EXPECTED_HEADERS = ['UID','Trading Volume (USDT)', 'Discord Id']
+WHITELIST_EXPECTED_HEADERS = ['UID', 'Discord Id']
+SHEET_MAPPING = {"VIP":0,
+                 "WHITE_LIST":1}
+MIN_TRADE_VOLUME = 300000
 class GSheet():
     def __init__(self, dbcon, config):
         self.dbcon = dbcon
@@ -45,9 +45,40 @@ class GSheet():
         for _, row in df.iterrows():
             if (row[header[0]] == ''):
                 break
-            small_tupple = (int(float(row[header[0]])), int(float(row[header[1]])))
+            small_tupple = (int(float(row[header[0]])), int(float(row[header[1]])), row[header[2]])
             jiant_tupple.append(small_tupple)
         return jiant_tupple
+    
+    def df_to_json_vip(self, df, header):
+        df = df[header]
+        json_ret = []
+        for _, row in df.iterrows():
+            if (row[header[0]] == ''):
+                break
+            if int(float(row[header[1]])) < MIN_TRADE_VOLUME:
+                continue
+            small_json = { 
+                header[0]: int(float(row[header[0]])),
+                header[1]: int(float(row[header[1]])),
+                header[2]: row[header[2]]
+            }
+            json_ret.append(small_json)
+        return json_ret
+    
+    def df_to_json_whitelist(self, df, header):
+        df = df[header]
+        json_ret = []
+        for _, row in df.iterrows():
+            if (row[header[0]] == ''):
+                break
+            if int(float(row[header[1]])) < MIN_TRADE_VOLUME:
+                continue
+            small_json = { 
+                header[0]: int(float(row[header[0]])),
+                header[1]: int(float(row[header[1]]))
+            }
+            json_ret.append(small_json)
+        return json_ret
     
     def df_to_tupples_bitget(self, df, header):
         jiant_tupple = []
@@ -75,9 +106,21 @@ class GSheet():
     
     async def store_to_bingx_db(self):
         worksheet = self.get_worksheet(GBOT_GSHEET_ID, SHEET_MAPPING.get("BINGX"))
-        df = self.get_all_user(worksheet, BINGX_EXPECTED_HEADERS, 2)
-        tupple_data = self.df_to_tupples_bingx(df, BINGX_EXPECTED_HEADERS)
+        df = self.get_all_user(worksheet, VIP_EXPECTED_HEADERS, 2)
+        tupple_data = self.df_to_tupples_bingx(df, VIP_EXPECTED_HEADERS)
         await self.dbcon.update_bingx_table(tupple_data)
+
+    def get_vip_data(self):
+        worksheet = self.get_worksheet(GBOT_GSHEET_ID, SHEET_MAPPING.get("VIP"))
+        df = self.get_all_user(worksheet, VIP_EXPECTED_HEADERS, 2)
+        json_data = self.df_to_json_vip(df, VIP_EXPECTED_HEADERS)
+        return json_data
+    
+    def get_whitelist_data(self):
+        worksheet = self.get_worksheet(GBOT_GSHEET_ID, SHEET_MAPPING.get("WHITE_LIST"))
+        df = self.get_all_user(worksheet, WHITELIST_EXPECTED_HEADERS, 2)
+        json_data = self.df_to_json_whitelist(df, WHITELIST_EXPECTED_HEADERS)
+        return json_data
     
     async def store_to_bitget_db(self):
         worksheet = self.get_worksheet(GBOT_GSHEET_ID, SHEET_MAPPING.get("BITGET"))

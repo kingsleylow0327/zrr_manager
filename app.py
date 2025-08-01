@@ -57,13 +57,13 @@ def within_valid_period(date_time):
 async def on_ready():
     await dbcon.init_async_pool()
     await bot.tree.sync()
-    bot.add_view(RedeemVIPView(dbcon, config.SUPPORT_CHANNEL_ID, config.SUPPORT_CHANNEL_CH_ID))
+    # bot.add_view(RedeemVIPView(dbcon, config.SUPPORT_CHANNEL_ID, config.SUPPORT_CHANNEL_CH_ID))
     for guild in bot.guilds:
         invite_cache[guild.id] = await guild.invites()
     await run_admin()
     await run_vip()
     # await run_atm()
-    await run_scheduler()
+    # await run_scheduler()
     logger.info("Manager Ready")
 
 
