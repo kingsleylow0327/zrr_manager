@@ -9,7 +9,7 @@ PROPW_EXPECTED_HEADERS = ['propw_uid','Amount']
 BITGET_EXPECTED_HEADERS = ['UID','Trading Volume (USDT)']
 PIONEX_EXPECTED_HEADERS = ['purchase_date', 'uid','Amount']
 VIP_EXPECTED_HEADERS = ['VIP Level', 'Discord Id']
-WHITELIST_EXPECTED_HEADERS = ['Discord Id']
+WHITELIST_EXPECTED_HEADERS = ['UID', 'Discord Id']
 SHEET_MAPPING = {"VIP":0,
                  "WHITE_LIST":1}
 MIN_TRADE_VOLUME = 300000
@@ -69,7 +69,8 @@ class GSheet():
             if (row[header[0]] == ''):
                 break
             small_json = { 
-                header[0]: row[header[0]]
+                header[0]: row[header[0]],
+                header[1]: row[header[1]]
             }
             json_ret.append(small_json)
         return json_ret

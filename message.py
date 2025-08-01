@@ -147,53 +147,87 @@ VIP_TITTLE_CH = """
 """
 
 VIP_DESCRIPTION = """
-<a:animatedarrowright:1224308096835256361> Daily Live Trades & Market Analysis
-<a:animatedarrowright:1224308096835256361> Weekly TAP Beginner Live Trades
-<a:animatedarrowright:1224308096835256361> Weekly MMM Strategy Live Trades
+*:tada: No More Free VIP — Earn It Through Real Trading!*
+VIP access is now based on your accumulated trading volume under the UnityCrypto  — *DJ, ZRR, DSphere & BCC* — across *Bybit, **BingX, and **Bitget*!
+
+*:rocket: How to Qualify:*
+:small_blue_diamond: Make sure your exchange account is registered under UnityCrypto 
+:small_blue_diamond: Your cumulative trading volume is tracked monthly across all 3 platforms
+
+===============================
+= *:trophy: New VIP Tiers & Perks:*   =
+===============================
+
+### *:small_orange_diamond: VIP 1 *:small_orange_diamond: – $500K+ Trading Volume*
+:white_check_mark: Access to VIP Chatroom  -> #💭・vip-chatroom  
+:white_check_mark: Access to VIP Chart Analysis and Daily Live Stream Summary -> #📈・vip-chart-analysis 
+:white_check_mark: Eligible to apply for 3-months French Fries Mentorship (Paid Program, Interview Required)
+
+### *:small_orange_diamond: VIP 2 *:small_orange_diamond: – $1M+ Trading Volume*
+:white_check_mark: All VIP 1 Perks
+:white_check_mark: Access to 3AM Offline Class 
+
+### *:small_orange_diamond: VIP 3 *:small_orange_diamond: – $3M+ Trading Volume*
+:white_check_mark: All VIP 2 Perks
+:white_check_mark: Unlock GMC Access — GMC Short-Term Trade (Scalping) Offline Class
+:white_check_mark: *Guaranteed entry* into French Fries Mentorship — *no interview required* & Unlimited revision support during mentorship
 
 ⸻
 
-🔶 BingX | Bitget 🔶
+:warning: Please Note:
+	⁠• VIP roles are updated during the first week of every month
+	⁠• If you hit the required volume mid-month, please contact support for early access
+	⁠• French Fries Mentorship is a paid program
+	⁠• Trading involves risk — past performance does not guarantee future results
 
-If your monthly trading volume exceeds 300K, you'sre entitled to <@&1265980898570928141> / <@&1366801023800185013> Access.
-<a:animatedarrowright:1224308096835256361> Volume is tracked monthly.
-<a:animatedarrowright:1224308096835256361> You'll be notified when your VIP access is expiring.
-<a:animatedarrowright:1224308096835256361> Applies to both BingX and Bitget users.
 
-⸻
+:envelope_with_arrow: Think you qualify but haven’t received your role?
+Reach out via: <#1219304738844315648>  or  <#1228967268122361897>
 
-⚠️ Please Note:
-• By claiming this VIP access, you acknowledge the inherent risks in crypto trading. 
-• Past performance does not guarantee future results. Trade wisely and leverage expert insights.
-• We update all VIP access status every Monday—stay tuned!
 
-📩 If you believe you've been missed, please reach out via:
-🔧 <#1219304738844315648>  or  <#1228967268122361897>
+## Update your Bitget, BingX, and Bybit UID at https://ufc.unitycrypto.com, and we’ll refresh your VIP status every month.
 """
 
 VIP_DESCRIPTION_CH = """
-<a:animatedarrowright:1224308096835256361> 每日实盘交易 & 市场分析
-<a:animatedarrowright:1224308096835256361> 每周 TAP 新手实盘教学
-<a:animatedarrowright:1224308096835256361> 每周 MMM 策略实盘教学
+*:tada: 升级您的 VIP 身份，真实交易换来专属特权！*
+从现在起，VIP 身份将根据您在 *UnityCrypto* 联盟（*DJ、ZRR、DSphere 和 BCC）旗下三大交易所：Bybit、BingX* 与 *Bitget*的累积交易量来评定
+
+*:rocket: 如何获得 VIP：*
+:small_blue_diamond: 确保您的交易账户注册在 UnityCrypto 联盟的团体下
+:small_blue_diamond: 每月追踪您在所有三个交易所的累积交易量
+
+
+===============================
+= *:trophy: 全新 VIP 等级与专属福利*   =
+===============================
+
+### *:small_orange_diamond: VIP 1 *:small_orange_diamond: - 50 万美金以上交易量*
+:white_check_mark: 加入 VIP 专属聊天室 →  #💭・vip-chatroom 
+:white_check_mark: 解锁每日 VIP 图表分析与直播总结 -> #📈・vip-chart-analysis 
+:white_check_mark: 有资格申请为期 3 个月的 French Fries Mentorship 计划（付费，需面试）
+
+### *:small_orange_diamond: VIP 2 *:small_orange_diamond: - 100 万美金以上交易量*
+:white_check_mark: 拥有 VIP 1 所有福利
+:white_check_mark: 参与 3AM 线下进阶课程
+
+### *:small_orange_diamond: VIP 3 *:small_orange_diamond: – 300 万美金以上交易量*
+:white_check_mark: 拥有 VIP 2 所有权益
+:white_check_mark: 解锁 GMC 线下速短交易（Scalping）课程
+:white_check_mark: 直接进入 French Fries Mentorship 计划（付费， *无需面试*），无限复训机会
 
 ⸻
 
-🔶 BingX | Bitget 🔶
+:warning: 温馨提醒
+	⁠• VIP 身份将于每月第一周统一更新
+	⁠• 若您在当月中达到标准，请主动联系支持团队申请提前激活
+	⁠• French Fries Mentorship计划为付费项目
+	⁠• 加密交易存在风险 — 过往表现不代表未来收益
 
-若你每月的交易量超过 30 万美金，即可获得 <@&1265980898570928141> / <@&1366801023800185013> 访问权限：
-<a:animatedarrowright:1224308096835256361> 每月自动追踪交易量
-<a:animatedarrowright:1224308096835256361> 我们会在 VIP 即将到期时通知你
-<a:animatedarrowright:1224308096835256361> 适用于 BingX 和 Bitget 用户
+:envelope_with_arrow: 达标但尚未获得对应身份？
+请前往：
+<#1228967268122361897>  or  <#1219304738844315648>
 
-⸻
-
-⚠️ 请注意：
-• 领取 VIP 权限即表示你了解并接受加密交易的相关风险。
-• 过往表现不代表未来结果，请理性交易，并善用专家见解提升策略。
-• 我们将于每周一更新所有 VIP 状态，请持续关注！
-
-📩 若你认为自己被遗漏，请通过以下渠道联系我们：
-🔧 <#1228967268122361897>  or  <#1219304738844315648>
+## 请前往 https://ufc.unitycrypto.com 更新您的 Bitget、BingX 与 Bybit UID，我们将在每月定期刷新您的 VIP 状态
 """
 
 ATM_TITLE = """
