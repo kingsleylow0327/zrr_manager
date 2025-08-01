@@ -8,8 +8,8 @@ GBOT_GSHEET_ID = "1ss4RoFEIpXSg5PfT0YxkK-od8l3rNTLIRBcU0iCYGgk"
 PROPW_EXPECTED_HEADERS = ['propw_uid','Amount']
 BITGET_EXPECTED_HEADERS = ['UID','Trading Volume (USDT)']
 PIONEX_EXPECTED_HEADERS = ['purchase_date', 'uid','Amount']
-VIP_EXPECTED_HEADERS = ['UID','Trading Volume (USDT)', 'Discord Id']
-WHITELIST_EXPECTED_HEADERS = ['UID', 'Discord Id']
+VIP_EXPECTED_HEADERS = ['VIP Level', 'Discord Id']
+WHITELIST_EXPECTED_HEADERS = ['Discord Id']
 SHEET_MAPPING = {"VIP":0,
                  "WHITE_LIST":1}
 MIN_TRADE_VOLUME = 300000
@@ -56,9 +56,8 @@ class GSheet():
             if (row[header[0]] == ''):
                 break
             small_json = { 
-                header[0]: int(float(row[header[0]])),
-                header[1]: int(float(row[header[1]])),
-                header[2]: row[header[2]]
+                header[0]: row[header[0]],
+                header[1]: row[header[1]]
             }
             json_ret.append(small_json)
         return json_ret
@@ -70,8 +69,7 @@ class GSheet():
             if (row[header[0]] == ''):
                 break
             small_json = { 
-                header[0]: int(float(row[header[0]])),
-                header[1]: int(float(row[header[1]]))
+                header[0]: row[header[0]]
             }
             json_ret.append(small_json)
         return json_ret
@@ -124,4 +122,44 @@ class GSheet():
         tupple_data = self.df_to_tupples_bitget(df, BITGET_EXPECTED_HEADERS)
         await self.dbcon.update_bitget_table(tupple_data)
 
+if __name__ == "__main__":
+    gsheet = GSheet(None,None)
 
+    # BingX
+    worksheet = gsheet.get_worksheet(GBOT_GSHEET_ID, SHEET_MAPPING.get("VIP"))
+    df = gsheet.get_all_user(worksheet, VIP_EXPECTED_HEADERS, 2)
+    json_data = gsheet.df_to_json_vip(df, VIP_EXPECTED_HEADERS)
+    print(json_data)
+    # sql_format = """INSERT INTO trade_volume_table (uuid, volume) VALUES ('{}', '{}') ON DUPLICATE KEY UPDATE volume = VALUES(volume);\n"""
+    # jiant_string = ""
+    # for t in tupple_data:
+    #     jiant_string += sql_format.format(t[0], t[1])
+    # with open('bingx_sql.txt', 'w') as file:
+    #     file.write(jiant_string)
+
+    # # Bitget
+    # print("Start Bitget")
+    # worksheet = gsheet.get_worksheet(GBOT_GSHEET_ID, SHEET_MAPPING.get("BITGET"))
+    # df = gsheet.get_all_user(worksheet, BITGET_EXPECTED_HEADERS, 2)
+    # tupple_data = gsheet.df_to_tupples_bitget(df, BITGET_EXPECTED_HEADERS)
+    # sql_format = """INSERT INTO bitget_table (uuid, volume) VALUES ('{}', '{}') ON DUPLICATE KEY UPDATE volume = VALUES(volume);\n"""
+    # # sql_format = """INSERT INTO bitget_table (uuid) VALUES ('{}') ON DUPLICATE KEY UPDATE uuid = uuid;\n"""
+    # jiant_string = ""
+    # print("Start Bitget Write")
+    # for t in tupple_data:
+    #     jiant_string += sql_format.format(t[0], t[1])
+    # with open('bitget_sql.txt', 'w') as file:
+    #     file.write(jiant_string)
+    
+    # # Pionex
+    # print("Start Pionex")
+    # worksheet = gsheet.get_worksheet(GBOT_GSHEET_ID, SHEET_MAPPING.get("PIONEX"))
+    # df = gsheet.get_all_user(worksheet, PIONEX_EXPECTED_HEADERS, 0)
+    # tupple_data = gsheet.df_to_tupples_pionex(df, PIONEX_EXPECTED_HEADERS)
+    # sql_format = """INSERT INTO pionex_table (pionex_uid, amount) VALUES ('{}', '{}') ON DUPLICATE KEY UPDATE pionex_uid = VALUES(pionex_uid), amount = VALUES(amount);\n"""
+    # jiant_string = ""
+    # print("Start Pionex Write")
+    # for t in tupple_data:
+    #     jiant_string += sql_format.format(t[0], t[1])
+    # with open('pionex_sql.txt', 'w') as file:
+    #     file.write(jiant_string)
