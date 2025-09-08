@@ -7,6 +7,8 @@ ROLE_TABLE = {
     "VIP30": "pionex_table",
     "VIPB": "bitget_table"
 }
+ROLE_NAMES = ["VIP 1", "VIP 2", "VIP 3"]
+# ROLE_NAMES = ["VIP 1 TEST", "VIP 2 TEST"] # Testing purpose
 class AdminView(discord.ui.View):
 
     def __init__(self, dbcon, config):
@@ -21,21 +23,23 @@ class AdminView(discord.ui.View):
             await interaction.followup.send("This function only limit to Admin", ephemeral=True)
             return
         await interaction.followup.send("Fetching VIP Sheet... This may take sometime...", ephemeral=True)
-        role = discord.utils.get(interaction.guild.roles, name="VIP")
+        role_list = [discord.utils.get(interaction.guild.roles, name=r) for r in ROLE_NAMES]
 
         gsheet = GSheet(self.dbcon, self.config)
         json_data = gsheet.get_vip_data()
-        if json_data != None and len(json_data) != 0:
-            # Clearing roles
-            await interaction.followup.send("Clearing Roles...", ephemeral=True)
+        failed_string = ""
+        # Clearing roles
+        await interaction.followup.send("Clearing Roles...", ephemeral=True)
+        for role in role_list:
             member_list = role.members
             for user in member_list:
                 await user.remove_roles(role)
+        if json_data != None and len(json_data) != 0:
             # Adding Roles
             await interaction.followup.send("Assigning Roles...", ephemeral=True)
             success_number = 0
-            failed_string = ""
             for j in json_data:
+                role = discord.utils.get(interaction.guild.roles, name=j.get('VIP Level'))
                 if j.get('Discord Id') is None or j.get('Discord Id') == "" :
                     continue
                 vip_id = int(j.get('Discord Id'))
@@ -60,6 +64,7 @@ class AdminView(discord.ui.View):
                 vip_id = int(j.get('Discord Id'))
                 whitelist_user = interaction.guild.get_member(vip_id)
                 if whitelist_user:
+                    role = discord.utils.get(interaction.guild.roles, name=j.get('VIP Level'))
                     await whitelist_user.add_roles(role)
                     whitelist_success_number += 1
                 else:
@@ -68,33 +73,3 @@ class AdminView(discord.ui.View):
         if whitelist_failed_string != "":
             await interaction.followup.send(f"(Whitelist) Following are member failed to assigned: \n {whitelist_failed_string}", ephemeral=True)
         await interaction.followup.send("Done!", ephemeral=True)
-
-    # @discord.ui.button(label="Update Bitget", style=discord.ButtonStyle.blurple, custom_id="update_bitget")
-    # async def update_bitget(self, interaction: discord.Interaction, button: discord.ui.Button):
-    #     await interaction.response.defer(ephemeral=True)
-    #     if not self.dbcon.is_admin(str(interaction.user.id)):
-    #         await interaction.followup.send("This function only limit to Admin", ephemeral=True)
-    #         return
-    #     await interaction.followup.send("Updating Bitget Table... This may take sometime...", ephemeral=True)
-    #     gsheet = GSheet(self.dbcon, self.config)
-    #     await gsheet.store_to_bitget_db()
-    #     await interaction.followup.send("Updating User's Expiry", ephemeral=True)
-    #     valid_vip_dict = self.dbcon.get_bitget_table_with_volume(300000)
-    #     success_number = 0
-    #     failed_string = ""
-    #     if valid_vip_dict != None and len(valid_vip_dict) != 0:
-    #         vip_list = [k.get("discord_id") for k in valid_vip_dict]
-    #         self.dbcon.update_bitget_table_expired_date(",".join(vip_list), 30)
-    #         await interaction.followup.send("Assigning Roles", ephemeral=True)
-    #         role = discord.utils.get(interaction.guild.roles, name="VIPB")
-    #         for vip in vip_list:
-    #             user = interaction.guild.get_member(int(vip))
-    #             if user:
-    #                 await user.add_roles(role)
-    #                 success_number += 1
-    #             else:
-    #                 failed_string += f"{vip},\n"
-    #     await interaction.followup.send(f"Successfully added {success_number} member(s) as VIPB!", ephemeral=True)
-    #     if failed_string != "":
-    #         await interaction.followup.send(f"Following are member failed to assigned: \n {failed_string}", ephemeral=True)
-    #     await interaction.followup.send("Done!", ephemeral=True)
