@@ -2,12 +2,12 @@ WRONG_CHANNEL="""Please call this command in Manager Channel"""
 
 NON_REGISTERED="""
 You have not registered to the system or you have used with a wrong Account ID
-Please Contact ZRR Admin
+Please Contact Admin
 """
 
 NO_ACCOUNT="""
 You have not registered any account with us
-Please Contact ZRR Admin
+Please Contact Admin
 """
 
 NO_ALGO_STRATEGY="""
@@ -55,7 +55,7 @@ ERROR_CLOSED_ORDER = """Closing Active Order failed, please close ALL Active Ord
 
 EXPIRED_ACCOUNT = """
 This account is expired
-Please Contact ZRR Admin
+Please Contact Admin
 """
 
 NO_LICENSE = """
@@ -147,7 +147,7 @@ VIP_TITTLE_CH = """
 """
 
 VIP_DESCRIPTION = """
-VIP access is now based on your accumulated trading volume under the UnityCrypto  — **DJ, ZRR, DSphere & BCC** — across **Bybit**, **BingX**, and **Bitget**!
+VIP access is now based on your accumulated trading volume under the UnityCrypto  — **DJ, Potato Squad, DSphere & BCC** — across **Bybit**, **BingX**, and **Bitget**!
 
 **:rocket: How to Qualify:**
 :small_blue_diamond: Make sure your exchange account is registered under UnityCrypto 
@@ -188,7 +188,7 @@ Reach out via: <#1219304738844315648>
 """
 
 VIP_DESCRIPTION_CH = """
-从现在起，VIP 身份将根据您在 **UnityCrypto** 联盟（**DJ、ZRR、DSphere 和 BCC**）旗下三大交易所：**Bybit**、**BingX** 与 **Bitget**的累积交易量来评定
+从现在起，VIP 身份将根据您在 **UnityCrypto** 联盟（**DJ、Potato Squad、DSphere 和 BCC**）旗下三大交易所：**Bybit**、**BingX** 与 **Bitget**的累积交易量来评定
 
 **:rocket: 如何获得 VIP：**
 :small_blue_diamond: 确保您的交易账户注册在 UnityCrypto 联盟的团体下
