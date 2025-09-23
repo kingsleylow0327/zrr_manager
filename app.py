@@ -64,11 +64,6 @@ async def on_ready():
     await run_vip()
     # await run_atm()
     # await run_scheduler()
-    member1 = guild.get_member(int(212639226192330753))
-    member2 = guild.get_member(int(522806720817528979))
-    await member1.send(f"Hallo, this is a test message")
-    await member2.send(f"Hallo, this is a test message")
-            
     logger.info("Manager Ready")
 
 
